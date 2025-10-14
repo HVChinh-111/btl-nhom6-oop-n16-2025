@@ -37,14 +37,13 @@ Sau mỗi tuần, team sẽ merge `develop` vào `main` để release phiên b�
 **Hướng dẫn sử dụng:** ....
 ## 3. Các Chức Năng Chính
 
-- **Chức năng 1:** Đăng ký, đăng nhập. Tên đăng nhập mã sinh viên (xác thực bằng email học viện) hoặc đăng nhập bằng Slink
+- **Chức năng 1:** Đăng ký, đăng nhập. Tên đăng nhập mã sinh viên (xác thực bằng email học viện)
 - **Chức năng 2:** Chọn các chủ đề quan tâm (Các bài viết sẽ liên quan đến chủ đề đã chọn)
-- **Chức năng 3:** Đăng bài viết hỏi hoặc chia sẻ kiến thức học thuật
-- **Chức năng 4:** Tìm kiếm các bài viết
-- **Chức năng 5:** Nhắn tin thời gian thực - Có thể nhắn trực tiếp với người khác để hỏi trực tiếp
-- **Chức năng 6:** Tích hợp chatbot - Hỏi và tổng hợp các kiến thức đã được chia sẻ trong nền tảng
-- **Chức năng 7:** Xem profile của các người dùng khác và danh sách bài viết họ đã đăng, theo dõi
-- **Chức năng 8:** Bình luận và đánh giá bài viết qua hệ thống upvote-downvote và lưu lại bài viết yêu thích theo danh sách cá nhân hóa.
+- **Chức năng 3:** Đăng bài viết chia sẻ các kiến thức học thuật
+- **Chức năng 4:** Tìm kiếm bài viết quan tâm, lướt bài viết follow, trending
+- **Chức năng 5:** Xem profile cá nhân, xem profile của các người dùng khác và danh sách bài viết họ đã đăng, theo dõi
+- **Chức năng 6:** Bình luận và đánh giá bài viết qua hệ thống upvote-downvote và lưu lại bài viết yêu thích theo danh sách cá nhân hóa.
+- **Chức năng 7:** Tích hợp chatbot - Hỏi và tổng hợp các kiến thức đã được chia sẻ trong nền tảng
 ## 4. Công Nghệ
 #### 4.1. Công Nghệ Sử Dụng
 - Liner, Github: Chính
