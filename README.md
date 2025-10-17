@@ -43,7 +43,8 @@ Sau mỗi tuần, team sẽ merge `develop` vào `main` để release phiên b�
 - **Chức năng 4:** Tìm kiếm bài viết quan tâm, lướt bài viết follow, trending
 - **Chức năng 5:** Xem profile cá nhân, xem profile của các người dùng khác và danh sách bài viết họ đã đăng, theo dõi
 - **Chức năng 6:** Bình luận và đánh giá bài viết qua hệ thống upvote-downvote và lưu lại bài viết yêu thích theo danh sách cá nhân hóa.
-- **Chức năng 7:** Tích hợp chatbot - Hỏi và tổng hợp các kiến thức đã được chia sẻ trong nền tảng
+- **Chức năng 7:** Bảng xếp hạng đóng góp và màu tên cho từng rank riêng (tương tự codeforces)
+- **Chức năng 8:** Tích hợp chatbot - Hỏi và tổng hợp các kiến thức đã được chia sẻ trong nền tảng
 ## 4. Công Nghệ
 #### 4.1. Công Nghệ Sử Dụng
 - Liner, Github: Chính
@@ -150,12 +151,3 @@ Luồng hoạt động cơ bản của project
 **Giải pháp:** 
 
 #### Kết Quả
-
-* Database: (Đăng, Cường)
-  * Thiết kế mô hình ER: Đăng
-  * Chuẩn hóa và vẽ luôn mô hình
-  * Deadline: trước 22h t5 tuần này
-  * CN: chuyển ER thành mô hình quan hệ: Cường
-
-* FE:
-  * Code signin, signout, post
