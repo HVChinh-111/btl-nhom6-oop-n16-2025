@@ -14,7 +14,7 @@ Team hoạt động theo mô hình Scrum, sử dụng Linear để quản lý c�
 
 - Link linear: ...
 
-**22h thứ 5 hàng tuần**, team sẽ ngồi lại để review công việc đã làm, cùng nhau giải quyết vấn đề đang gặp phải và lên kế hoạch phát triển các tính năng trong tuần tiếp theo.
+**22h thứ 7 hàng tuần (hạn cuối 25/11)**, team sẽ ngồi lại để review công việc đã làm, cùng nhau giải quyết vấn đề đang gặp phải và lên kế hoạch phát triển các tính năng trong tuần tiếp theo.
 
 **Version Control Strategy**
 
@@ -151,3 +151,15 @@ Luồng hoạt động cơ bản của project
 **Giải pháp:** 
 
 #### Kết Quả
+
+
+#### Công việc:
+* BE: tìm hiểu Java Spring Boot kỹ để code các tuần sau
+  * **Cường:** Code các class model
+  * **Đăng:** Code SignIn, SignOut (tìm hiểu luôn mã hóa, giải mã mật khẩu), tìm hiểu xác thực qua email.
+
+* FE: **Chính**
+  * SignIn, SignOut
+  * ...
+
+* **Deadline: 22h t7**
