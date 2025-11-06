@@ -1,22 +1,22 @@
 package com.example.hiveptit.model;
+
 import jakarta.persistence.*;
-import java.util.*;
 
 @Entity
 @Table(name = "users")
-
 public class Users {
+
     @Id
-    @Column(name = "student_id", length = 10)
+    @Column(name = "student_id", length = 10, nullable = false)
     private String studentId;
 
-    @Column(name = "password_hash", nullable = false, length = 30)
+    @Column(name = "password_hash", columnDefinition = "VARCHAR(255)", nullable = false)
     private String passwordHash;
 
-    @Column(name = "username", nullable = false, unique = true, length = 30)
+    @Column(name = "username", length = 30, nullable = false, unique = true)
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true, length = 30)
+    @Column(name = "email", length = 50, nullable = false, unique = true)
     private String email;
 
     @Column(name = "firstname", length = 30)
@@ -25,55 +25,83 @@ public class Users {
     @Column(name = "lastname", length = 30)
     private String lastname;
 
-    @Column(name = "avatar_url", length = 50)
+    @Column(name = "avatar_url", length = 255)
     private String avatarUrl;
 
-    @Lob
+    @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "is_verified", columnDefinition = "ENUM('Y','N') default 'N'")
-    private VerifyStatus isVerified = VerifyStatus.N;
+    @Column(name = "is_verified", length = 1, nullable = false)
+    private IsVerified isVerified = IsVerified.N;
 
     @Column(name = "ranking_core", nullable = false)
-    private int rankingCore = 0;
+    private Integer rankingCore = 0;
 
-    // Quan hệ với Role
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_role",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Roles> roles = new HashSet<>();
+    public enum IsVerified {
+        Y, N
+    }
 
-    // Quan hệ với Topic
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_topic",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "topic_id")
-    )
-    private Set<Topics> topics = new HashSet<>();
+    public Users() {
+    }
 
-    // 1 User - n BookmarkList
-    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Bookmark_List> bookmarkLists = new ArrayList<>();
+    public String getStudentId() {
+        return studentId;
+    }
 
-    // 1 User - n Post
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Posts> posts = new ArrayList<>();
+    public void setStudentId(String studentId) {
+        this.studentId = studentId;
+    }
 
-    // 1 User - n Comment
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comments> comments = new ArrayList<>();
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
-    // Quan hệ Follow
-    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Follows> following = new HashSet<>();
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 
-    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Follows> followers = new HashSet<>();
+    public String getUsername() {
+        return username;
+    }
 
-    public enum VerifyStatus { Y, N }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public IsVerified getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(IsVerified isVerified) {
+        this.isVerified = isVerified;
+    }
+
+    public void setRankingCore(Integer rankingCore) {
+        this.rankingCore = rankingCore;
+    }
 }
