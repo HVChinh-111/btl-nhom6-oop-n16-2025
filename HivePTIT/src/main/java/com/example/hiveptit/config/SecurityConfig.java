@@ -71,6 +71,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/posts/create").hasAuthority("POST_CREATE")
                 .requestMatchers("/api/posts/delete/**").hasAuthority("POST_DELETE")
                 
+                // Vote và Bookmark endpoints - Authenticated users
+                .requestMatchers("/api/votes/**").authenticated()
+                .requestMatchers("/api/bookmarks/**").authenticated()
+                
                 // Tất cả request khác cần authentication
                 .anyRequest().authenticated()
             )

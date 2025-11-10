@@ -45,13 +45,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     private Collection<? extends GrantedAuthority> getAuthorities(Users user) {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
+        // Lấy roles của user
         Set<Roles> roles = user.getRoles();
         
         for (Roles role : roles) {
+            // Thêm role với prefix "ROLE_"
+            // SimpleGrantedAuthority là implementation của GrantedAuthority
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toUpperCase()));
             
+            // Lấy permissions của role này
             Set<Permissions> permissions = role.getPermissions();
             
+            // Thêm tất cả permissions (không có prefix)
+            // Stream API: map code của permission thành SimpleGrantedAuthority
             authorities.addAll(
                 permissions.stream()
                     .map(permission -> new SimpleGrantedAuthority(permission.getCode()))
@@ -62,6 +68,14 @@ public class CustomUserDetailsService implements UserDetailsService {
         return authorities;
     }
 
+    /**
+     * Load user by email - Custom method (không phải của UserDetailsService)
+     * Để support login bằng email
+     * 
+     * @param email Email để tìm kiếm
+     * @return UserDetails object
+     * @throws UsernameNotFoundException nếu không tìm thấy user
+     */
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
         Users user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));

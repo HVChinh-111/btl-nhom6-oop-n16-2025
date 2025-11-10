@@ -30,4 +30,54 @@ public class Votes {
     private VoteType voteType;
 
     public enum VoteType { upvote, downvote }
+
+    public Votes() {
+    }
+
+    public Votes(Users voter, Posts post, Comments comment, VoteType voteType) {
+        this.voter = voter;
+        this.post = post;
+        this.comment = comment;
+        this.voteType = voteType;
+    }
+
+    public Integer getVoteId() {
+        return voteId;
+    }
+
+    public void setVoteId(Integer voteId) {
+        this.voteId = voteId;
+    }
+
+    public Users getVoter() {
+        return voter;
+    }
+
+    public void setVoter(Users voter) {
+        this.voter = voter;
+    }
+
+    public Posts getPost() {
+        return post;
+    }
+
+    public void setPost(Posts post) {
+        this.post = post;
+    }
+
+    public Comments getComment() {
+        return comment;
+    }
+
+    public void setComment(Comments comment) {
+        this.comment = comment;
+    }
+
+    public VoteType getVoteType() {
+        return voteType;
+    }
+
+    public void setVoteType(VoteType voteType) {
+        this.voteType = voteType;
+    }
 }

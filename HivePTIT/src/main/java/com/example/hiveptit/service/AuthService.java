@@ -86,7 +86,7 @@ public class AuthService {
             user.getStudentId(),
             user.getUsername(),
             user.getEmail(),
-            "Đăng ký thành công! Vui lòng xác thực email để đăng nhập.",
+            "Đăng ký thành công!",
             true
         );
     }
