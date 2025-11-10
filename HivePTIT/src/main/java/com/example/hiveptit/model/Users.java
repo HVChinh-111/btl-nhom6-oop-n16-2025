@@ -1,13 +1,15 @@
 package com.example.hiveptit.model;
 
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class Users {
 
     @Id
-    @Column(name = "student_id", length = 10, nullable = false)
+    @Column(name = "student_id", columnDefinition = "CHAR(10)", nullable = false)
     private String studentId;
 
     @Column(name = "password_hash", columnDefinition = "VARCHAR(255)", nullable = false)
@@ -37,6 +39,24 @@ public class Users {
 
     @Column(name = "ranking_core", nullable = false)
     private Integer rankingCore = 0;
+
+    // Quan hệ Many-to-Many với Roles thông qua bảng user_role
+    @ManyToMany(fetch = FetchType.EAGER) // EAGER: load roles cùng với user
+    @JoinTable(
+        name = "user_role",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Roles> roles = new HashSet<>();
+
+    // Quan hệ Many-to-Many với Topics thông qua bảng user_topic
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_topic",
+        joinColumns = @JoinColumn(name = "student_id"),
+        inverseJoinColumns = @JoinColumn(name = "topic_id")
+    )
+    private Set<Topics> topics = new HashSet<>();
 
     public enum IsVerified {
         Y, N
@@ -103,5 +123,43 @@ public class Users {
 
     public void setRankingCore(Integer rankingCore) {
         this.rankingCore = rankingCore;
+    }
+
+    public Integer getRankingCore() {
+        return rankingCore;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    // Getter và Setter cho roles
+    public Set<Roles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Roles> roles) {
+        this.roles = roles;
+    }
+
+    // Getter và Setter cho topics
+    public Set<Topics> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(Set<Topics> topics) {
+        this.topics = topics;
     }
 }
