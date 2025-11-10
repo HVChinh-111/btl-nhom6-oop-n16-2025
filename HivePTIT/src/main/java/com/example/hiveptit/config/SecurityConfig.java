@@ -75,6 +75,13 @@ public class SecurityConfig {
                 .requestMatchers("/api/votes/**").authenticated()
                 .requestMatchers("/api/bookmarks/**").authenticated()
                 
+                // Follow endpoints - Authenticated users
+                .requestMatchers("/api/follow/toggle").authenticated()
+                .requestMatchers("/api/follow/check").authenticated()
+                .requestMatchers("/api/follow/*/followers").permitAll()
+                .requestMatchers("/api/follow/*/following").permitAll()
+                .requestMatchers("/api/follow/*/stats").permitAll()
+                
                 // Tất cả request khác cần authentication
                 .anyRequest().authenticated()
             )
