@@ -52,8 +52,8 @@ public class FollowService {
             message = "Followed " + targetUsername + " successfully";
         }
 
-        int followerCount = followRepository.countFollowers(targetUser);
-        int followingCount = followRepository.countFollowing(targetUser);
+        long followerCount = followRepository.countFollowers(targetUser);
+        long followingCount = followRepository.countFollowing(targetUser);
 
         return new FollowResponse(message, true, action, followerCount, followingCount);
     }
@@ -122,13 +122,13 @@ public class FollowService {
                 .collect(Collectors.toList());
     }
 
-    public int getFollowerCount(String username) {
+    public long getFollowerCount(String username) {
         Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return followRepository.countFollowers(user);
     }
 
-    public int getFollowingCount(String username) {
+    public long getFollowingCount(String username) {
         Users user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         return followRepository.countFollowing(user);
