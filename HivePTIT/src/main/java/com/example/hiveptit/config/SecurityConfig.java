@@ -82,6 +82,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/follow/*/following").permitAll()
                 .requestMatchers("/api/follow/*/stats").permitAll()
                 
+                // User profile endpoints
+                .requestMatchers("/api/users/profile").authenticated()
+                .requestMatchers("/api/users/*").permitAll()
+                
                 // Tất cả request khác cần authentication
                 .anyRequest().authenticated()
             )

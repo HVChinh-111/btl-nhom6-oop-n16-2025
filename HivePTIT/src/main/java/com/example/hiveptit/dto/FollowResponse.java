@@ -4,13 +4,13 @@ public class FollowResponse {
     private String message;
     private boolean success;
     private String action;
-    private Integer followerCount;
-    private Integer followingCount;
+    private Long followerCount;
+    private Long followingCount;
 
     public FollowResponse() {
     }
 
-    public FollowResponse(String message, boolean success, String action, Integer followerCount, Integer followingCount) {
+    public FollowResponse(String message, boolean success, String action, Long followerCount, Long followingCount) {
         this.message = message;
         this.success = success;
         this.action = action;
@@ -42,19 +42,19 @@ public class FollowResponse {
         this.action = action;
     }
 
-    public Integer getFollowerCount() {
+    public Long getFollowerCount() {
         return followerCount;
     }
 
-    public void setFollowerCount(Integer followerCount) {
+    public void setFollowerCount(Long followerCount) {
         this.followerCount = followerCount;
     }
 
-    public Integer getFollowingCount() {
+    public Long getFollowingCount() {
         return followingCount;
     }
 
-    public void setFollowingCount(Integer followingCount) {
+    public void setFollowingCount(Long followingCount) {
         this.followingCount = followingCount;
     }
 }

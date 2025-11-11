@@ -64,8 +64,8 @@ public class FollowController {
     }
 
     @GetMapping("/{username}/stats")
-    public ResponseEntity<Map<String, Integer>> getFollowStats(@PathVariable String username) {
-        Map<String, Integer> stats = new HashMap<>();
+    public ResponseEntity<Map<String, Long>> getFollowStats(@PathVariable String username) {
+        Map<String, Long> stats = new HashMap<>();
         stats.put("followers", followService.getFollowerCount(username));
         stats.put("following", followService.getFollowingCount(username));
         return ResponseEntity.ok(stats);
