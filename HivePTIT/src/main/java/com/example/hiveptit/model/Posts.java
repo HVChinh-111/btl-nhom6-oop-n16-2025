@@ -15,10 +15,10 @@ public class Posts {
     @JoinColumn(name = "student_id", nullable = false)
     private Users author;
 
-    @Lob
+//    @Lob
     private String title;
 
-    @Lob
+//    @Lob
     private String content;
 
     @Column(name = "vote_count", nullable = false)
@@ -39,15 +39,20 @@ public class Posts {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments = new ArrayList<>();
 
-    public Posts() {
-    }
-
-    public Posts(Users author, String title, String content) {
+    public Posts(Integer postId, Users author, String title, String content, int voteCount, Instant createdAt, Instant updatedAt, Set<Topics> topics, List<Comments> comments) {
+        this.postId = postId;
         this.author = author;
         this.title = title;
         this.content = content;
-        this.createdAt = Instant.now();
-        this.updatedAt = Instant.now();
+        this.voteCount = voteCount;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.topics = topics;
+        this.comments = comments;
+    }
+
+    public Posts() {
+
     }
 
     public Integer getPostId() {
