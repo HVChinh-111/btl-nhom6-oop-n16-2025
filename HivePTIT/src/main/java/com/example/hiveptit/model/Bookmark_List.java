@@ -28,4 +28,53 @@ public class Bookmark_List {
             inverseJoinColumns = @JoinColumn(name = "post_id")
     )
     private Set<Posts> posts = new HashSet<>();
+
+    public Bookmark_List() {
+    }
+
+    public Bookmark_List(Users users, String name) {
+        this.users = users;
+        this.name = name;
+        this.createdAt = Instant.now();
+    }
+
+    public Integer getListId() {
+        return listId;
+    }
+
+    public void setListId(Integer listId) {
+        this.listId = listId;
+    }
+
+    public Users getUsers() {
+        return users;
+    }
+
+    public void setUsers(Users users) {
+        this.users = users;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<Posts> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Posts> posts) {
+        this.posts = posts;
+    }
 }

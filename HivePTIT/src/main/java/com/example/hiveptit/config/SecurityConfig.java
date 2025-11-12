@@ -71,6 +71,21 @@ public class SecurityConfig {
                 .requestMatchers("/api/posts/create").hasAuthority("POST_CREATE")
                 .requestMatchers("/api/posts/delete/**").hasAuthority("POST_DELETE")
                 
+                // Vote và Bookmark endpoints - Authenticated users
+                .requestMatchers("/api/votes/**").authenticated()
+                .requestMatchers("/api/bookmarks/**").authenticated()
+                
+                // Follow endpoints - Authenticated users
+                .requestMatchers("/api/follow/toggle").authenticated()
+                .requestMatchers("/api/follow/check").authenticated()
+                .requestMatchers("/api/follow/*/followers").permitAll()
+                .requestMatchers("/api/follow/*/following").permitAll()
+                .requestMatchers("/api/follow/*/stats").permitAll()
+                
+                // User profile endpoints
+                .requestMatchers("/api/users/profile").authenticated()
+                .requestMatchers("/api/users/*").permitAll()
+                
                 // Tất cả request khác cần authentication
                 .anyRequest().authenticated()
             )
