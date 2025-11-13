@@ -1,15 +1,144 @@
 <!DOCTYPE html>
 <html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../static/images/LogoProPTIT.png" type="image/png" />
+    <link rel="stylesheet" href="../static/styles/general.css" />
+    <title>HivePTIT</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../static/images/LogoProPTIT.png" type="image/png">
-  <link rel="stylesheet" href="../static/styles/general.css">
-  <title>HivePTIT</title>
-</head>
+  <body class="page">
+    <!-- Header chính -->
+    <header class="header">
+      <nav class="header__nav">
+        <!-- Logo và tên -->
+        <a href="index.html" class="header__brand">HivePTIT</a>
 
-<body>
-  
-</body>
+        <!-- Menu điều hướng -->
+        <ul class="header__menu">
+          <li class="header__menu-item">
+            <a
+              href="index.html"
+              class="header__menu-link header__menu-link--active"
+            >
+              Trang chủ
+            </a>
+          </li>
+          <li class="header__menu-item">
+            <a href="#" class="header__menu-link"> Đang theo dõi </a>
+          </li>
+          <li class="header__menu-item header__menu-item--dropdown">
+            <button class="header__menu-link header__dropdown-toggle">
+              Các chuyên mục
+              <svg
+                class="header__dropdown-icon"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+                fill="none"
+              >
+                <path
+                  d="M2 4L6 8L10 4"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <!-- Dropdown menu -->
+            <ul class="header__dropdown-menu">
+              <li class="header__dropdown-item">
+                <a href="#" class="header__dropdown-link">OOP</a>
+              </li>
+              <li class="header__dropdown-item">
+                <a href="#" class="header__dropdown-link">DATABASE</a>
+              </li>
+              <li class="header__dropdown-item">
+                <a href="#" class="header__dropdown-link">WEB</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Avatar và menu người dùng -->
+        <div class="header__user">
+          <button class="header__avatar-btn">
+            <img
+              src="../static/images/avatar.jpeg"
+              alt="Avatar"
+              class="header__avatar"
+            />
+          </button>
+          <!-- Dropdown menu người dùng -->
+          <div class="header__user-menu">
+            <!-- Thông tin người dùng -->
+            <div class="header__user-info">
+              <img
+                src="../static/images/avatar.jpeg"
+                alt="Avatar"
+                class="header__user-avatar"
+              />
+              <div class="header__user-details">
+                <p class="header__user-name">Hoàng Văn Chính</p>
+                <p class="header__user-username">@HVChinh-111</p>
+                <button class="header__user-edit-btn">Sửa</button>
+              </div>
+            </div>
+            <!-- Đường phân cách -->
+            <div class="header__user-divider"></div>
+            <!-- Các tùy chọn -->
+            <ul class="header__user-options">
+              <li class="header__user-option">
+                <a href="#" class="header__user-option-link">
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Trang cá nhân
+                </a>
+              </li>
+              <li class="header__user-option">
+                <a href="#" class="header__user-option-link">
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M5 8H11M11 8L8 5M11 8L8 11M1 8C1 9.85652 1.7375 11.637 3.05025 12.9497C4.36301 14.2625 6.14348 15 8 15C9.85652 15 11.637 14.2625 12.9497 12.9497C14.2625 11.637 15 9.85652 15 8C15 6.14348 14.2625 4.36301 12.9497 3.05025C11.637 1.7375 9.85652 1 8 1C6.14348 1 4.36301 1.7375 3.05025 3.05025C1.7375 4.36301 1 6.14348 1 8Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Đăng xuất
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+      <!-- Nội dung trang chủ sẽ được thêm vào đây -->
+    </main>
+
+    <!-- Scripts -->
+    <script src="../static/scripts/dropdown.js"></script>
+  </body>
 </html>

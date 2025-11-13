@@ -427,3 +427,382 @@
     font-size: 13px;
   }
 }
+
+/* ========== HEADER - Thanh điều hướng chính ========== */
+.header {
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
+}
+
+/* HEADER__NAV - Container chứa các phần tử navigation */
+.header__nav {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-xl);
+}
+
+/* HEADER__BRAND - Logo/tên thương hiệu HivePTIT */
+.header__brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #58a6ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+
+.header__brand:hover {
+  opacity: 0.8;
+}
+
+/* HEADER__MENU - Danh sách menu điều hướng */
+.header__menu {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  list-style: none;
+  flex: 1;
+}
+
+/* HEADER__MENU-ITEM - Mỗi mục trong menu */
+.header__menu-item {
+  position: relative;
+}
+
+/* HEADER__MENU-LINK - Link điều hướng trong menu */
+.header__menu-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.header__menu-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+/* HEADER__MENU-LINK--ACTIVE - Link đang được chọn */
+.header__menu-link--active {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+}
+
+/* HEADER__DROPDOWN-TOGGLE - Nút mở dropdown */
+.header__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* HEADER__DROPDOWN-ICON - Icon mũi tên dropdown */
+.header__dropdown-icon {
+  transition: transform 0.2s ease;
+}
+
+.header__menu-item--open .header__dropdown-icon {
+  transform: rotate(180deg);
+}
+
+/* HEADER__DROPDOWN-MENU - Menu thả xuống các chuyên mục */
+.header__dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 200px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  list-style: none;
+  padding: var(--spacing-xs);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.header__menu-item--open .header__dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* HEADER__DROPDOWN-LINK - Link trong dropdown */
+.header__dropdown-link {
+  display: block;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.header__dropdown-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+/* HEADER__USER - Container chứa avatar và menu người dùng */
+.header__user {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* HEADER__AVATAR-BTN - Nút bấm avatar */
+.header__avatar-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.header__avatar-btn:hover {
+  opacity: 0.8;
+}
+
+/* HEADER__AVATAR - Ảnh đại diện người dùng */
+.header__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+  transition: var(--transition);
+}
+
+.header__avatar-btn:hover .header__avatar {
+  border-color: var(--color-accent);
+}
+
+/* HEADER__USER-MENU - Menu thả xuống của người dùng */
+.header__user-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 280px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-sm);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.header__user--open .header__user-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* HEADER__USER-INFO - Thông tin người dùng */
+.header__user-info {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+}
+
+/* HEADER__USER-AVATAR - Avatar lớn trong menu */
+.header__user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+/* HEADER__USER-DETAILS - Chi tiết người dùng */
+.header__user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* HEADER__USER-NAME - Họ và tên người dùng */
+.header__user-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+/* HEADER__USER-USERNAME - Tên người dùng (@username) */
+.header__user-username {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+/* HEADER__USER-EDIT-BTN - Nút sửa thông tin */
+.header__user-edit-btn {
+  align-self: flex-start;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.header__user-edit-btn:hover {
+  background-color: var(--color-bg-primary);
+  border-color: var(--color-border-hover);
+}
+
+/* HEADER__USER-DIVIDER - Đường phân cách */
+.header__user-divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: var(--spacing-xs) 0;
+}
+
+/* HEADER__USER-OPTIONS - Danh sách các tùy chọn */
+.header__user-options {
+  list-style: none;
+  padding: var(--spacing-xs) 0;
+}
+
+/* HEADER__USER-OPTION-LINK - Link tùy chọn */
+.header__user-option-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.header__user-option-link:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+/* HEADER__USER-OPTION-ICON - Icon cho mỗi tùy chọn */
+.header__user-option-icon {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* MAIN - Container chính cho nội dung trang */
+.main {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-lg);
+  min-height: calc(100vh - 64px);
+}
+
+/* ========== RESPONSIVE HEADER - Điều chỉnh cho các màn hình ========== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .header__nav {
+    padding: 0 var(--spacing-md);
+  }
+
+  .main {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+}
+
+/* Mobile lớn (480px - 768px) */
+@media (max-width: 768px) {
+  .header__nav {
+    height: 56px;
+    gap: var(--spacing-md);
+  }
+
+  .header__brand {
+    font-size: 20px;
+  }
+
+  .header__menu {
+    gap: 0;
+  }
+
+  .header__menu-link {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .header__user-menu {
+    min-width: 260px;
+  }
+
+  .main {
+    padding: var(--spacing-md);
+    min-height: calc(100vh - 56px);
+  }
+}
+
+/* Mobile nhỏ (< 480px) */
+@media (max-width: 480px) {
+  .header__nav {
+    padding: 0 var(--spacing-sm);
+    gap: var(--spacing-sm);
+  }
+
+  .header__brand {
+    font-size: 18px;
+  }
+
+  .header__menu-link {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .header__avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header__user-menu {
+    min-width: calc(100vw - 32px);
+    right: -8px;
+  }
+}
