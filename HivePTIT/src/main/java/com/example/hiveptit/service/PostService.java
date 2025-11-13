@@ -2,6 +2,7 @@ package com.example.hiveptit.service;
 
 import com.example.hiveptit.dto.PostRequest;
 import com.example.hiveptit.dto.PostResponse;
+import com.example.hiveptit.dto.UserSummaryDTO;
 import com.example.hiveptit.model.Posts;
 import com.example.hiveptit.model.Topics;
 import com.example.hiveptit.model.Users;
@@ -117,10 +118,17 @@ public class PostService {
         resp.setUpdatedAt(post.getUpdatedAt());
         resp.setVoteCount(post.getVoteCount());
         if (post.getAuthor() != null) {
-            resp.setAuthor(new PostResponse.AuthorSummary(
+            resp.setAuthor(new UserSummaryDTO(
                     post.getAuthor().getStudentId(),
-                    post.getAuthor().getUsername()
+                    post.getAuthor().getUsername(),
+                    post.getAuthor().getFirstname(),   // nếu không có, có thể để null
+                    post.getAuthor().getLastname(),    // nếu không có, có thể để null
+                    post.getAuthor().getAvatarUrl(),   // nếu không có, có thể để null
+                    post.getAuthor().getBio(),         // nếu không có, có thể để null
+                    post.getAuthor().getRankingCore(), // nếu không có, có thể để null
+                    false                              // isFollowing: mặc định false nếu chưa có logic
             ));
+
         }
 
         if (post.getTopics() != null) {

@@ -132,12 +132,15 @@ public class CommentService {
         return new CommentResponse(
                 c.getCommentId(),
                 c.getPost() != null ? c.getPost().getPostId() : null,
-                c.getAuthor() == null ? null : new CommentAuthorDto(
+                c.getAuthor() == null ? null : new UserSummaryDTO(
                         c.getAuthor().getStudentId(),
                         c.getAuthor().getUsername(),
                         c.getAuthor().getFirstname(),
                         c.getAuthor().getLastname(),
-                        c.getAuthor().getAvatarUrl()
+                        c.getAuthor().getAvatarUrl(),
+                        c.getAuthor().getBio(),
+                        c.getAuthor().getRankingCore(),
+                        false
                 ),
                 c.getContent(),
                 c.getVoteCount(),
@@ -146,5 +149,6 @@ public class CommentService {
                 c.getParentComment() != null ? c.getParentComment().getCommentId() : null,
                 replies
         );
+
     }
 }

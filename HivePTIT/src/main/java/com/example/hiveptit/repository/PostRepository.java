@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Posts, Integer> {
     // tìm post theo id
     Optional<Posts> findById(Integer Id);
+
+    Long countByAuthor(Users user);
 }

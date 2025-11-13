@@ -6,7 +6,7 @@ import java.util.List;
 public record CommentResponse(
         Integer id,
         Integer postId,
-        CommentAuthorDto author,
+        UserSummaryDTO author,
         String content,
         int voteCount,
         String isEdited, // "Y" | "N"

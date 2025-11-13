@@ -8,7 +8,7 @@ public class PostResponse {
     private String title;
     private String content;
     private List<TopicSummary> topics;
-    private AuthorSummary author;
+    private UserSummaryDTO author;
     private Instant createdAt;
     private Instant updatedAt;
     private Integer voteCount;
@@ -28,20 +28,6 @@ public class PostResponse {
         public void setName(String name) { this.name = name; }
     }
 
-    public static class AuthorSummary {
-        private String student_id;
-        private String username;
-
-        public AuthorSummary() {}
-        public AuthorSummary(String id, String username) {
-            this.student_id = id;
-            this.username = username;
-        }
-        public String getId() { return student_id; }
-        public void setId(String id) { this.student_id = id; }
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-    }
 
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
@@ -55,8 +41,8 @@ public class PostResponse {
     public List<TopicSummary> getTopics() { return topics; }
     public void setTopics(List<TopicSummary> topics) { this.topics = topics; }
 
-    public AuthorSummary getAuthor() { return author; }
-    public void setAuthor(AuthorSummary author) { this.author = author; }
+    public UserSummaryDTO getAuthor() { return author; }
+    public void setAuthor(UserSummaryDTO author) { this.author = author; }
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
