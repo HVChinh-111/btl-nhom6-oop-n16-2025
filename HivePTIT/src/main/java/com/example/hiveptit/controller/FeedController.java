@@ -31,11 +31,9 @@ public class FeedController {
     }
 
     @GetMapping("/trending")
-    public ResponseEntity<List<FeedPostResponse>> getTrendingFeed(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
+    public ResponseEntity<List<FeedPostResponse>> getTrendingFeed() {
         
-        List<FeedPostResponse> feed = feedService.getTrendingFeed(page, size);
+        List<FeedPostResponse> feed = feedService.getTrendingFeed();
         return ResponseEntity.ok(feed);
     }
 
