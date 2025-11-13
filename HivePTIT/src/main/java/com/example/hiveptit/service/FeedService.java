@@ -53,13 +53,12 @@ public class FeedService {
                 .collect(Collectors.toList());
     }
 
-    public List<FeedPostResponse> getTrendingFeed(int page, int size) {
+    public List<FeedPostResponse> getTrendingFeed() {
         Instant twentyFourHoursAgo = Instant.now().minus(24, ChronoUnit.HOURS);
 
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Posts> recentPosts = postRepository.findByCreatedAtAfter(twentyFourHoursAgo, pageable);
+        List<Posts> recentPosts = postRepository.findByCreatedAtAfter(twentyFourHoursAgo);
 
-        List<FeedPostResponse> feedPosts = recentPosts.getContent().stream()
+        List<FeedPostResponse> feedPosts = recentPosts.stream()
                 .map(post -> {
                     FeedPostResponse response = convertToFeedPostResponse(post);
                     double score = calculateTrendingScore(post);
