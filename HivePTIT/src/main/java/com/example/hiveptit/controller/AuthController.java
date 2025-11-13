@@ -12,16 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "*") // Cho phép CORS từ mọi nguồn (production nên giới hạn)
+@CrossOrigin(origins = "*") 
 public class AuthController {
 
     @Autowired
     private AuthService authService;
 
-    /**
-     * API Đăng ký
-     * POST /api/auth/signup
-     */
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody SignUpRequest request) {
         AuthResponse response = authService.signUp(request);
@@ -33,10 +30,7 @@ public class AuthController {
         }
     }
 
-    /**
-     * API Đăng nhập
-     * POST /api/auth/login
-     */
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
@@ -48,20 +42,14 @@ public class AuthController {
         }
     }
 
-    /**
-     * API Đăng xuất
-     * POST /api/auth/logout
-     */
+
     @PostMapping("/logout")
     public ResponseEntity<AuthResponse> logout() {
         AuthResponse response = authService.logout();
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Health check endpoint
-     * GET /api/auth/health
-     */
+
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Auth API is running!");
