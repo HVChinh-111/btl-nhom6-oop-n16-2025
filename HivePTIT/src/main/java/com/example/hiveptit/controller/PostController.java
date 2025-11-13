@@ -42,6 +42,7 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    // admin hoặc người tạo
     // DELETE /api/posts/{id} : Xóa cứng
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(

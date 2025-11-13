@@ -22,7 +22,7 @@ public class CommentController {
     public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
-    // Lấy danh sách bình luận của 1 bài viết
+    // Lấy danh sách bình luận của 1 bài viết (parent = null)
     // GET /api/posts/{postId}/comments?depth=0&page=0&size=10&sortBy=createdAt&direction=asc
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<PagedResponse<CommentResponse>> listByPost(
@@ -47,6 +47,7 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getComment(id, depth));
     }
 
+    //tạo comment mới
     // POST /api/posts/{postId}/comments
     @PostMapping(path = "/posts/{postId}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -59,6 +60,7 @@ public class CommentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // sửa comment
     // PUT /api/comments/{id}
     @PutMapping(path = "/comments/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("isAuthenticated()")
@@ -72,6 +74,7 @@ public class CommentController {
         return ResponseEntity.ok(response);
     }
 
+    // xóa comment
     // DELETE /api/comments/{id}
     @DeleteMapping("/comments/{id}")
     @PreAuthorize("isAuthenticated()")
