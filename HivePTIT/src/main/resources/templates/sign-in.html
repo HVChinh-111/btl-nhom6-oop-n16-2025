@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập - HivePTIT</title>
+    <title>HivePTIT</title>
     <link rel="stylesheet" href="../static/styles/general.css" />
   </head>
   <body class="page">
@@ -18,6 +18,24 @@
         <!-- Form đăng nhập -->
         <section class="auth__form-section">
           <h2 class="auth__title">Đăng nhập</h2>
+
+          <!-- Thông báo lỗi đăng nhập -->
+          <div class="form__error" id="loginError" style="display: none">
+            <svg
+              class="form__error-icon"
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+            >
+              <path
+                fill="currentColor"
+                d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"
+              />
+            </svg>
+            <span class="form__error-text"
+              >Tên đăng nhập hoặc mật khẩu không chính xác!</span
+            >
+          </div>
 
           <form class="form" action="/api/auth/login" method="POST">
             <!-- Input username hoặc email -->
@@ -72,7 +90,7 @@
         <footer class="auth__footer">
           <p class="auth__footer-text">
             Chưa có tài khoản?
-            <a href="/sign-up" class="auth__footer-link">Đăng ký ngay</a>
+            <a href="sign-up.html" class="auth__footer-link">Đăng ký ngay</a>
           </p>
         </footer>
       </div>
