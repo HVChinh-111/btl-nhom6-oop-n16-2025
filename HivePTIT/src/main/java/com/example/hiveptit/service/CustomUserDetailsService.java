@@ -25,9 +25,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+        Users user;
+        
+        if (usernameOrEmail.contains("@")) {
+            user = userRepository.findByEmail(usernameOrEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + usernameOrEmail));
+        } else {
+            user = userRepository.findByUsername(usernameOrEmail)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + usernameOrEmail));
+        }
 
         Collection<? extends GrantedAuthority> authorities = getAuthorities(user);
 
@@ -66,30 +73,5 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         return authorities;
-    }
-
-    /**
-     * Load user by email - Custom method (không phải của UserDetailsService)
-     * Để support login bằng email
-     * 
-     * @param email Email để tìm kiếm
-     * @return UserDetails object
-     * @throws UsernameNotFoundException nếu không tìm thấy user
-     */
-    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
-        Users user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        Collection<? extends GrantedAuthority> authorities = getAuthorities(user);
-
-        return User.builder()
-                .username(user.getUsername())
-                .password(user.getPasswordHash())
-                .authorities(authorities)
-                .accountExpired(false)
-                .accountLocked(false)
-                .credentialsExpired(false)
-                .disabled(user.getIsVerified() == Users.IsVerified.N)
-                .build();
     }
 }

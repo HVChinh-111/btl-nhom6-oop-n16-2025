@@ -94,8 +94,6 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         try {
-            // BƯỚC 1: Authenticate bằng AuthenticationManager
-            // Nếu username/password sai -> throw BadCredentialsException
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     request.getUsernameOrEmail(),
@@ -103,39 +101,25 @@ public class AuthService {
                 )
             );
 
-            // BƯỚC 2: Load UserDetails (có thể từ authentication hoặc load lại)
-            // Cần load lại để có thể support login bằng email
-            UserDetails userDetails;
-            if (request.getUsernameOrEmail().contains("@")) {
-                // Login bằng email
-                userDetails = userDetailsService.loadUserByEmail(request.getUsernameOrEmail());
-            } else {
-                // Login bằng username
-                userDetails = userDetailsService.loadUserByUsername(request.getUsernameOrEmail());
-            }
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            // BƯỚC 3: Load thông tin user từ database để lấy roles
             Optional<Users> userOpt = userRepository.findByUsername(userDetails.getUsername());
             if (userOpt.isEmpty()) {
                 return new AuthResponse(null, null, null, null, "User not found!", false);
             }
             Users user = userOpt.get();
 
-            // Check xem user đã verify email chưa
             if (user.getIsVerified() == Users.IsVerified.N) {
                 return new AuthResponse(null, null, null, null, 
                     "Tài khoản chưa được xác thực! Vui lòng kiểm tra email.", false);
             }
 
-            // BƯỚC 4: Generate JWT token
             String token = jwtUtil.generateToken(userDetails);
 
-            // BƯỚC 5: Lấy danh sách roles để trả về
             Set<String> roles = user.getRoles().stream()
                 .map(Roles::getRoleName)
                 .collect(Collectors.toSet());
 
-            // BƯỚC 6: Return success response với token
             return new AuthResponse(
                 token,
                 user.getStudentId(),
@@ -146,11 +130,9 @@ public class AuthService {
             );
 
         } catch (BadCredentialsException e) {
-            // Username hoặc password không đúng
             return new AuthResponse(null, null, null, null, 
                 "Username hoặc mật khẩu không chính xác!", false);
         } catch (Exception e) {
-            // Lỗi khác
             return new AuthResponse(null, null, null, null, 
                 "Đăng nhập thất bại: " + e.getMessage(), false);
         }
