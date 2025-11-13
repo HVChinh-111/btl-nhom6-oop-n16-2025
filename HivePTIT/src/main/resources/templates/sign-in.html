@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - HivePTIT</title>
+    <link rel="stylesheet" href="../static/styles/general.css" />
+  </head>
+  <body class="page">
+    <main class="auth">
+      <div class="auth__container">
+        <!-- Header của trang đăng nhập -->
+        <header class="auth__header">
+          <h1 class="auth__logo">HivePTIT</h1>
+          <p class="auth__description">Nền tảng chia sẻ kiến thức học thuật</p>
+        </header>
+
+        <!-- Form đăng nhập -->
+        <section class="auth__form-section">
+          <h2 class="auth__title">Đăng nhập</h2>
+
+          <form class="form" action="/api/auth/login" method="POST">
+            <!-- Input username hoặc email -->
+            <div class="form__group">
+              <label for="usernameOrEmail" class="form__label">
+                Tên đăng nhập hoặc Email
+              </label>
+              <input
+                type="text"
+                id="usernameOrEmail"
+                name="usernameOrEmail"
+                class="form__input"
+                placeholder="Nhập tên đăng nhập hoặc email của bạn"
+                required
+              />
+            </div>
+
+            <!-- Input mật khẩu -->
+            <div class="form__group">
+              <label for="password" class="form__label"> Mật khẩu </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form__input"
+                placeholder="Nhập mật khẩu của bạn"
+                required
+              />
+            </div>
+
+            <!-- Các tùy chọn bổ sung -->
+            <div class="form__options">
+              <label class="form__checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  class="form__checkbox"
+                  name="rememberMe"
+                />
+                <span class="form__checkbox-label">Ghi nhớ đăng nhập</span>
+              </label>
+              <a href="/forgot-password" class="form__link">Quên mật khẩu?</a>
+            </div>
+
+            <!-- Nút đăng nhập -->
+            <button type="submit" class="form__button form__button--primary">
+              Đăng nhập
+            </button>
+          </form>
+        </section>
+
+        <!-- Footer với link đến trang đăng ký -->
+        <footer class="auth__footer">
+          <p class="auth__footer-text">
+            Chưa có tài khoản?
+            <a href="/sign-up" class="auth__footer-link">Đăng ký ngay</a>
+          </p>
+        </footer>
+      </div>
+    </main>
+  </body>
+</html>
