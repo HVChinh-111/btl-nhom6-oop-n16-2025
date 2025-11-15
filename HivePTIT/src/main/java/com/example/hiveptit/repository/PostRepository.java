@@ -19,4 +19,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
     Page<Posts> findByAuthorStudentIdIn(List<String> studentIds, Pageable pageable);
 
     List<Posts> findByCreatedAtAfter(Instant createdAt);
+
+    Page<Posts> findByAuthor(Users author, Pageable pageable);
+
 }
