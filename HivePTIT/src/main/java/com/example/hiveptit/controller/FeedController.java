@@ -45,4 +45,14 @@ public class FeedController {
         List<FeedPostResponse> feed = feedService.getHomeFeed(page, size);
         return ResponseEntity.ok(feed);
     }
+
+    @GetMapping("/topic/{topicName}")
+    public ResponseEntity<List<FeedPostResponse>> getTopicFeed(
+            @PathVariable String topicName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        
+        List<FeedPostResponse> feed = feedService.getTopicFeed(topicName, page, size);
+        return ResponseEntity.ok(feed);
+    }
 }

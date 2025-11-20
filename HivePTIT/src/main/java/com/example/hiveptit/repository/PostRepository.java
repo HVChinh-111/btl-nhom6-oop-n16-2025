@@ -40,4 +40,5 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
     )
     Page<Posts> searchFullText(@Param("keyword") String keyword, Pageable pageable);
 
+    Page<Posts> findByTopicsContaining(Topics topic, Pageable pageable);
 }
