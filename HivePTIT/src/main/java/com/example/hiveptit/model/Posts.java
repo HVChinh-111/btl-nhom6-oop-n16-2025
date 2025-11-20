@@ -15,10 +15,10 @@ public class Posts {
     @JoinColumn(name = "student_id", nullable = false)
     private Users author;
 
-//    @Lob
+    @Lob
     private String title;
 
-//    @Lob
+    @Lob
     private String content;
 
     @Column(name = "vote_count", nullable = false)
