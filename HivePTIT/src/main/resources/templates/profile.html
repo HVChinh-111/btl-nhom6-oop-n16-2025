@@ -38,6 +38,7 @@
               alt="User Avatar"
               class="header__avatar"
               id="headerAvatar"
+              onerror="this.src='/images/avatar.jpeg'"
             />
           </button>
           <!-- User dropdown menu -->
@@ -48,6 +49,7 @@
                 alt="User Avatar"
                 class="header__user-avatar"
                 id="userMenuAvatar"
+                onerror="this.src='/images/avatar.jpeg'"
               />
               <div class="header__user-details">
                 <h4 class="header__user-name" id="userName">Loading...</h4>
@@ -126,10 +128,11 @@
           <div class="profile__info-wrapper">
             <div class="profile__avatar-section">
               <img
-                src="../static/images/avatar.jpeg"
+                src="/images/avatar.jpeg"
                 alt="Profile Avatar"
                 class="profile__avatar"
                 id="profileAvatar"
+                onerror="this.src='/images/avatar.jpeg'"
               />
             </div>
             <div class="profile__info">
@@ -172,6 +175,22 @@
                   />
                 </svg>
                 Chỉnh sửa
+              </button>
+              <!-- Nút Create Post - chỉ hiện khi xem profile bản thân -->
+              <button
+                class="profile__btn profile__btn--create-post"
+                id="createPostBtn"
+                style="display: none"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 5V15M5 10H15"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                Tạo bài viết
               </button>
               <!-- Nút Follow - chỉ hiện khi xem profile người khác -->
               <button
@@ -309,15 +328,27 @@
           </div>
         </section>
 
-        <!-- Create Post Form - Chỉ hiện khi xem profile bản thân -->
-        <section
-          class="create-post"
-          id="createPostSection"
-          style="display: none"
-        >
-          <div class="create-post__container">
-            <h2 class="create-post__title">Tạo bài viết mới</h2>
-            <form class="create-post__form" id="createPostForm">
+        <!-- Create/Edit Post Modal -->
+        <div class="post-modal" id="postModal" style="display: none">
+          <div class="post-modal__overlay" id="postModalOverlay"></div>
+          <div class="post-modal__container">
+            <div class="post-modal__header">
+              <h2 class="post-modal__title" id="postModalTitle">
+                Tạo bài viết mới
+              </h2>
+              <button class="post-modal__close" id="closePostModal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M6 6L18 18M6 18L18 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <form class="post-modal__form" id="postForm">
+              <input type="hidden" id="postId" value="" />
               <div class="form__group">
                 <label class="form__label" for="postTitle">Tiêu đề</label>
                 <input
@@ -343,15 +374,11 @@
               </div>
               <div class="form__group">
                 <label class="form__label" for="postTopics">Chủ đề</label>
-                <div class="create-post__topics" id="postTopicsList">
+                <div class="post-modal__topics" id="postTopicsList">
                   <!-- Topics will be dynamically loaded -->
                 </div>
               </div>
-              <div
-                class="form__error"
-                id="createPostError"
-                style="display: none"
-              >
+              <div class="form__error" id="postError" style="display: none">
                 <svg
                   class="form__error-icon"
                   width="20"
@@ -377,14 +404,18 @@
                     stroke-linecap="round"
                   />
                 </svg>
-                <span class="form__error-text" id="createPostErrorText"></span>
+                <span class="form__error-text" id="postErrorText"></span>
               </div>
-              <button type="submit" class="form__button form__button--primary">
+              <button
+                type="submit"
+                class="form__button form__button--primary"
+                id="postSubmitBtn"
+              >
                 Đăng bài viết
               </button>
             </form>
           </div>
-        </section>
+        </div>
 
         <!-- User's Posts -->
         <section class="profile__posts">

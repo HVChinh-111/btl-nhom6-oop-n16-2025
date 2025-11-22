@@ -780,6 +780,7 @@
 
 /* POST - Mỗi bài viết */
 .post {
+  position: relative;
   background-color: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -1750,6 +1751,8 @@
 
 /* PROFILE__ACTIONS - Các nút action */
 .profile__actions {
+  display: flex;
+  gap: var(--spacing-md);
   padding-top: var(--spacing-md);
   flex-shrink: 0;
 }
@@ -1804,6 +1807,238 @@
   background-color: rgba(248, 81, 73, 0.1);
   border-color: #f85149;
   color: #f85149;
+}
+
+/* PROFILE__BTN--CREATE-POST - Nút tạo bài viết */
+.profile__btn--create-post {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+.profile__btn--create-post:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* POST-MODAL - Modal tạo/sửa bài viết */
+.post-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.post-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.post-modal__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  margin: auto;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.post-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post-modal__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.post-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.post-modal__close:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.post-modal__form {
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Dark scrollbar for modal form */
+.post-modal__form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.post-modal__form::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.post-modal__form::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.post-modal__form::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox scrollbar */
+.post-modal__form {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.post-modal__topics {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Dark scrollbar for topics */
+.post-modal__topics::-webkit-scrollbar {
+  height: 8px;
+}
+
+.post-modal__topics::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.post-modal__topics::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.post-modal__topics::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox scrollbar */
+.post-modal__topics {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+/* POST__MENU - Menu bài viết */
+.post__menu {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+}
+
+.post__menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.post__menu-btn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.post__menu-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 180px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xs);
+  z-index: 100;
+}
+
+.post__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  font-family: inherit;
+}
+
+.post__menu-item:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+.post__menu-item svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.post__menu-item--danger {
+  color: #f85149;
+}
+
+.post__menu-item--danger:hover {
+  color: #ffffff;
+  background-color: #da3633;
+}
+
+.post__menu-item--danger svg {
+  opacity: 1;
 }
 
 /* PROFILE__POSTS - Phần bài viết */

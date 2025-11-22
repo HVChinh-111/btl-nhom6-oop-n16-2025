@@ -107,10 +107,13 @@ function renderPost(post) {
 
     authorAvatar.src = post.author.avatarUrl || "/images/avatar.jpeg";
     authorAvatar.alt = post.author.username;
+    authorAvatar.onerror = function () {
+      this.src = "/images/avatar.jpeg";
+    };
 
     const displayName =
-      post.author.firstname && post.author.lastname
-        ? `${post.author.firstname} ${post.author.lastname}`
+      post.author.lastname && post.author.firstname
+        ? `${post.author.lastname} ${post.author.firstname}`
         : post.author.username;
 
     authorName.textContent = displayName;

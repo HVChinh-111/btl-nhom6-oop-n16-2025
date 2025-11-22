@@ -168,73 +168,74 @@ async function fetchTopAuthors(limit = 5) {
 
 // Render a single post
 function renderPost(post) {
-  const topicsHTML =
-    post.topics && post.topics.length > 0
-      ? post.topics
-          .map((topic) => `<span class="post__tag">${topic}</span>`)
-          .join("")
-      : "";
+  const topicsHTML = post.topics
+    .map(
+      (topic, index) => `
+      <span class="post__tag post__tag--${
+        ["blue", "teal", "purple", "blue-light"][index % 4]
+      }">
+        ${topic}
+      </span>
+    `
+    )
+    .join("");
 
   const authorName =
-    post.authorFirstname && post.authorLastname
-      ? `${post.authorFirstname} ${post.authorLastname}`
+    post.authorLastname && post.authorFirstname
+      ? `${post.authorLastname} ${post.authorFirstname}`
       : post.authorUsername;
 
   const avatarUrl = post.authorAvatarUrl || "/images/avatar.jpeg";
 
   return `
-    <article class="post" data-post-id="${post.postId}">
-      <div class="post__tags">
-        ${topicsHTML}
-      </div>
-      <h2 class="post__title">
+    <article class="post">
+      ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
+      <h3 class="post__title">
         <a href="/post?id=${post.postId}" class="post__title-link">
           ${post.title}
         </a>
-      </h2>
+      </h3>
       <div class="post__meta">
-        <div class="post__author">
-          <img
-            src="${avatarUrl}"
-            alt="${authorName}"
-            class="post__author-avatar"
-          />
-          <div class="post__author-info">
-            <a href="/profile?username=${
-              post.authorUsername
-            }" class="post__author-name">
-              ${authorName}
-            </a>
-            <time class="post__date" datetime="${post.createdAt}">
-              ${formatDate(post.createdAt)}
-            </time>
-          </div>
-        </div>
-        <div class="post__stats">
-          <span class="post__stat">
-            <svg viewBox="0 0 20 20" width="16" height="16">
-              <path
-                fill="currentColor"
-                d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"
-              />
-            </svg>
-            ${post.voteCount || 0}
-          </span>
-          <span class="post__stat">
-            <svg viewBox="0 0 20 20" width="16" height="16">
-              <path
-                fill="currentColor"
-                d="M10 20c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10zm0-2c4.418 0 8-3.582 8-8s-3.582-8-8-8-8 3.582-8 8 3.582 8 8 8zm-1-5h2v2h-2v-2zm0-8h2v6h-2v-6z"
-              />
-            </svg>
-            ${post.commentCount || 0}
-          </span>
-        </div>
+        <img
+          src="${avatarUrl}"
+          alt="${authorName}"
+          class="post__author-avatar"
+          onerror="this.src='/images/avatar.jpeg'"
+        />
+        <span class="post__author">
+          ${authorName}
+        </span>
+        <span class="post__date">
+          <svg
+            class="post__date-icon"
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              d="M8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
+              stroke="currentColor"
+              stroke-width="1.5"
+            />
+            <path
+              d="M8 4V8L10.5 9.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+          </svg>
+          ${formatDate(post.createdAt)}
+        </span>
       </div>
       <p class="post__excerpt">
-        ${truncateText(post.content, 200)}
+        ${post.content.substring(0, 200)}${
+    post.content.length > 200 ? "..." : ""
+  }
       </p>
-      <a href="/post?id=${post.postId}" class="post__read-more">Đọc thêm</a>
+      <a href="/post?id=${post.postId}" class="post__read-more">
+        Đọc thêm
+      </a>
     </article>
   `;
 }
@@ -503,8 +504,8 @@ async function renderUserInfo() {
   const userUsername = document.getElementById("userUsername");
 
   const fullName =
-    userProfile.firstname && userProfile.lastname
-      ? `${userProfile.firstname} ${userProfile.lastname}`
+    userProfile.lastname && userProfile.firstname
+      ? `${userProfile.lastname} ${userProfile.firstname}`
       : userProfile.username;
 
   // Update avatars
@@ -540,7 +541,7 @@ async function renderTopAuthors() {
   topAuthorsContainer.innerHTML = authors
     .map((author, index) => {
       const fullName =
-        author.firstname && author.lastname
+        author.lastname && author.firstname
           ? `${author.lastname} ${author.firstname}`
           : author.username;
       const avatarUrl = author.avatarUrl || "../static/images/avatar.jpeg";
@@ -578,7 +579,7 @@ async function renderTrendingPosts() {
   trendingContainer.innerHTML = trendingPosts
     .map((post) => {
       const authorName =
-        post.authorFirstname && post.authorLastname
+        post.authorLastname && post.authorFirstname
           ? `${post.authorLastname} ${post.authorFirstname}`
           : post.authorUsername;
 
@@ -709,9 +710,6 @@ async function init() {
 
   // Initialize event listeners
   initEventListeners();
-
-  // Render user info in header
-  await renderUserInfo();
 
   // Render sidebar components
   await Promise.all([

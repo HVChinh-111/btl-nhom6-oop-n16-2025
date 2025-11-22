@@ -84,6 +84,87 @@ function truncateText(text, maxLength = 200) {
   return text.substring(0, maxLength) + "...";
 }
 
+// ========== USER PROFILE UTILITIES ==========
+
+// Fetch current user profile
+async function fetchCurrentUserProfile() {
+  const token = getAuthToken();
+  const username = getCurrentUsername();
+
+  if (!token || !username) return null;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/users/${username}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) throw new Error("Failed to fetch user profile");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return null;
+  }
+}
+
+// Render current user info in header dropdown
+async function renderUserInfo() {
+  const userMenu = document.querySelector(".header__user");
+
+  if (!checkAuth()) {
+    // User not logged in - show login button
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
+    return;
+  }
+
+  const userProfile = await fetchCurrentUserProfile();
+  if (!userProfile) {
+    // Show login button on error
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
+    return;
+  }
+
+  const headerAvatar = document.getElementById("headerAvatar");
+  const userMenuAvatar = document.getElementById("userMenuAvatar");
+  const userName = document.getElementById("userName");
+  const userUsername = document.getElementById("userUsername");
+
+  const fullName =
+    userProfile.lastname && userProfile.firstname
+      ? `${userProfile.lastname} ${userProfile.firstname}`
+      : userProfile.username;
+
+  // Update avatars
+  if (headerAvatar) {
+    headerAvatar.src = userProfile.avatarUrl || "/images/avatar.jpeg";
+    headerAvatar.onerror = function () {
+      this.src = "/images/avatar.jpeg";
+    };
+  }
+  if (userMenuAvatar) {
+    userMenuAvatar.src = userProfile.avatarUrl || "/images/avatar.jpeg";
+    userMenuAvatar.onerror = function () {
+      this.src = "/images/avatar.jpeg";
+    };
+  }
+
+  // Update name and username
+  if (userName) {
+    userName.textContent = fullName;
+  }
+  if (userUsername) {
+    userUsername.textContent = `@${userProfile.username}`;
+  }
+}
+
 // ========== NAVIGATION UTILITIES ==========
 
 // Navigate to Following feed (chuyển về trang index với feed "Đang theo dõi")
@@ -111,7 +192,10 @@ function navigateToFollowing() {
 
 // ========== INIT COMMON HANDLERS ==========
 
-function initCommonHandlers() {
+async function initCommonHandlers() {
+  // Render user info in header dropdown (works on all pages)
+  await renderUserInfo();
+
   // Handle logout button - tìm trong tất cả các trang
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {

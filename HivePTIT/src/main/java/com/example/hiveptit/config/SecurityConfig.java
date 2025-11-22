@@ -115,14 +115,15 @@ public class SecurityConfig {
                 // Search endpoint - Public access
                 .requestMatchers("/api/search/**").permitAll()
                 
+                // Posts endpoints - Allow authenticated users to create, update, delete
+                .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
+                
                 // Protected endpoints - Cần authentication
                 // hasRole() tự động thêm prefix "ROLE_"
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
-                
-                // hasAuthority() dùng cho permission (không thêm prefix)
-                .requestMatchers("/api/posts/create").hasAuthority("POST_CREATE")
-                .requestMatchers("/api/posts/delete/**").hasAuthority("POST_DELETE")
                 
                 // Vote và Bookmark endpoints - Authenticated users
                 .requestMatchers("/api/votes/**").authenticated()

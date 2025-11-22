@@ -102,7 +102,7 @@ function renderHeaderUserInfo(user) {
 
   document.getElementById(
     "userName"
-  ).textContent = `${user.firstname} ${user.lastname}`;
+  ).textContent = `${user.lastname} ${user.firstname}`;
   document.getElementById("userUsername").textContent = `@${user.username}`;
 
   if (user.avatarUrl) {
@@ -154,7 +154,7 @@ function renderPodiumItem(element, author, rank) {
     avatar.src = author.avatarUrl;
   }
   if (name) {
-    name.textContent = `${author.firstname} ${author.lastname}`;
+    name.textContent = `${author.lastname} ${author.firstname}`;
   }
   if (username) {
     username.textContent = `@${author.username}`;
@@ -196,7 +196,8 @@ function renderRankingTable(authors) {
         <td class="ranking-table__td ranking-table__td--avatar">
           <img
             src="${author.avatarUrl || "/images/avatar.jpeg"}"
-            alt="${author.firstname} ${author.lastname}"
+            alt="${author.lastname} ${author.firstname}"
+            onerror="this.src='/images/avatar.jpeg'"
             class="ranking-table__avatar"
           />
         </td>

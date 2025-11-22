@@ -37,9 +37,10 @@
           <button class="header__avatar-btn">
             <img
               src="/images/avatar.jpeg"
-              alt="Avatar"
+              alt="User Avatar"
               class="header__avatar"
               id="headerAvatar"
+              onerror="this.src='/images/avatar.jpeg'"
             />
           </button>
           <!-- Dropdown menu người dùng -->
@@ -48,9 +49,10 @@
             <div class="header__user-info">
               <img
                 src="/images/avatar.jpeg"
-                alt="Avatar"
+                alt="User Avatar"
                 class="header__user-avatar"
                 id="userMenuAvatar"
+                onerror="this.src='/images/avatar.jpeg'"
               />
               <div class="header__user-details">
                 <p class="header__user-name" id="userName">Loading...</p>

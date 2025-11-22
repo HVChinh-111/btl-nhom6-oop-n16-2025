@@ -263,7 +263,7 @@ function renderHeaderUserInfo(user) {
   const userMenuAvatar = document.getElementById("userMenuAvatar");
 
   if (userName) {
-    userName.textContent = `${user.firstname} ${user.lastname}`;
+    userName.textContent = `${user.lastname} ${user.firstname}`;
   }
   if (userUsername) {
     userUsername.textContent = `@${user.username}`;
@@ -283,7 +283,7 @@ function renderHeaderUserInfo(user) {
 function renderProfileHeader(user) {
   document.getElementById(
     "profileName"
-  ).textContent = `${user.firstname} ${user.lastname}`;
+  ).textContent = `${user.lastname} ${user.firstname}`;
   document.getElementById("profileUsername").textContent = `@${user.username}`;
   document.getElementById("profileBio").textContent =
     user.bio || "Chưa có giới thiệu";
@@ -300,6 +300,7 @@ function renderProfileHeader(user) {
 
   // Hiển thị nút phù hợp
   const editBtn = document.getElementById("editProfileBtn");
+  const createPostBtn = document.getElementById("createPostBtn");
   const followBtn = document.getElementById("followBtn");
   const unfollowBtn = document.getElementById("unfollowBtn");
   const token = getAuthToken();
@@ -307,13 +308,13 @@ function renderProfileHeader(user) {
   if (isOwnProfile) {
     // Xem profile bản thân
     editBtn.style.display = "flex";
+    createPostBtn.style.display = "flex";
     followBtn.style.display = "none";
     unfollowBtn.style.display = "none";
-    document.getElementById("createPostSection").style.display = "block";
   } else {
     // Xem profile người khác
     editBtn.style.display = "none";
-    document.getElementById("createPostSection").style.display = "none";
+    createPostBtn.style.display = "none";
 
     if (!token) {
       // Chưa đăng nhập -> vô hiệu hóa nút follow
@@ -372,6 +373,35 @@ function renderUserPosts(posts) {
       return `
       <article class="post">
         ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
+        ${
+          isOwnProfile
+            ? `
+        <div class="post__menu">
+          <button class="post__menu-btn" onclick="togglePostMenu(${post.postId})">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="4" cy="10" r="1.5" fill="currentColor"/>
+              <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+              <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="post__menu-dropdown" id="postMenu${post.postId}" style="display: none;">
+            <button class="post__menu-item" onclick="event.stopPropagation(); openEditPostModal(${post.postId})">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M11.5 2L14 4.5L5 13.5H2.5V11L11.5 2Z" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+              Chỉnh sửa
+            </button>
+            <button class="post__menu-item post__menu-item--danger" onclick="event.stopPropagation(); deletePost(${post.postId})">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 4H13M5 4V3C5 2.44772 5.44772 2 6 2H10C10.5523 2 11 2.44772 11 3V4M6.5 7.5V11.5M9.5 7.5V11.5M4 4H12V13C12 13.5523 11.5523 14 11 14H5C4.44772 14 4 13.5523 4 13V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              Xóa
+            </button>
+          </div>
+        </div>
+        `
+            : ""
+        }
         <h3 class="post__title">
           <a href="/post?id=${post.postId}" class="post__title-link">
             ${post.title}
@@ -379,12 +409,13 @@ function renderUserPosts(posts) {
         </h3>
         <div class="post__meta">
           <img
-            src="${post.authorAvatarUrl || "../static/images/avatar.jpeg"}"
-            alt="${post.authorFirstname} ${post.authorLastname}"
+            src="${post.authorAvatarUrl || "/images/avatar.jpeg"}"
+            alt="${post.authorLastname} ${post.authorFirstname}"
             class="post__author-avatar"
+            onerror="this.src='/images/avatar.jpeg'"
           />
           <span class="post__author">
-            ${post.authorFirstname} ${post.authorLastname}
+            ${post.authorLastname} ${post.authorFirstname}
           </span>
           <span class="post__date">
             <svg
@@ -496,6 +527,151 @@ function renderTopicsCheckboxes(topics) {
 
 // ========== EVENT HANDLERS ==========
 
+// ========== MODAL HANDLERS ==========
+// Open post modal for creating new post
+function openPostModal() {
+  const modal = document.getElementById("postModal");
+  const modalTitle = document.getElementById("postModalTitle");
+  const postIdInput = document.getElementById("postId");
+  const submitBtn = document.getElementById("postSubmitBtn");
+
+  // Reset form
+  document.getElementById("postForm").reset();
+  postIdInput.value = "";
+
+  // Set to create mode
+  modalTitle.textContent = "Tạo bài viết mới";
+  submitBtn.textContent = "Đăng bài viết";
+
+  // Show modal
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+// Open post modal for editing existing post
+async function openEditPostModal(postId) {
+  const modal = document.getElementById("postModal");
+  const modalTitle = document.getElementById("postModalTitle");
+  const postIdInput = document.getElementById("postId");
+  const submitBtn = document.getElementById("postSubmitBtn");
+  const titleInput = document.getElementById("postTitle");
+  const contentInput = document.getElementById("postContent");
+  const errorEl = document.getElementById("postError");
+  const errorText = document.getElementById("postErrorText");
+
+  try {
+    errorEl.style.display = "none";
+
+    // Fetch post with rawContent
+    const response = await fetch(
+      `${API_BASE_URL}/posts/${postId}?includeRawContent=true`,
+      {
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      }
+    );
+
+    if (!response.ok) throw new Error("Không thể tải bài viết");
+
+    const post = await response.json();
+
+    // Pre-fill form with existing data
+    postIdInput.value = postId;
+    titleInput.value = post.title;
+    contentInput.value = post.rawContent || post.content; // Use rawContent (markdown)
+
+    // Pre-select topics
+    const topicCheckboxes = document.querySelectorAll('input[name="topicIds"]');
+    topicCheckboxes.forEach((checkbox) => {
+      checkbox.checked = post.topics.includes(parseInt(checkbox.value));
+    });
+
+    // Set to edit mode
+    modalTitle.textContent = "Chỉnh sửa bài viết";
+    submitBtn.textContent = "Lưu thay đổi";
+
+    // Show modal
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+  } catch (error) {
+    errorText.textContent = error.message;
+    errorEl.style.display = "flex";
+  }
+}
+
+// Close post modal
+function closePostModal() {
+  const modal = document.getElementById("postModal");
+  modal.style.display = "none";
+  document.body.style.overflow = "auto";
+
+  // Reset form
+  document.getElementById("postForm").reset();
+  document.getElementById("postId").value = "";
+  document.getElementById("postError").style.display = "none";
+}
+
+// Toggle post menu dropdown
+function togglePostMenu(postId) {
+  const menu = document.getElementById(`postMenu${postId}`);
+  const allMenus = document.querySelectorAll(".post__menu-dropdown");
+
+  // Close all other menus
+  allMenus.forEach((m) => {
+    if (m.id !== `postMenu${postId}`) {
+      m.style.display = "none";
+    }
+  });
+
+  // Toggle current menu
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+}
+
+// Close menus when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".post__menu")) {
+    document.querySelectorAll(".post__menu-dropdown").forEach((menu) => {
+      menu.style.display = "none";
+    });
+  }
+});
+
+// Delete post with confirmation
+async function deletePost(postId) {
+  if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
+    return;
+  }
+
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      alert("Bạn cần đăng nhập để xóa bài viết");
+      return;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("Delete failed:", response.status, errorData);
+      throw new Error(`Không thể xóa bài viết (${response.status})`);
+    }
+
+    // Reload page after successful delete
+    window.location.reload();
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    alert("Lỗi: " + error.message);
+  }
+}
+
 // Handle edit profile button
 document.getElementById("editProfileBtn")?.addEventListener("click", () => {
   const modal = document.getElementById("profileEditModal");
@@ -551,50 +727,79 @@ document
   });
 
 // Handle create post form submit
-document
-  .getElementById("createPostForm")
-  ?.addEventListener("submit", async (e) => {
-    e.preventDefault();
+document.getElementById("postForm")?.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-    const title = document.getElementById("postTitle").value.trim();
-    const content = document.getElementById("postContent").value.trim();
-    const topicCheckboxes = document.querySelectorAll(
-      'input[name="topicIds"]:checked'
-    );
-    const topicIds = Array.from(topicCheckboxes).map((cb) =>
-      parseInt(cb.value)
-    );
+  const postId = document.getElementById("postId").value;
+  const title = document.getElementById("postTitle").value.trim();
+  const content = document.getElementById("postContent").value.trim();
+  const topicCheckboxes = document.querySelectorAll(
+    'input[name="topicIds"]:checked'
+  );
+  const topicIds = Array.from(topicCheckboxes).map((cb) => parseInt(cb.value));
 
-    const errorEl = document.getElementById("createPostError");
-    const errorText = document.getElementById("createPostErrorText");
+  const errorEl = document.getElementById("postError");
+  const errorText = document.getElementById("postErrorText");
 
-    if (!title || !content) {
-      errorText.textContent = "Vui lòng điền đầy đủ thông tin";
-      errorEl.style.display = "flex";
-      return;
-    }
+  if (!title || !content) {
+    errorText.textContent = "Vui lòng điền đầy đủ thông tin";
+    errorEl.style.display = "flex";
+    return;
+  }
 
-    try {
-      errorEl.style.display = "none";
+  try {
+    errorEl.style.display = "none";
+
+    if (postId) {
+      // Edit existing post
+      console.log("profile.js: Đang cập nhật bài viết", postId);
+      const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+        body: JSON.stringify({ title, content, topicIds }),
+      });
+
+      if (!response.ok) throw new Error("Không thể cập nhật bài viết");
+
+      console.log("profile.js: Cập nhật bài viết thành công!");
+    } else {
+      // Create new post
       console.log(
         "profile.js: Đang tạo bài viết với",
         topicIds.length,
         "chủ đề:",
         topicIds
       );
-      const newPost = await createPost(title, content, topicIds);
-
-      // Reset form
-      document.getElementById("createPostForm").reset();
-
-      // After creating a post, reload the page so feed and counts refresh
-      console.log("profile.js: Tạo bài viết thành công!", newPost);
-      window.location.reload();
-    } catch (error) {
-      errorText.textContent = error.message;
-      errorEl.style.display = "flex";
+      await createPost(title, content, topicIds);
+      console.log("profile.js: Tạo bài viết thành công!");
     }
-  });
+
+    // Close modal and reload page
+    closePostModal();
+    window.location.reload();
+  } catch (error) {
+    errorText.textContent = error.message;
+    errorEl.style.display = "flex";
+  }
+});
+
+// Handle create post button
+document.getElementById("createPostBtn")?.addEventListener("click", () => {
+  openPostModal();
+});
+
+// Handle close post modal
+document.getElementById("closePostModal")?.addEventListener("click", () => {
+  closePostModal();
+});
+
+// Handle post modal overlay click
+document.getElementById("postModalOverlay")?.addEventListener("click", () => {
+  closePostModal();
+});
 
 // Handle follow button
 document.getElementById("followBtn")?.addEventListener("click", async () => {

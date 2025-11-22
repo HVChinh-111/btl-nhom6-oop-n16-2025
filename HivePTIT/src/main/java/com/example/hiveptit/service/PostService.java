@@ -123,6 +123,14 @@ public class PostService {
         return toResponse(post);
     }
 
+    // Overload để hỗ trợ includeRawContent từ controller
+    @Transactional(readOnly = true)
+    public PostResponse getPost(Integer id, boolean includeRawContent) {
+        Posts post = postRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bài viết không tồn tại"));
+        return toResponse(post, includeRawContent);
+    }
+
 
     private PostResponse toResponse(Posts post) {
         return toResponse(post, false);
