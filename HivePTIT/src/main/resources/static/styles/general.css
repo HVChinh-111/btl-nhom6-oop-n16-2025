@@ -776,6 +776,8 @@
   flex-wrap: wrap;
   gap: var(--spacing-xs);
   margin-bottom: var(--spacing-md);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* POST__TAG - Mỗi tag */
@@ -785,8 +787,81 @@
   font-weight: 500;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  cursor: pointer;
 }
 
+.post__tag:hover {
+  opacity: 0.8;
+  transform: translateY(-1px);
+}
+
+/* Màu sắc cho tags theo thứ tự */
+.post__tag:nth-child(12n + 1) {
+  background-color: rgba(88, 166, 255, 0.15);
+  color: #58a6ff;
+}
+
+.post__tag:nth-child(12n + 2) {
+  background-color: rgba(86, 199, 186, 0.15);
+  color: #56c7ba;
+}
+
+.post__tag:nth-child(12n + 3) {
+  background-color: rgba(188, 140, 255, 0.15);
+  color: #bc8cff;
+}
+
+.post__tag:nth-child(12n + 4) {
+  background-color: rgba(255, 125, 100, 0.15);
+  color: #ff7d64;
+}
+
+.post__tag:nth-child(12n + 5) {
+  background-color: rgba(255, 196, 79, 0.15);
+  color: #ffc44f;
+}
+
+.post__tag:nth-child(12n + 6) {
+  background-color: rgba(121, 192, 106, 0.15);
+  color: #79c06a;
+}
+
+.post__tag:nth-child(12n + 7) {
+  background-color: rgba(255, 130, 159, 0.15);
+  color: #ff829f;
+}
+
+.post__tag:nth-child(12n + 8) {
+  background-color: rgba(130, 216, 255, 0.15);
+  color: #82d8ff;
+}
+
+.post__tag:nth-child(12n + 9) {
+  background-color: rgba(199, 146, 234, 0.15);
+  color: #c792ea;
+}
+
+.post__tag:nth-child(12n + 10) {
+  background-color: rgba(255, 158, 101, 0.15);
+  color: #ff9e65;
+}
+
+.post__tag:nth-child(12n + 11) {
+  background-color: rgba(130, 170, 255, 0.15);
+  color: #82aaff;
+}
+
+.post__tag:nth-child(12n + 12) {
+  background-color: rgba(195, 232, 141, 0.15);
+  color: #c3e88d;
+}
+
+/* Backwards compatibility */
 .post__tag--blue {
   background-color: rgba(88, 166, 255, 0.15);
   color: #58a6ff;
@@ -1277,6 +1352,8 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  padding: 0;
+  margin: 0;
 }
 
 /* TOPICS__ITEM - Mỗi topic item */
@@ -1296,6 +1373,7 @@
   padding: 12px 0;
   text-decoration: none;
   transition: var(--transition);
+  position: relative;
 }
 
 .topics__link:hover {
@@ -1306,21 +1384,39 @@
   color: var(--color-accent);
 }
 
+.topics__link:active .topics__name {
+  color: #ff7d64;
+}
+
+.topics__link:active .topics__count {
+  background-color: rgba(255, 125, 100, 0.2);
+  color: #ff7d64;
+}
+
 /* TOPICS__NAME - Tên chủ đề */
 .topics__name {
   font-size: 15px;
   color: var(--color-text-primary);
   transition: var(--transition);
+  font-weight: 400;
 }
 
 /* TOPICS__COUNT - Số lượng bài viết */
 .topics__count {
-  font-size: 14px;
-  color: var(--color-text-tertiary);
-  font-weight: 500;
-  padding: 2px 8px;
-  background-color: var(--color-bg-tertiary);
-  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  padding: 4px 10px;
+  background-color: rgba(48, 54, 61, 0.8);
+  border-radius: 12px;
+  min-width: 32px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.topics__link:hover .topics__count {
+  background-color: rgba(56, 139, 253, 0.2);
+  color: var(--color-accent);
 }
 
 /* ========== AUTHOR-CARD - Card thông tin tác giả ========== */

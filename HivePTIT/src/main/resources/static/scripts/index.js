@@ -667,18 +667,21 @@ async function renderTopicsSidebar() {
       const postCount = topicCounts[topic.name] || 0;
 
       return `
-      <button class="topics__item" data-topic="${topic.name}">
-        <span class="topics__name">${topic.name}</span>
-        <span class="topics__count">${postCount}</span>
-      </button>
+      <li class="topics__item">
+        <a href="#" class="topics__link" data-topic="${topic.name}">
+          <span class="topics__name">${topic.name}</span>
+          <span class="topics__count">${postCount}</span>
+        </a>
+      </li>
     `;
     })
     .join("");
 
   // Attach event listeners
-  document.querySelectorAll(".topics__item").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const topicName = btn.getAttribute("data-topic");
+  document.querySelectorAll(".topics__link").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const topicName = link.getAttribute("data-topic");
       switchToTopicFeed(topicName);
     });
   });
