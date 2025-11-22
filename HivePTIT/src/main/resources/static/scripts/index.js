@@ -1,5 +1,4 @@
 // ========== CONFIGURATION & STATE ==========
-const API_BASE_URL = "http://localhost:8080/api";
 const POSTS_PER_PAGE = 10;
 
 let currentState = {
@@ -14,53 +13,8 @@ let currentState = {
 };
 
 // ========== UTILITY FUNCTIONS ==========
-
-// Lấy JWT token từ localStorage
-function getAuthToken() {
-  return localStorage.getItem("jwtToken");
-}
-
-// Lấy username từ localStorage
-function getCurrentUsername() {
-  return localStorage.getItem("username");
-}
-
-// Check authentication status
-function checkAuth() {
-  const token = getAuthToken();
-  const username = getCurrentUsername();
-  currentState.isAuthenticated = !!(token && username);
-  currentState.currentUser = username;
-  return currentState.isAuthenticated;
-}
-
-// Format date
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInSeconds = Math.floor((now - date) / 1000);
-
-  if (diffInSeconds < 60) return "Vừa xong";
-  if (diffInSeconds < 3600)
-    return `${Math.floor(diffInSeconds / 60)} phút trước`;
-  if (diffInSeconds < 86400)
-    return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
-  if (diffInSeconds < 604800)
-    return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
-
-  return date.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-// Truncate text
-function truncateText(text, maxLength = 200) {
-  if (!text) return "";
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + "...";
-}
+// Note: getAuthToken, getCurrentUsername, checkAuth, formatDate, truncateText
+// are now in common.js
 
 // ========== API CALLS ==========
 
@@ -736,8 +690,9 @@ function initEventListeners() {
 async function init() {
   console.log("Initializing HivePTIT Index...");
 
-  // Check authentication
-  checkAuth();
+  // Check authentication (from common.js)
+  currentState.isAuthenticated = checkAuth();
+  currentState.currentUser = getCurrentUsername();
 
   // Initialize event listeners
   initEventListeners();

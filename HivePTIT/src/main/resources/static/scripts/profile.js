@@ -11,28 +11,13 @@ let totalPages = 0;
 let allTopics = [];
 
 // ========== UTILITY FUNCTIONS ==========
-
-// Lấy token từ localStorage
-function getAuthToken() {
-  return localStorage.getItem("authToken");
-}
-
-// Lấy username từ localStorage
-function getCurrentUsername() {
-  return localStorage.getItem("username");
-}
+// Note: getAuthToken, getCurrentUsername, logout are now in common.js
+// Keeping local copies for backward compatibility
 
 // Lấy username từ URL query params
 function getUsernameFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("username");
-}
-
-// Logout
-function logout() {
-  localStorage.removeItem("authToken");
-  localStorage.removeItem("username");
-  window.location.href = "sign-in.html";
 }
 
 // Format date
@@ -564,12 +549,6 @@ document.getElementById("paginationPages")?.addEventListener("click", (e) => {
   }
 });
 
-// Handle logout
-document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
-  e.preventDefault();
-  logout();
-});
-
 // ========== MAIN FUNCTIONS ==========
 
 // Load user posts
@@ -586,7 +565,9 @@ async function initProfile() {
   // Check if user is logged in
   const token = getAuthToken();
   if (!token) {
-    window.location.href = "sign-in.html";
+    // Redirect to sign-in if not authenticated
+    sessionStorage.setItem("redirectAfterLogin", window.location.href);
+    window.location.href = "/sign-in";
     return;
   }
 
@@ -595,7 +576,7 @@ async function initProfile() {
   if (!targetUsername) {
     targetUsername = getCurrentUsername();
     // Redirect to profile with username param
-    window.location.href = `profile.html?username=${targetUsername}`;
+    window.location.href = `/profile?username=${targetUsername}`;
     return;
   }
 

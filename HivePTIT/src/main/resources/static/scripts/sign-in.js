@@ -107,7 +107,14 @@ async function handleLoginSubmit(e) {
 
       // Redirect after a short delay
       setTimeout(() => {
-        window.location.href = "index.html";
+        // Check if there's a redirect URL saved
+        const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
+        if (redirectUrl) {
+          sessionStorage.removeItem("redirectAfterLogin");
+          window.location.href = redirectUrl;
+        } else {
+          window.location.href = "/";
+        }
       }, 1000);
     } else {
       // Show error message
@@ -126,12 +133,41 @@ async function handleLoginSubmit(e) {
 // ========== INITIALIZATION ==========
 
 function init() {
-  // Check if already logged in
-  const token = localStorage.getItem("jwtToken");
-  if (token) {
-    // Redirect to home page if already logged in
-    window.location.href = "index.html";
+  console.log("Sign-in page init");
+  console.log("Current pathname:", window.location.pathname);
+
+  // Đảm bảo đang ở trang sign-in
+  const isSignInPage =
+    window.location.pathname === "/sign-in" ||
+    window.location.pathname === "/sign-in.html";
+
+  if (!isSignInPage) {
+    console.log("Not on sign-in page, skipping init");
     return;
+  }
+
+  // Check if user just logged out
+  const justLoggedOut = sessionStorage.getItem("justLoggedOut");
+  console.log("justLoggedOut flag:", justLoggedOut);
+
+  if (justLoggedOut) {
+    // Xóa flag và không redirect
+    sessionStorage.removeItem("justLoggedOut");
+    console.log("User just logged out, staying on sign-in page");
+
+    // Xóa lại localStorage để đảm bảo
+    localStorage.clear();
+  } else {
+    // Check if already logged in
+    const token = localStorage.getItem("jwtToken");
+    console.log("JWT token exists:", !!token);
+
+    if (token) {
+      // Redirect to home page if already logged in
+      console.log("Token found, redirecting to home");
+      window.location.href = "/";
+      return;
+    }
   }
 
   // Attach form submit handler

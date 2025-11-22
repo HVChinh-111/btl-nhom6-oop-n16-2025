@@ -7,24 +7,8 @@ let allAuthors = [];
 let currentUser = null;
 
 // ========== UTILITY FUNCTIONS ==========
-
-// Lấy token từ localStorage
-function getAuthToken() {
-  return localStorage.getItem("authToken") || localStorage.getItem("jwtToken");
-}
-
-// Lấy username từ localStorage
-function getCurrentUsername() {
-  return localStorage.getItem("username");
-}
-
-// Logout
-function logout() {
-  localStorage.removeItem("authToken");
-  localStorage.removeItem("jwtToken");
-  localStorage.removeItem("username");
-  window.location.href = "sign-in.html";
-}
+// Note: getAuthToken, getCurrentUsername, logout are now in common.js
+// Keeping for backward compatibility but common.js will be used
 
 // ========== API CALLS ==========
 

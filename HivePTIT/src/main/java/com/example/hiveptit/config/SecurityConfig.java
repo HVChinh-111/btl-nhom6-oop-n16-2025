@@ -56,16 +56,38 @@ public class SecurityConfig {
             // Tắt CSRF vì dùng JWT (stateless), không dùng cookie/session
             .csrf(csrf -> csrf.disable())
             
-            // 2. Authorization Rules (Phân quyền URL)
+            // 2. Form Login - Tắt để không redirect
+            .formLogin(form -> form.disable())
+            
+            // 3. HTTP Basic - Tắt
+            .httpBasic(basic -> basic.disable())
+            
+            // 4. Exception Handling - Không redirect khi unauthorized
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    // Return 401 instead of redirecting to login
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    // Return 403 instead of redirecting
+                    response.setStatus(403);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Forbidden\",\"message\":\"Access denied\"}");
+                })
+            )
+            
+            // 5. Authorization Rules (Phân quyền URL)
             .authorizeHttpRequests(auth -> auth
                 // HTML Pages - Public access
                 .requestMatchers("/", "/index", "/index.html").permitAll()
                 .requestMatchers("/sign-in", "/sign-in.html").permitAll()
                 .requestMatchers("/sign-up", "/sign-up.html").permitAll()
-                
-                // HTML Pages - Authenticated access
-                .requestMatchers("/profile", "/profile.html").authenticated()
                 .requestMatchers("/author-ranking", "/author-ranking.html").permitAll()
+                
+                // HTML Pages - Authenticated access (handle auth in frontend)
+                .requestMatchers("/profile", "/profile.html").permitAll()
                 
                 // Static resources - Public access
                 .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
@@ -113,18 +135,18 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             
-            // 3. Session Management
+            // 6. Session Management
             // STATELESS: Không tạo session, mỗi request phải có JWT token
             // Khác với session-based: server lưu session, client lưu session ID
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // 4. Authentication Provider
+            // 7. Authentication Provider
             // Đăng ký provider đã tạo ở trên
             .authenticationProvider(authenticationProvider())
             
-            // 5. Add JWT Filter
+            // 8. Add JWT Filter
             // Thêm JwtAuthenticationFilter VÀO TRƯỚC UsernamePasswordAuthenticationFilter
             // Tại sao? Vì ta muốn check JWT trước khi Spring Security xử lý authentication
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
