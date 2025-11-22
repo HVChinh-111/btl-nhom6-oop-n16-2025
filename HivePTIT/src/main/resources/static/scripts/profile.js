@@ -414,9 +414,15 @@ function renderUserPosts(posts) {
             class="post__author-avatar"
             onerror="this.src='/images/avatar.jpeg'"
           />
-          <span class="post__author">
-            ${post.authorLastname} ${post.authorFirstname}
-          </span>
+          ${
+            isOwnProfile
+              ? `<span class="post__author">
+                ${post.authorLastname} ${post.authorFirstname}
+              </span>`
+              : `<a href="/profile?username=${post.authorUsername}" class="post__author">
+                ${post.authorLastname} ${post.authorFirstname}
+              </a>`
+          }
           <span class="post__date">
             <svg
               class="post__date-icon"

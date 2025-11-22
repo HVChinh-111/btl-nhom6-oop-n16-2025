@@ -1176,6 +1176,7 @@
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0 0 var(--spacing-md) 0;
+  text-decoration: none;
 }
 
 /* TRENDING__LIST - Danh sách bài viết trending */
@@ -1344,6 +1345,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
 }
 
 /* TOP-AUTHORS__STATS - Thống kê */

@@ -128,36 +128,13 @@ async function fetchCurrentUserProfile() {
 // Fetch top authors (sorted by ranking score)
 async function fetchTopAuthors(limit = 5) {
   try {
-    // Since API doesn't have dedicated top authors endpoint,
-    // we'll fetch home feed and extract unique authors, sorted by rankingCore
-    const posts = await fetch(`${API_BASE_URL}/feed/home?page=0&size=100`)
-      .then((res) => res.json())
-      .catch(() => []);
-
-    // Extract unique authors and sort by rankingCore
-    const authorsMap = new Map();
-    posts.forEach((post) => {
-      if (!authorsMap.has(post.authorUsername)) {
-        authorsMap.set(post.authorUsername, {
-          username: post.authorUsername,
-          firstname: post.authorFirstname,
-          lastname: post.authorLastname,
-          avatarUrl: post.authorAvatarUrl,
-          rankingCore: 0, // We'll need to get this from user profile
-          postCount: 1,
-        });
-      } else {
-        const author = authorsMap.get(post.authorUsername);
-        author.postCount++;
-      }
-    });
-
-    // Convert to array and sort by post count (as proxy for ranking)
-    const authors = Array.from(authorsMap.values())
-      .sort((a, b) => b.postCount - a.postCount)
-      .slice(0, limit);
-
-    return authors;
+    // Use leaderboard API which sorts by ranking_core
+    const response = await fetch(
+      `${API_BASE_URL}/leaderboard?page=0&size=${limit}`
+    );
+    if (!response.ok) throw new Error("Failed to fetch top authors");
+    const data = await response.json();
+    return data.content || [];
   } catch (error) {
     console.error("Error fetching top authors:", error);
     return [];
@@ -202,9 +179,9 @@ function renderPost(post) {
           class="post__author-avatar"
           onerror="this.src='/images/avatar.jpeg'"
         />
-        <span class="post__author">
+        <a href="/profile?username=${post.authorUsername}" class="post__author">
           ${authorName}
-        </span>
+        </a>
         <span class="post__date">
           <svg
             class="post__date-icon"
@@ -544,18 +521,19 @@ async function renderTopAuthors() {
         author.lastname && author.firstname
           ? `${author.lastname} ${author.firstname}`
           : author.username;
-      const avatarUrl = author.avatarUrl || "../static/images/avatar.jpeg";
+      const avatarUrl = author.avatarUrl || "/images/avatar.jpeg";
 
       return `
       <div class="top-authors__item">
         <span class="top-authors__rank">${index + 1}</span>
         <img src="${avatarUrl}" 
              alt="${fullName}" 
-             class="top-authors__avatar" />
+             class="top-authors__avatar"
+             onerror="this.src='/images/avatar.jpeg'" />
         <div class="top-authors__info">
            <a href="/profile?username=${author.username}" 
              class="top-authors__name">${fullName}</a>
-          <p class="top-authors__stats">${author.postCount} bài viết</p>
+          <p class="top-authors__stats">${author.rankingCore || 0} điểm</p>
         </div>
       </div>
     `;
