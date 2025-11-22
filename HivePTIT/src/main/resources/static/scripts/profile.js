@@ -1,5 +1,5 @@
 // ========== CONSTANTS ==========
-const API_BASE_URL = "http://localhost:8080/api";
+// `API_BASE_URL` is provided by `common.js`; do not redeclare here.
 
 // ========== STATE MANAGEMENT ==========
 let currentUser = null;
@@ -22,7 +22,39 @@ function getUsernameFromURL() {
 
 // Format date
 function formatDate(dateString) {
-  const date = new Date(dateString);
+  if (!dateString) return "";
+
+  // Handle both Instant (ISO string) and LocalDateTime formats
+  let date;
+  if (typeof dateString === "string") {
+    // If it's array format from LocalDateTime [year, month, day, hour, minute, second]
+    if (dateString.startsWith("[")) {
+      const parts = JSON.parse(dateString);
+      date = new Date(
+        parts[0],
+        parts[1] - 1,
+        parts[2],
+        parts[3] || 0,
+        parts[4] || 0,
+        parts[5] || 0
+      );
+    } else {
+      date = new Date(dateString);
+    }
+  } else if (Array.isArray(dateString)) {
+    // LocalDateTime as array
+    date = new Date(
+      dateString[0],
+      dateString[1] - 1,
+      dateString[2],
+      dateString[3] || 0,
+      dateString[4] || 0,
+      dateString[5] || 0
+    );
+  } else {
+    date = new Date(dateString);
+  }
+
   const options = {
     year: "numeric",
     month: "long",
@@ -59,6 +91,7 @@ async function fetchCurrentUser() {
 
 // Lấy thông tin profile user
 async function fetchUserProfile(username) {
+  console.log("profile.js:fetchUserProfile ->", username);
   try {
     const token = getAuthToken();
     const headers = {};
@@ -71,10 +104,14 @@ async function fetchUserProfile(username) {
     });
 
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      console.log("profile.js:fetchUserProfile ok", data.username);
+      return data;
     } else if (response.status === 404) {
       alert("Không tìm thấy người dùng");
       window.location.href = "index.html";
+    } else {
+      console.warn("profile.js:fetchUserProfile failed", response.status);
     }
     return null;
   } catch (error) {
@@ -116,13 +153,21 @@ async function updateProfile(firstname, lastname, avatarUrl, bio) {
 // Lấy bài viết của user
 async function fetchUserPosts(username, page = 0) {
   try {
+    console.log("profile.js:fetchUserPosts ->", username, page);
     const response = await fetch(
       `${API_BASE_URL}/feed/user/${username}?page=${page}&size=${pageSize}`
     );
 
     if (response.ok) {
-      return await response.json();
+      const data = await response.json();
+      console.log(
+        "profile.js:fetchUserPosts ok, type:",
+        Array.isArray(data) ? "array" : typeof data,
+        data?.length ?? data?.content?.length
+      );
+      return data;
     }
+    console.warn("profile.js:fetchUserPosts non-ok", response.status);
     return null;
   } catch (error) {
     console.error("Error fetching user posts:", error);
@@ -175,14 +220,14 @@ async function fetchTopics() {
 // Follow/Unfollow user
 async function toggleFollow(username) {
   try {
-    const response = await fetch(`${API_BASE_URL}/follows`, {
+    const response = await fetch(`${API_BASE_URL}/follow/toggle`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getAuthToken()}`,
       },
       body: JSON.stringify({
-        followedUsername: username,
+        targetUsername: username,
       }),
     });
 
@@ -257,22 +302,38 @@ function renderProfileHeader(user) {
   const editBtn = document.getElementById("editProfileBtn");
   const followBtn = document.getElementById("followBtn");
   const unfollowBtn = document.getElementById("unfollowBtn");
+  const token = getAuthToken();
 
   if (isOwnProfile) {
+    // Xem profile bản thân
     editBtn.style.display = "flex";
     followBtn.style.display = "none";
     unfollowBtn.style.display = "none";
     document.getElementById("createPostSection").style.display = "block";
   } else {
+    // Xem profile người khác
     editBtn.style.display = "none";
-    if (user.isFollowing) {
-      followBtn.style.display = "none";
-      unfollowBtn.style.display = "flex";
-    } else {
-      followBtn.style.display = "flex";
-      unfollowBtn.style.display = "none";
-    }
     document.getElementById("createPostSection").style.display = "none";
+
+    if (!token) {
+      // Chưa đăng nhập -> vô hiệu hóa nút follow
+      followBtn.style.display = "flex";
+      followBtn.disabled = true;
+      followBtn.classList.add("profile__btn--disabled");
+      unfollowBtn.style.display = "none";
+    } else {
+      // Đã đăng nhập -> hiển thị nút follow/unfollow
+      followBtn.disabled = false;
+      followBtn.classList.remove("profile__btn--disabled");
+
+      if (user.isFollowing) {
+        followBtn.style.display = "none";
+        unfollowBtn.style.display = "flex";
+      } else {
+        followBtn.style.display = "flex";
+        unfollowBtn.style.display = "none";
+      }
+    }
   }
 }
 
@@ -302,7 +363,7 @@ function renderUserPosts(posts) {
         <span class="post__tag post__tag--${
           ["blue", "teal", "purple", "blue-light"][index % 4]
         }">
-          ${topic.name}
+          ${topic}
         </span>
       `
         )
@@ -312,18 +373,18 @@ function renderUserPosts(posts) {
       <article class="post">
         ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
         <h3 class="post__title">
-          <a href="post-detail.html?id=${post.id}" class="post__title-link">
+          <a href="post-detail.html?id=${post.postId}" class="post__title-link">
             ${post.title}
           </a>
         </h3>
         <div class="post__meta">
           <img
-            src="${post.author.avatarUrl || "../static/images/avatar.jpeg"}"
-            alt="${post.author.firstname} ${post.author.lastname}"
+            src="${post.authorAvatarUrl || "../static/images/avatar.jpeg"}"
+            alt="${post.authorFirstname} ${post.authorLastname}"
             class="post__author-avatar"
           />
           <span class="post__author">
-            ${post.author.firstname} ${post.author.lastname}
+            ${post.authorFirstname} ${post.authorLastname}
           </span>
           <span class="post__date">
             <svg
@@ -353,7 +414,7 @@ function renderUserPosts(posts) {
         post.content.length > 200 ? "..." : ""
       }
         </p>
-        <a href="post-detail.html?id=${post.id}" class="post__read-more">
+        <a href="post-detail.html?id=${post.postId}" class="post__read-more">
           Đọc thêm
         </a>
       </article>
@@ -520,10 +581,9 @@ document
       // Reset form
       document.getElementById("createPostForm").reset();
 
-      // Reload posts
-      await loadUserPosts(profileUser.username, 0);
-
-      alert("Tạo bài viết thành công!");
+      // After creating a post, reload the page so feed and counts refresh
+      console.log("profile.js:createPost success, reloading page", newPost);
+      window.location.reload();
     } catch (error) {
       errorText.textContent = error.message;
       errorEl.style.display = "flex";
@@ -532,20 +592,47 @@ document
 
 // Handle follow button
 document.getElementById("followBtn")?.addEventListener("click", async () => {
+  if (!getAuthToken()) {
+    alert("Vui lòng đăng nhập để theo dõi người dùng");
+    return;
+  }
+
   const result = await toggleFollow(profileUser.username);
-  if (result) {
-    profileUser.isFollowing = true;
-    profileUser.followerCount += 1;
+  if (result && result.success) {
+    // Cập nhật trạng thái follow
+    profileUser.isFollowing = result.action === "FOLLOWED";
+
+    // Cập nhật số lượng followers từ response
+    if (result.followerCount !== undefined) {
+      profileUser.followerCount = result.followerCount;
+    } else {
+      // Nếu API không trả về followerCount, tự tăng/giảm
+      profileUser.followerCount += result.action === "FOLLOWED" ? 1 : -1;
+    }
+
     renderProfileHeader(profileUser);
   }
 });
 
 // Handle unfollow button
 document.getElementById("unfollowBtn")?.addEventListener("click", async () => {
+  if (!getAuthToken()) {
+    return;
+  }
+
   const result = await toggleFollow(profileUser.username);
-  if (result) {
-    profileUser.isFollowing = false;
-    profileUser.followerCount -= 1;
+  if (result && result.success) {
+    // Cập nhật trạng thái follow
+    profileUser.isFollowing = result.action === "FOLLOWED";
+
+    // Cập nhật số lượng followers từ response
+    if (result.followerCount !== undefined) {
+      profileUser.followerCount = result.followerCount;
+    } else {
+      // Nếu API không trả về followerCount, tự tăng/giảm
+      profileUser.followerCount += result.action === "FOLLOWED" ? 1 : -1;
+    }
+
     renderProfileHeader(profileUser);
   }
 });
@@ -575,40 +662,77 @@ document.getElementById("paginationPages")?.addEventListener("click", (e) => {
 // Load user posts
 async function loadUserPosts(username, page = 0) {
   const postsData = await fetchUserPosts(username, page);
-  if (postsData) {
+  if (!postsData) {
+    console.warn("profile.js:loadUserPosts no data");
+    document.getElementById(
+      "userPosts"
+    ).innerHTML = `<div class="posts__empty"><p>Không có bài viết</p></div>`;
+    document.getElementById("postsPagination").style.display = "none";
+    return;
+  }
+
+  // API may return either an array (List<FeedPostResponse>) or a paged object with `content`
+  if (Array.isArray(postsData)) {
+    renderUserPosts(postsData);
+  } else if (postsData.content && Array.isArray(postsData.content)) {
     renderUserPosts(postsData.content);
     renderPagination(postsData);
+  } else {
+    // Fallback: try to render as array-like
+    try {
+      renderUserPosts(Array.from(postsData));
+    } catch (err) {
+      console.error(
+        "profile.js:loadUserPosts cannot render postsData",
+        postsData
+      );
+      document.getElementById(
+        "userPosts"
+      ).innerHTML = `<div class="posts__empty"><p>Không có bài viết</p></div>`;
+    }
+  }
+  // Hide pagination if not provided
+  if (!postsData.totalPages) {
+    const pag = document.getElementById("postsPagination");
+    if (pag) pag.style.display = "none";
   }
 }
 
 // Initialize profile page
 async function initProfile() {
+  console.log("profile.js:initProfile called", {
+    pathname: window.location.pathname,
+    search: window.location.search,
+  });
+  // Get username from URL
+  let targetUsername = getUsernameFromURL();
+
   // Check if user is logged in
   const token = getAuthToken();
-  if (!token) {
-    // Redirect to sign-in if not authenticated
-    sessionStorage.setItem("redirectAfterLogin", window.location.href);
-    window.location.href = "/sign-in";
-    return;
-  }
+  const currentUsername = getCurrentUsername();
 
-  // Get username from URL or use current user
-  let targetUsername = getUsernameFromURL();
+  // Nếu truy cập /profile (không có username param)
   if (!targetUsername) {
-    targetUsername = getCurrentUsername();
-    // Redirect to profile with username param
-    window.location.href = `/profile?username=${targetUsername}`;
-    return;
+    if (!token || !currentUsername) {
+      // Chưa đăng nhập -> redirect về sign-in
+      sessionStorage.setItem("redirectAfterLogin", window.location.href);
+      window.location.href = "/sign-in";
+      return;
+    }
+    // Đã đăng nhập -> xem profile bản thân
+    targetUsername = currentUsername;
   }
 
-  // Fetch current user info
-  currentUser = await fetchCurrentUser();
-  if (currentUser) {
-    renderHeaderUserInfo(currentUser);
+  // Fetch current user info (nếu đã đăng nhập)
+  if (token && currentUsername) {
+    currentUser = await fetchCurrentUser();
+    if (currentUser) {
+      renderHeaderUserInfo(currentUser);
+    }
   }
 
   // Check if viewing own profile
-  isOwnProfile = targetUsername === getCurrentUsername();
+  isOwnProfile = currentUsername && targetUsername === currentUsername;
 
   // Fetch profile user
   profileUser = await fetchUserProfile(targetUsername);
@@ -617,7 +741,7 @@ async function initProfile() {
     await loadUserPosts(targetUsername, 0);
   }
 
-  // Load topics for create post form
+  // Load topics for create post form (chỉ khi xem profile bản thân)
   if (isOwnProfile) {
     allTopics = await fetchTopics();
     renderTopicsCheckboxes(allTopics);

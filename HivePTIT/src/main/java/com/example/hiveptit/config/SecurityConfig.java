@@ -103,6 +103,7 @@ public class SecurityConfig {
                 
                 // Feed endpoints - Public access for viewing
                 .requestMatchers("/api/feed/home", "/api/feed/trending").permitAll()
+                .requestMatchers("/api/feed/user/**").permitAll()
                 
                 // Topics endpoint - Public access
                 .requestMatchers("/api/topics", "/api/topics/**").permitAll()

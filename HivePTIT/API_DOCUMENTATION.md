@@ -1015,6 +1015,30 @@ Auth API is running!
 
 ---
 
+### 9.4. Lấy feed của một user
+
+**Endpoint**: `GET /api/feed/user/{username}`
+
+**Mô tả**: Lấy tất cả bài viết của một user cụ thể
+
+**Path Parameters**:
+
+- `username`: Username của người dùng
+
+**Query Parameters**:
+
+- `page`: Số trang (mặc định: 0)
+- `size`: Số lượng bài viết mỗi trang (mặc định: 20)
+
+**Response**: `List<FeedPostResponse>`
+
+**Status Codes**:
+
+- `200 OK`: Lấy feed thành công
+- `404 Not Found`: Không tìm thấy user
+
+---
+
 ## 10. Leaderboard APIs (`/api/leaderboard`)
 
 ### 10.1. Lấy bảng xếp hạng có phân trang

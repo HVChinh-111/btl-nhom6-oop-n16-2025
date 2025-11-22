@@ -200,7 +200,7 @@ function renderPost(post) {
             class="post__author-avatar"
           />
           <div class="post__author-info">
-            <a href="profile.html?username=${
+            <a href="/profile?username=${
               post.authorUsername
             }" class="post__author-name">
               ${authorName}
@@ -554,7 +554,7 @@ async function renderTopAuthors() {
              alt="${fullName}" 
              class="top-authors__avatar" />
         <div class="top-authors__info">
-          <a href="profile.html?username=${author.username}" 
+           <a href="/profile?username=${author.username}" 
              class="top-authors__name">${fullName}</a>
           <p class="top-authors__stats">${author.postCount} bài viết</p>
         </div>
