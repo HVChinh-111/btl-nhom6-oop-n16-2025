@@ -1,5 +1,9 @@
 // ========== POST DETAIL PAGE - Trang chi tiết bài viết ==========
 
+// Store current user's vote state
+let currentUserVote = null; // "UPVOTE", "DOWNVOTE", or null
+let currentVoteCount = 0;
+
 // Lấy post ID từ URL parameter
 function getPostIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -30,11 +34,19 @@ function formatDate(dateString) {
 // Fetch post data từ API
 async function fetchPost(postId) {
   try {
+    const token = getAuthToken();
+    const headers = {
+      "Content-Type": "application/json",
+    };
+
+    // Add auth token if available
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: headers,
     });
 
     if (!response.ok) {
@@ -59,38 +71,6 @@ async function fetchPost(postId) {
     console.error("Error fetching post:", error);
     if (error.body) console.error("Response body:", error.body);
     throw error;
-  }
-}
-
-// Vote cho post (upvote/downvote)
-async function votePost(postId, voteType) {
-  const token = getAuthToken();
-  if (!token) {
-    alert("Vui lòng đăng nhập để vote");
-    return null;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/votes/post`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        postId: postId,
-        voteType: voteType, // "UPVOTE" hoặc "DOWNVOTE"
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Không thể vote");
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Error voting:", error);
-    return null;
   }
 }
 
@@ -144,7 +124,9 @@ function renderPost(post) {
   Prism.highlightAllUnder(bodyContainer);
 
   // Update vote count
-  document.getElementById("voteCount").textContent = post.voteCount || 0;
+  currentVoteCount = post.voteCount || 0;
+  currentUserVote = post.userVoteType || null;
+  updateVoteUI();
 
   // Generate table of contents
   generateTableOfContents();
@@ -287,6 +269,76 @@ function showError(message) {
   document.getElementById("errorMessage").textContent = message;
 }
 
+// Update vote UI based on current state
+function updateVoteUI() {
+  const upvoteBtn = document.getElementById("upvoteBtn");
+  const downvoteBtn = document.getElementById("downvoteBtn");
+  const voteCountEl = document.getElementById("voteCount");
+
+  // Update count
+  voteCountEl.textContent = currentVoteCount;
+
+  // Update button states
+  upvoteBtn.classList.remove("post-detail__vote-btn--active");
+  downvoteBtn.classList.remove("post-detail__vote-btn--active");
+
+  if (currentUserVote === "UPVOTE") {
+    upvoteBtn.classList.add("post-detail__vote-btn--active");
+  } else if (currentUserVote === "DOWNVOTE") {
+    downvoteBtn.classList.add("post-detail__vote-btn--active");
+  }
+}
+
+// Handle vote click with YouTube-like logic
+async function handleVote(postId, voteType) {
+  const token = getAuthToken();
+  if (!token) {
+    alert("Vui lòng đăng nhập để vote");
+    return;
+  }
+
+  // Send request to server
+  try {
+    const response = await fetch(`${API_BASE_URL}/votes/post`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        postId: postId,
+        voteType: voteType,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Không thể vote");
+    }
+
+    const result = await response.json();
+
+    // Update vote count from server response
+    currentVoteCount = result.totalScore;
+
+    // Update user vote state based on action
+    if (result.action === "REMOVED") {
+      // Vote was removed (clicked same vote again)
+      currentUserVote = null;
+    } else if (result.action === "ADDED") {
+      // New vote was added
+      currentUserVote = voteType;
+    } else if (result.action === "CHANGED") {
+      // Vote was changed from one type to another
+      currentUserVote = voteType;
+    }
+
+    updateVoteUI();
+  } catch (error) {
+    console.error("Error voting:", error);
+    alert("Không thể vote. Vui lòng thử lại.");
+  }
+}
+
 // Init post detail page
 async function initPostDetail() {
   const postId = getPostIdFromURL();
@@ -307,27 +359,8 @@ async function initPostDetail() {
     const upvoteBtn = document.getElementById("upvoteBtn");
     const downvoteBtn = document.getElementById("downvoteBtn");
 
-    upvoteBtn.addEventListener("click", async () => {
-      const result = await votePost(postId, "UPVOTE");
-      if (result) {
-        // Update vote count
-        document.getElementById("voteCount").textContent =
-          result.voteCount || 0;
-        upvoteBtn.classList.add("post-detail__vote-btn--active");
-        downvoteBtn.classList.remove("post-detail__vote-btn--active");
-      }
-    });
-
-    downvoteBtn.addEventListener("click", async () => {
-      const result = await votePost(postId, "DOWNVOTE");
-      if (result) {
-        // Update vote count
-        document.getElementById("voteCount").textContent =
-          result.voteCount || 0;
-        downvoteBtn.classList.add("post-detail__vote-btn--active");
-        upvoteBtn.classList.remove("post-detail__vote-btn--active");
-      }
-    });
+    upvoteBtn.addEventListener("click", () => handleVote(postId, "UPVOTE"));
+    downvoteBtn.addEventListener("click", () => handleVote(postId, "DOWNVOTE"));
   } catch (error) {
     console.error("Error initializing post detail:", error);
     showError("Không thể tải bài viết. Vui lòng thử lại sau.");

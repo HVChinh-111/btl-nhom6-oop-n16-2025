@@ -131,6 +131,52 @@
         id="postContainer"
         style="display: none"
       >
+        <!-- Left Sidebar - Vote controls -->
+        <aside class="post-detail__vote-sidebar">
+          <div class="post-detail__vote-sticky">
+            <!-- Upvote button -->
+            <button
+              class="post-detail__vote-btn post-detail__vote-btn--up"
+              id="upvoteBtn"
+              title="Upvote"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 4L4 12H8V20H16V12H20L12 4Z" fill="currentColor" />
+              </svg>
+            </button>
+
+            <!-- Vote count -->
+            <span class="post-detail__vote-count" id="voteCount">0</span>
+
+            <!-- Downvote button -->
+            <button
+              class="post-detail__vote-btn post-detail__vote-btn--down"
+              id="downvoteBtn"
+              title="Downvote"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 20L20 12H16V4H8V12H4L12 20Z" fill="currentColor" />
+              </svg>
+            </button>
+
+            <!-- Bookmark button (placeholder for future) -->
+            <button
+              class="post-detail__bookmark-btn"
+              id="bookmarkBtn"
+              title="Bookmark"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M17 3H7C5.9 3 5 3.9 5 5V21L12 18L19 21V5C19 3.9 18.1 3 17 3Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  fill="none"
+                />
+              </svg>
+            </button>
+          </div>
+        </aside>
+
         <!-- Nội dung bài viết chính -->
         <article class="post-detail__content">
           <!-- Header bài viết -->
@@ -166,37 +212,6 @@
           <section class="post-detail__body" id="postBody">
             <!-- Nội dung HTML sẽ được inject bằng JS -->
           </section>
-
-          <!-- Footer với vote buttons -->
-          <footer class="post-detail__footer">
-            <div class="post-detail__vote">
-              <button
-                class="post-detail__vote-btn post-detail__vote-btn--up"
-                id="upvoteBtn"
-                title="Upvote"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 4L4 12H8V20H16V12H20L12 4Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-              <span class="post-detail__vote-count" id="voteCount">0</span>
-              <button
-                class="post-detail__vote-btn post-detail__vote-btn--down"
-                id="downvoteBtn"
-                title="Downvote"
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M12 20L20 12H16V4H8V12H4L12 20Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </button>
-            </div>
-          </footer>
         </article>
 
         <!-- Sidebar - Table of Contents -->

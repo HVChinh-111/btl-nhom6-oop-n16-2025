@@ -13,6 +13,7 @@ public class PostResponse {
     private Instant createdAt;
     private Instant updatedAt;
     private Integer voteCount;
+    private String userVoteType; // "UPVOTE", "DOWNVOTE", hoặc null
 
     public static class TopicSummary {
         private Integer id;
@@ -56,4 +57,7 @@ public class PostResponse {
 
     public Integer getVoteCount() { return voteCount; }
     public void setVoteCount(Integer voteCount) { this.voteCount = voteCount; }
+
+    public String getUserVoteType() { return userVoteType; }
+    public void setUserVoteType(String userVoteType) { this.userVoteType = userVoteType; }
 }

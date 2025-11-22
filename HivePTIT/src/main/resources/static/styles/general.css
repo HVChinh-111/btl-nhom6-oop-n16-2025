@@ -2984,11 +2984,11 @@
   color: #f85149;
 }
 
-/* POST-DETAIL__CONTAINER - Container chứa nội dung và TOC */
+/* POST-DETAIL__CONTAINER - Container chứa vote sidebar, nội dung và TOC */
 .post-detail__container {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: var(--spacing-xxl);
+  grid-template-columns: 80px 1fr 300px;
+  gap: var(--spacing-xl);
   align-items: start;
 }
 
@@ -3206,24 +3206,32 @@
   margin: var(--spacing-xl) 0;
 }
 
-/* POST-DETAIL__FOOTER - Footer với vote */
-.post-detail__footer {
-  margin-top: var(--spacing-xxl);
-  padding-top: var(--spacing-xl);
-  border-top: 1px solid var(--color-border);
+/* POST-DETAIL__VOTE-SIDEBAR - Left sidebar for votes */
+.post-detail__vote-sidebar {
+  position: relative;
 }
 
-/* POST-DETAIL__VOTE - Container vote buttons */
-.post-detail__vote {
+/* POST-DETAIL__VOTE-STICKY - Sticky container for vote controls */
+.post-detail__vote-sticky {
+  position: fixed;
+  left: calc((100vw - 1400px) / 2 - 70px);
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-xs);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  z-index: 10;
 }
 
 /* POST-DETAIL__VOTE-BTN - Nút vote */
 .post-detail__vote-btn {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3233,6 +3241,11 @@
   cursor: pointer;
   transition: var(--transition);
   color: var(--color-text-secondary);
+}
+
+.post-detail__vote-btn svg {
+  width: 20px;
+  height: 20px;
 }
 
 .post-detail__vote-btn:hover {
@@ -3266,11 +3279,48 @@
 
 /* POST-DETAIL__VOTE-COUNT - Số vote */
 .post-detail__vote-count {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--color-text-primary);
-  min-width: 60px;
   text-align: center;
+  padding: 4px 0;
+}
+
+/* POST-DETAIL__BOOKMARK-BTN - Nút bookmark */
+.post-detail__bookmark-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--color-text-secondary);
+  margin-top: var(--spacing-xs);
+}
+
+.post-detail__bookmark-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.post-detail__bookmark-btn:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+  color: var(--color-accent);
+}
+
+.post-detail__bookmark-btn--active {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.post-detail__bookmark-btn--active svg {
+  fill: var(--color-accent);
 }
 
 /* POST-DETAIL__TOC - Table of Contents Sidebar */
@@ -3388,8 +3438,8 @@
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .post-detail__container {
-    grid-template-columns: 1fr 250px;
-    gap: var(--spacing-lg);
+    grid-template-columns: 70px 1fr 220px;
+    gap: var(--spacing-md);
   }
 
   .post-detail__title {
@@ -3398,6 +3448,27 @@
 
   .post-detail__content {
     padding: var(--spacing-xl);
+  }
+
+  .post-detail__vote-sticky {
+    left: var(--spacing-md);
+    padding: 6px;
+  }
+
+  .post-detail__vote-btn,
+  .post-detail__bookmark-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .post-detail__vote-btn svg,
+  .post-detail__bookmark-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .post-detail__vote-count {
+    font-size: 14px;
   }
 }
 
@@ -3413,6 +3484,10 @@
 
   .post-detail__toc {
     display: none; /* Ẩn TOC trên mobile */
+  }
+
+  .post-detail__vote-sidebar {
+    display: none; /* Ẩn vote sidebar trên mobile */
   }
 
   .post-detail__title {
@@ -3453,14 +3528,5 @@
   .post-detail__meta {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .post-detail__vote {
-    justify-content: center;
-  }
-
-  .post-detail__vote-btn {
-    width: 40px;
-    height: 40px;
   }
 }

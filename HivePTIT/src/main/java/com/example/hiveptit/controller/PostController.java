@@ -57,9 +57,11 @@ public class PostController {
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPostById(
             @PathVariable Integer id,
-            @RequestParam(required = false, defaultValue = "false") boolean includeRawContent
+            @RequestParam(required = false, defaultValue = "false") boolean includeRawContent,
+            Principal principal
     ) {
-        return ResponseEntity.ok(postService.getPost(id, includeRawContent));
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(postService.getPost(id, includeRawContent, username));
     }
 
 }
