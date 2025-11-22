@@ -9,7 +9,7 @@ const allPosts = document.querySelectorAll(".post");
 const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
 // Hiển thị bài viết theo trang
-function showPage(page) {
+function showPage(page, shouldScroll = false) {
   // Ẩn tất cả bài viết
   allPosts.forEach((post) => {
     post.style.display = "none";
@@ -24,10 +24,10 @@ function showPage(page) {
     allPosts[i].style.display = "block";
   }
 
-  // Scroll lên đầu danh sách bài viết
-  document
-    .querySelector(".posts")
-    .scrollIntoView({ behavior: "smooth", block: "start" });
+  // Chỉ scroll khi người dùng click vào nút phân trang
+  if (shouldScroll) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 // Cập nhật trạng thái các nút phân trang
@@ -71,7 +71,7 @@ document.querySelectorAll(".pagination__page").forEach((btn) => {
   btn.addEventListener("click", () => {
     const pageNum = parseInt(btn.textContent);
     currentPage = pageNum;
-    showPage(currentPage);
+    showPage(currentPage, true);
     updatePagination();
   });
 });
@@ -82,7 +82,7 @@ document
   .addEventListener("click", () => {
     if (currentPage > 1) {
       currentPage--;
-      showPage(currentPage);
+      showPage(currentPage, true);
       updatePagination();
     }
   });
@@ -93,11 +93,11 @@ document
   .addEventListener("click", () => {
     if (currentPage < totalPages) {
       currentPage++;
-      showPage(currentPage);
+      showPage(currentPage, true);
       updatePagination();
     }
   });
 
-// Khởi tạo trang đầu tiên
-showPage(currentPage);
+// Khởi tạo trang đầu tiên (không scroll)
+showPage(currentPage, false);
 updatePagination();

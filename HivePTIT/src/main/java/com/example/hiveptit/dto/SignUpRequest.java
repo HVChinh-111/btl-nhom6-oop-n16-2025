@@ -17,7 +17,7 @@ public class SignUpRequest {
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không hợp lệ")
-    @Pattern(regexp = ".*@ptit\\.edu\\.vn$", message = "Email phải có đuôi @ptit.edu.vn")
+    @Pattern(regexp = ".*@stu\\.ptit\\.edu\\.vn$", message = "Email phải có đuôi @stu.ptit.edu.vn")
     private String email;
 
     @NotBlank(message = "Password không được để trống")

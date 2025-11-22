@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="../static/images/LogoProPTIT.png" type="image/png" />
+    <link rel="stylesheet" href="../static/styles/general.css" />
+    <title>Bảng xếp hạng tác giả - HivePTIT</title>
+  </head>
+
+  <body class="page">
+    <!-- Header chính -->
+    <header class="header">
+      <nav class="header__nav">
+        <!-- Logo và tên -->
+        <a href="index.html" class="header__brand">HivePTIT</a>
+
+        <!-- Menu điều hướng -->
+        <ul class="header__menu">
+          <li class="header__menu-item">
+            <a href="index.html" class="header__menu-link"> Trang chủ </a>
+          </li>
+          <li class="header__menu-item">
+            <a href="#" class="header__menu-link"> Đang theo dõi </a>
+          </li>
+          <li class="header__menu-item">
+            <a
+              href="author-ranking.html"
+              class="header__menu-link header__menu-link--active"
+              >Bảng xếp hạng tác giả</a
+            >
+          </li>
+        </ul>
+
+        <!-- Avatar và menu người dùng -->
+        <div class="header__user">
+          <button class="header__avatar-btn">
+            <img
+              src="../static/images/avatar.jpeg"
+              alt="Avatar"
+              class="header__avatar"
+              id="headerAvatar"
+            />
+          </button>
+          <!-- Dropdown menu người dùng -->
+          <div class="header__user-menu">
+            <!-- Thông tin người dùng -->
+            <div class="header__user-info">
+              <img
+                src="../static/images/avatar.jpeg"
+                alt="Avatar"
+                class="header__user-avatar"
+                id="userMenuAvatar"
+              />
+              <div class="header__user-details">
+                <p class="header__user-name" id="userName">Loading...</p>
+                <p class="header__user-username" id="userUsername">@...</p>
+              </div>
+            </div>
+            <!-- Đường phân cách -->
+            <div class="header__user-divider"></div>
+            <!-- Các tùy chọn -->
+            <ul class="header__user-options">
+              <li class="header__user-option">
+                <a href="profile.html" class="header__user-option-link">
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Trang cá nhân
+                </a>
+              </li>
+              <li class="header__user-option">
+                <a
+                  href="sign-in.html"
+                  class="header__user-option-link"
+                  id="logoutBtn"
+                >
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M5 8H11M11 8L8 5M11 8L8 11M1 8C1 9.85652 1.7375 11.637 3.05025 12.9497C4.36301 14.2625 6.14348 15 8 15C9.85652 15 11.637 14.2625 12.9497 12.9497C14.2625 11.637 15 9.85652 15 8C15 6.14348 14.2625 4.36301 12.9497 3.05025C11.637 1.7375 9.85652 1 8 1C6.14348 1 4.36301 1.7375 3.05025 3.05025C1.7375 4.36301 1 6.14348 1 8Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Đăng xuất
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+      <div class="ranking">
+        <!-- Ranking header -->
+        <section class="ranking__header">
+          <h1 class="ranking__title">Bảng xếp hạng</h1>
+        </section>
+
+        <!-- Top 3 podium -->
+        <section class="ranking__podium">
+          <div class="podium">
+            <!-- 2nd place -->
+            <div class="podium__item podium__item--second" id="secondPlace">
+              <div class="podium__rank">2</div>
+              <img
+                src="../static/images/avatar.jpeg"
+                alt="2nd place"
+                class="podium__avatar"
+              />
+              <h3 class="podium__name">Loading...</h3>
+              <p class="podium__username">@...</p>
+              <p class="podium__student-id">...</p>
+              <div class="podium__stat-single">
+                <span class="podium__stat-value">0</span>
+                <span class="podium__stat-label">Ranking Core</span>
+              </div>
+            </div>
+
+            <!-- 1st place -->
+            <div class="podium__item podium__item--first" id="firstPlace">
+              <div class="podium__crown">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path
+                    d="M6 12L10 8L16 14L22 8L26 12V24H6V12Z"
+                    fill="#FFD700"
+                    stroke="#FFA500"
+                    stroke-width="2"
+                  />
+                  <circle cx="10" cy="8" r="2" fill="#FFD700" />
+                  <circle cx="16" cy="14" r="2" fill="#FFD700" />
+                  <circle cx="22" cy="8" r="2" fill="#FFD700" />
+                </svg>
+              </div>
+              <div class="podium__rank">1</div>
+              <img
+                src="../static/images/avatar.jpeg"
+                alt="1st place"
+                class="podium__avatar"
+              />
+              <h3 class="podium__name">Loading...</h3>
+              <p class="podium__username">@...</p>
+              <p class="podium__student-id">...</p>
+              <div class="podium__stat-single">
+                <span class="podium__stat-value">0</span>
+                <span class="podium__stat-label">Ranking Core</span>
+              </div>
+            </div>
+
+            <!-- 3rd place -->
+            <div class="podium__item podium__item--third" id="thirdPlace">
+              <div class="podium__rank">3</div>
+              <img
+                src="../static/images/avatar.jpeg"
+                alt="3rd place"
+                class="podium__avatar"
+              />
+              <h3 class="podium__name">Loading...</h3>
+              <p class="podium__username">@...</p>
+              <p class="podium__student-id">...</p>
+              <div class="podium__stat-single">
+                <span class="podium__stat-value">0</span>
+                <span class="podium__stat-label">Ranking Core</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Ranking table -->
+        <section class="ranking__table-section">
+          <div class="ranking-table">
+            <table class="ranking-table__table">
+              <thead class="ranking-table__thead">
+                <tr class="ranking-table__row">
+                  <th class="ranking-table__th">STT</th>
+                  <th class="ranking-table__th">Ảnh đại diện</th>
+                  <th class="ranking-table__th">Username</th>
+                  <th class="ranking-table__th">Họ</th>
+                  <th class="ranking-table__th">Tên</th>
+                  <th class="ranking-table__th">Mã sinh viên</th>
+                  <th class="ranking-table__th">Số post</th>
+                  <th class="ranking-table__th">Ranking Core</th>
+                </tr>
+              </thead>
+              <tbody class="ranking-table__tbody" id="rankingTableBody">
+                <!-- Loading state -->
+                <tr class="ranking-table__row">
+                  <td colspan="8" class="ranking-table__loading">
+                    Đang tải dữ liệu...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="../static/scripts/dropdown.js"></script>
+    <script src="../static/scripts/author-ranking.js"></script>
+  </body>
+</html>

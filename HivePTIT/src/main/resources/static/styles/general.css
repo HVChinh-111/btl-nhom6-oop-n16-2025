@@ -938,6 +938,15 @@
 .pagination__pages {
   display: flex;
   gap: var(--spacing-xs);
+  align-items: center;
+}
+
+/* PAGINATION__ELLIPSIS - Dấu ba chấm */
+.pagination__ellipsis {
+  padding: 0 8px;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 /* PAGINATION__PAGE - Mỗi số trang */
@@ -1511,5 +1520,1033 @@
   .pagination__pages {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
+
+/* ========== PROFILE - Trang profile người dùng ========== */
+.profile {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* PROFILE__HEADER - Phần header của profile */
+.profile__header {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xl);
+}
+
+/* PROFILE__COVER - Ảnh bìa */
+.profile__cover {
+  height: 200px;
+  background: linear-gradient(135deg, var(--color-accent) 0%, #58a6ff 100%);
+}
+
+/* PROFILE__INFO-WRAPPER - Container chứa avatar và info */
+.profile__info-wrapper {
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: flex-start;
+  position: relative;
+}
+
+/* PROFILE__AVATAR-SECTION - Phần avatar */
+.profile__avatar-section {
+  margin-top: -60px;
+  flex-shrink: 0;
+}
+
+/* PROFILE__AVATAR - Avatar lớn */
+.profile__avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid var(--color-bg-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+/* PROFILE__INFO - Thông tin profile */
+.profile__info {
+  flex: 1;
+  padding-top: var(--spacing-md);
+  min-width: 0;
+}
+
+/* PROFILE__NAME - Tên người dùng */
+.profile__name {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+}
+
+/* PROFILE__USERNAME - Username */
+.profile__username {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* PROFILE__BIO - Tiểu sử */
+.profile__bio {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+/* PROFILE__STATS - Thống kê */
+.profile__stats {
+  display: flex;
+  gap: var(--spacing-xl);
+  flex-wrap: wrap;
+}
+
+/* PROFILE__STAT - Mỗi mục thống kê */
+.profile__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* PROFILE__STAT-VALUE - Giá trị thống kê */
+.profile__stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+/* PROFILE__STAT-LABEL - Nhãn thống kê */
+.profile__stat-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+/* PROFILE__ACTIONS - Các nút action */
+.profile__actions {
+  padding-top: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+/* PROFILE__BTN - Nút chung */
+.profile__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-family: inherit;
+}
+
+/* PROFILE__BTN--EDIT - Nút chỉnh sửa */
+.profile__btn--edit {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+.profile__btn--edit:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* PROFILE__BTN--FOLLOW - Nút theo dõi */
+.profile__btn--follow {
+  color: #ffffff;
+  background-color: var(--color-accent);
+}
+
+.profile__btn--follow:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* PROFILE__BTN--FOLLOWING - Nút đang theo dõi */
+.profile__btn--following {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+.profile__btn--following:hover {
+  background-color: rgba(248, 81, 73, 0.1);
+  border-color: #f85149;
+  color: #f85149;
+}
+
+/* PROFILE__POSTS - Phần bài viết */
+.profile__posts {
+  margin-top: var(--spacing-xl);
+}
+
+/* PROFILE__POSTS-TITLE - Tiêu đề phần bài viết */
+.profile__posts-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+/* POSTS__LOADING - Loading state */
+.posts__loading {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+/* POSTS__EMPTY - Empty state */
+.posts__empty {
+  text-align: center;
+  padding: var(--spacing-xxl);
+  color: var(--color-text-secondary);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+/* ========== PROFILE-EDIT - Modal chỉnh sửa profile ========== */
+.profile-edit {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--spacing-lg);
+}
+
+/* PROFILE-EDIT__CONTAINER - Container modal */
+.profile-edit__container {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+/* PROFILE-EDIT__HEADER - Header modal */
+.profile-edit__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* PROFILE-EDIT__TITLE - Tiêu đề modal */
+.profile-edit__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* PROFILE-EDIT__CLOSE - Nút đóng */
+.profile-edit__close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+}
+
+.profile-edit__close:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* PROFILE-EDIT__FORM - Form chỉnh sửa */
+.profile-edit__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* FORM__TEXTAREA - Textarea chung */
+.form__textarea {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.form__textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.form__textarea:hover {
+  border-color: var(--color-border-hover);
+}
+
+.form__textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.1);
+}
+
+/* FORM__TEXTAREA--MARKDOWN - Textarea cho markdown */
+.form__textarea--markdown {
+  font-family: "Courier New", Courier, monospace;
+  min-height: 200px;
+}
+
+/* ========== CREATE-POST - Form tạo bài viết ========== */
+.create-post {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* CREATE-POST__CONTAINER - Container */
+.create-post__container {
+  max-width: 100%;
+}
+
+/* CREATE-POST__TITLE - Tiêu đề */
+.create-post__title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-lg) 0;
+}
+
+/* CREATE-POST__FORM - Form tạo bài */
+.create-post__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* CREATE-POST__TOPICS - Container các checkbox topics */
+.create-post__topics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-sm);
+  max-height: 200px;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+/* CREATE-POST__TOPIC-ITEM - Mỗi topic checkbox */
+.create-post__topic-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: 8px 12px;
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.create-post__topic-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* CREATE-POST__TOPIC-CHECKBOX - Checkbox */
+.create-post__topic-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--color-accent);
+}
+
+/* CREATE-POST__TOPIC-LABEL - Label */
+.create-post__topic-label {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ========== RESPONSIVE PROFILE ========== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .profile__name {
+    font-size: 28px;
+  }
+
+  .profile__username {
+    font-size: 16px;
+  }
+
+  .profile__avatar {
+    width: 120px;
+    height: 120px;
+  }
+
+  .profile__stat-value {
+    font-size: 20px;
+  }
+}
+
+/* Mobile lớn (480px - 768px) */
+@media (max-width: 768px) {
+  .profile__cover {
+    height: 150px;
+  }
+
+  .profile__info-wrapper {
+    flex-direction: column;
+    padding: 0 var(--spacing-md) var(--spacing-md);
+  }
+
+  .profile__avatar-section {
+    margin-top: -50px;
+  }
+
+  .profile__avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .profile__info {
+    padding-top: 0;
+  }
+
+  .profile__name {
+    font-size: 24px;
+  }
+
+  .profile__username {
+    font-size: 15px;
+  }
+
+  .profile__actions {
+    padding-top: 0;
+    width: 100%;
+  }
+
+  .profile__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .create-post__topics {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+/* Mobile nhỏ (< 480px) */
+@media (max-width: 480px) {
+  .profile__cover {
+    height: 120px;
+  }
+
+  .profile__avatar-section {
+    margin-top: -40px;
+  }
+
+  .profile__avatar {
+    width: 80px;
+    height: 80px;
+    border-width: 3px;
+  }
+
+  .profile__name {
+    font-size: 20px;
+  }
+
+  .profile__username {
+    font-size: 14px;
+  }
+
+  .profile__stats {
+    gap: var(--spacing-md);
+  }
+
+  .profile__stat-value {
+    font-size: 18px;
+  }
+
+  .profile__stat-label {
+    font-size: 12px;
+  }
+
+  .profile-edit__container {
+    padding: var(--spacing-lg);
+  }
+
+  .create-post {
+    padding: var(--spacing-md);
+  }
+
+  .create-post__topics {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== RANKING - Trang bảng xếp hạng ========== */
+.ranking {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* RANKING__HEADER - Header của trang ranking */
+.ranking__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+/* RANKING__TITLE - Tiêu đề trang */
+.ranking__title {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* RANKING__FILTER - Bộ lọc lớp học */
+.ranking__filter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+/* RANKING__FILTER-LABEL - Label cho filter */
+.ranking__filter-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* RANKING__FILTER-SELECT - Select dropdown */
+.ranking__filter-select {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: inherit;
+  cursor: pointer;
+  min-width: 250px;
+}
+
+.ranking__filter-select:hover {
+  border-color: var(--color-border-hover);
+}
+
+.ranking__filter-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.1);
+}
+
+/* ========== PODIUM - Top 3 podium ========== */
+.ranking__podium {
+  margin-bottom: var(--spacing-xxl);
+}
+
+.podium {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl) 0;
+}
+
+/* PODIUM__ITEM - Mỗi vị trí trên podium */
+.podium__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-bg-secondary);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  position: relative;
+  transition: var(--transition);
+  min-width: 240px;
+  max-width: 280px;
+}
+
+.podium__item:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* PODIUM__ITEM--FIRST - Vị trí thứ 1 */
+.podium__item--first {
+  border-color: #ffd700;
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-secondary) 0%,
+    rgba(255, 215, 0, 0.1) 100%
+  );
+  order: 2;
+  min-height: 380px;
+}
+
+/* PODIUM__ITEM--SECOND - Vị trí thứ 2 */
+.podium__item--second {
+  border-color: #c0c0c0;
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-secondary) 0%,
+    rgba(192, 192, 192, 0.1) 100%
+  );
+  order: 1;
+  min-height: 340px;
+}
+
+/* PODIUM__ITEM--THIRD - Vị trí thứ 3 */
+.podium__item--third {
+  border-color: #cd7f32;
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-secondary) 0%,
+    rgba(205, 127, 50, 0.1) 100%
+  );
+  order: 3;
+  min-height: 320px;
+}
+
+/* PODIUM__CROWN - Vương miện cho vị trí thứ 1 */
+.podium__crown {
+  position: absolute;
+  top: -20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* PODIUM__RANK - Số thứ hạng */
+.podium__rank {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: var(--spacing-md);
+  color: #ffffff;
+}
+
+.podium__item--first .podium__rank {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+.podium__item--second .podium__rank {
+  background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+  box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4);
+}
+
+.podium__item--third .podium__rank {
+  background: linear-gradient(135deg, #cd7f32, #e5a05f);
+  box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4);
+}
+
+/* PODIUM__AVATAR - Avatar */
+.podium__avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--color-border);
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-md);
+}
+
+.podium__item--first .podium__avatar {
+  border-color: #ffd700;
+  width: 120px;
+  height: 120px;
+}
+
+/* PODIUM__NAME - Tên */
+.podium__name {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  text-align: center;
+}
+
+/* PODIUM__STUDENT-ID - Mã sinh viên */
+.podium__student-id {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 6px 0;
+}
+
+/* PODIUM__USERNAME - Username */
+.podium__username {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0 0 4px 0;
+  text-align: center;
+}
+
+/* PODIUM__CLASS - Lớp học */
+.podium__class {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  margin: 0 0 var(--spacing-md) 0;
+  text-align: center;
+}
+
+/* PODIUM__STATS - Thống kê */
+.podium__stats {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-top: auto;
+}
+
+/* PODIUM__STAT-SINGLE - Single stat display */
+.podium__stat-single {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+}
+
+/* PODIUM__STAT - Mỗi stat */
+.podium__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+/* PODIUM__STAT-VALUE - Giá trị */
+.podium__stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #22c55e;
+}
+
+/* PODIUM__STAT-LABEL - Label */
+.podium__stat-label {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+/* ========== RANKING-TABLE - Bảng xếp hạng ========== */
+.ranking__table-section {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+/* RANKING-TABLE__TABLE - Table element */
+.ranking-table__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* RANKING-TABLE__THEAD - Table header */
+.ranking-table__thead {
+  background-color: rgba(139, 148, 158, 0.1);
+}
+
+/* RANKING-TABLE__TH - Table header cell */
+.ranking-table__th {
+  padding: 16px 12px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* RANKING-TABLE__TBODY - Table body */
+.ranking-table__tbody {
+  background-color: var(--color-bg-secondary);
+}
+
+/* RANKING-TABLE__ROW - Table row */
+.ranking-table__row {
+  transition: var(--transition);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ranking-table__row:last-child {
+  border-bottom: none;
+}
+
+.ranking-table__row:hover {
+  background-color: var(--color-bg-hover);
+}
+
+/* RANKING-TABLE__ROW--TOP1, TOP2, TOP3 - Top 3 rows */
+.ranking-table__row--top1 {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 215, 0, 0.15) 0%,
+    var(--color-bg-secondary) 100%
+  );
+}
+
+.ranking-table__row--top2 {
+  background: linear-gradient(
+    90deg,
+    rgba(192, 192, 192, 0.15) 0%,
+    var(--color-bg-secondary) 100%
+  );
+}
+
+.ranking-table__row--top3 {
+  background: linear-gradient(
+    90deg,
+    rgba(205, 127, 50, 0.15) 0%,
+    var(--color-bg-secondary) 100%
+  );
+}
+
+/* RANKING-TABLE__TD - Table cell */
+.ranking-table__td {
+  padding: 16px 12px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  vertical-align: middle;
+}
+
+/* RANKING-TABLE__TD--RANK - Rank column */
+.ranking-table__td--rank {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--color-accent);
+  width: 60px;
+  text-align: center;
+}
+
+/* RANKING-TABLE__TD--AVATAR - Avatar column */
+.ranking-table__td--avatar {
+  width: 60px;
+}
+
+/* RANKING-TABLE__AVATAR - Avatar image */
+.ranking-table__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+}
+
+/* RANKING-TABLE__LINK - Link to profile */
+.ranking-table__link {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.ranking-table__link:hover {
+  color: var(--color-accent-hover);
+  text-decoration: underline;
+}
+
+/* RANKING-TABLE__TD--CORRECT - Correct count */
+.ranking-table__td--correct {
+  color: #22c55e;
+  font-weight: 600;
+}
+
+/* RANKING-TABLE__TD--SUBMITTED - Submitted count */
+.ranking-table__td--submitted {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* RANKING-TABLE__LOADING - Loading state */
+.ranking-table__loading,
+.ranking-table__empty {
+  padding: var(--spacing-xl);
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+/* ========== RESPONSIVE RANKING ========== */
+
+/* Tablet (768px - 1024px) */
+@media (max-width: 1024px) {
+  .ranking__title {
+    font-size: 32px;
+  }
+
+  .podium {
+    gap: var(--spacing-md);
+  }
+
+  .podium__item {
+    min-width: 200px;
+    max-width: 240px;
+    padding: var(--spacing-md);
+  }
+
+  .podium__item--first {
+    min-height: 360px;
+  }
+
+  .podium__item--second {
+    min-height: 320px;
+  }
+
+  .podium__item--third {
+    min-height: 300px;
+  }
+
+  .ranking-table__th,
+  .ranking-table__td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile lớn (480px - 768px) */
+@media (max-width: 768px) {
+  .ranking__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ranking__title {
+    font-size: 28px;
+  }
+
+  .ranking__filter-select {
+    min-width: 100%;
+  }
+
+  .podium {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .podium__item {
+    width: 100%;
+    max-width: 100%;
+    min-height: auto !important;
+    order: 0 !important;
+  }
+
+  .podium__item--first,
+  .podium__item--second,
+  .podium__item--third {
+    order: 0 !important;
+  }
+
+  .ranking-table__table {
+    font-size: 12px;
+  }
+
+  .ranking-table__th,
+  .ranking-table__td {
+    padding: 10px 6px;
+    font-size: 12px;
+  }
+
+  /* Hide some columns on mobile */
+  .ranking-table__th:nth-child(4),
+  .ranking-table__td:nth-child(4),
+  .ranking-table__th:nth-child(6),
+  .ranking-table__td:nth-child(6) {
+    display: none;
+  }
+}
+
+/* Mobile nhỏ (< 480px) */
+@media (max-width: 480px) {
+  .ranking__title {
+    font-size: 24px;
+  }
+
+  .podium__avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .podium__item--first .podium__avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .podium__name {
+    font-size: 16px;
+  }
+
+  .podium__stat-value {
+    font-size: 20px;
+  }
+
+  .ranking-table__th,
+  .ranking-table__td {
+    padding: 8px 4px;
+    font-size: 11px;
+  }
+
+  .ranking-table__avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Hide more columns on small mobile */
+  .ranking-table__th:nth-child(5),
+  .ranking-table__td:nth-child(5),
+  .ranking-table__th:nth-child(7),
+  .ranking-table__td:nth-child(7) {
+    display: none;
   }
 }
