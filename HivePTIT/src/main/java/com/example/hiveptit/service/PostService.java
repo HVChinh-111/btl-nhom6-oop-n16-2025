@@ -9,6 +9,8 @@ import com.example.hiveptit.model.Users;
 import com.example.hiveptit.repository.PostRepository;
 import com.example.hiveptit.repository.TopicRepository;
 import com.example.hiveptit.repository.UserRepository;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +27,24 @@ public class PostService {
     private final PostRepository postRepository;
     private final TopicRepository topicRepository;
     private final UserRepository userRepository;
+    private final Parser markdownParser;
+    private final HtmlRenderer htmlRenderer;
 
     public PostService(PostRepository postRepository, TopicRepository topicRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
+        this.markdownParser = Parser.builder().build();
+        this.htmlRenderer = HtmlRenderer.builder().build();
+    }
+
+    // Chuyển đổi Markdown sang HTML
+    private String convertMarkdownToHtml(String markdown) {
+        if (markdown == null || markdown.isEmpty()) {
+            return "";
+        }
+        var document = markdownParser.parse(markdown);
+        return htmlRenderer.render(document);
     }
     // tạo bài viết mới
     @Transactional
@@ -110,10 +125,20 @@ public class PostService {
 
 
     private PostResponse toResponse(Posts post) {
+        return toResponse(post, false);
+    }
+
+    // Overload method để có thể lấy markdown gốc khi cần edit
+    private PostResponse toResponse(Posts post, boolean includeRawContent) {
         PostResponse resp = new PostResponse();
         resp.setId(post.getPostId());
         resp.setTitle(post.getTitle());
-        resp.setContent(post.getContent());
+        // Content là HTML để hiển thị
+        resp.setContent(convertMarkdownToHtml(post.getContent()));
+        // RawContent là markdown gốc (chỉ khi cần edit)
+        if (includeRawContent) {
+            resp.setRawContent(post.getContent());
+        }
         resp.setCreatedAt(post.getCreatedAt());
         resp.setUpdatedAt(post.getUpdatedAt());
         resp.setVoteCount(post.getVoteCount());

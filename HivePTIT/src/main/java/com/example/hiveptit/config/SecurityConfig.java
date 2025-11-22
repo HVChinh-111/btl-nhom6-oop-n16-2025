@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -85,6 +86,7 @@ public class SecurityConfig {
                 .requestMatchers("/sign-in", "/sign-in.html").permitAll()
                 .requestMatchers("/sign-up", "/sign-up.html").permitAll()
                 .requestMatchers("/author-ranking", "/author-ranking.html").permitAll()
+                .requestMatchers("/post", "/post.html").permitAll()
                 
                 // HTML Pages - Authenticated access (handle auth in frontend)
                 .requestMatchers("/profile", "/profile.html").permitAll() 
@@ -104,6 +106,8 @@ public class SecurityConfig {
                 // Feed endpoints - Public access for viewing
                 .requestMatchers("/api/feed/home", "/api/feed/trending").permitAll()
                 .requestMatchers("/api/feed/user/**").permitAll()
+                // Allow public GET to retrieve post details
+                .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
                 
                 // Topics endpoint - Public access
                 .requestMatchers("/api/topics", "/api/topics/**").permitAll()

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/images/LogoProPTIT.png" type="image/png" />
+    <link rel="stylesheet" href="/styles/general.css" />
+    <!-- Prism.js for syntax highlighting -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <title>Chi tiết bài viết - HivePTIT</title>
+  </head>
+
+  <body class="page">
+    <!-- Header chính - giống hệt index.html -->
+    <header class="header">
+      <nav class="header__nav">
+        <!-- Logo và tên -->
+        <a href="/" class="header__brand">HivePTIT</a>
+
+        <!-- Menu điều hướng -->
+        <ul class="header__menu">
+          <li class="header__menu-item">
+            <a href="/" class="header__menu-link"> Trang chủ </a>
+          </li>
+          <li class="header__menu-item">
+            <a href="#" class="header__menu-link"> Đang theo dõi </a>
+          </li>
+          <li class="header__menu-item">
+            <a href="/author-ranking" class="header__menu-link"
+              >Bảng xếp hạng tác giả</a
+            >
+          </li>
+        </ul>
+
+        <!-- Avatar và menu người dùng -->
+        <div class="header__user">
+          <button class="header__avatar-btn">
+            <img
+              src="/images/avatar.jpeg"
+              alt="Avatar"
+              class="header__avatar"
+              id="headerAvatar"
+            />
+          </button>
+          <!-- Dropdown menu người dùng -->
+          <div class="header__user-menu">
+            <!-- Thông tin người dùng -->
+            <div class="header__user-info">
+              <img
+                src="/images/avatar.jpeg"
+                alt="Avatar"
+                class="header__user-avatar"
+                id="userMenuAvatar"
+              />
+              <div class="header__user-details">
+                <p class="header__user-name" id="userName">Loading...</p>
+                <p class="header__user-username" id="userUsername">@...</p>
+              </div>
+            </div>
+            <!-- Đường phân cách -->
+            <div class="header__user-divider"></div>
+            <!-- Các tùy chọn -->
+            <ul class="header__user-options">
+              <li class="header__user-option">
+                <a
+                  href="/profile"
+                  class="header__user-option-link"
+                  id="profileLink"
+                >
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Trang cá nhân
+                </a>
+              </li>
+              <li class="header__user-option">
+                <a href="#" class="header__user-option-link" id="logoutBtn">
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M5 8H11M11 8L8 5M11 8L8 11M1 8C1 9.85652 1.7375 11.637 3.05025 12.9497C4.36301 14.2625 6.14348 15 8 15C9.85652 15 11.637 14.2625 12.9497 12.9497C14.2625 11.637 15 9.85652 15 8C15 6.14348 14.2625 4.36301 12.9497 3.05025C11.637 1.7375 9.85652 1 8 1C6.14348 1 4.36301 1.7375 3.05025 3.05025C1.7375 4.36301 1 6.14348 1 8Z"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Đăng xuất
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main content - Nội dung bài viết -->
+    <main class="post-detail">
+      <!-- Loading state -->
+      <div class="post-detail__loading" id="loadingState">
+        <p>Đang tải bài viết...</p>
+      </div>
+
+      <!-- Error state -->
+      <div class="post-detail__error" id="errorState" style="display: none">
+        <p id="errorMessage">Không thể tải bài viết. Vui lòng thử lại sau.</p>
+      </div>
+
+      <!-- Post content container -->
+      <div
+        class="post-detail__container"
+        id="postContainer"
+        style="display: none"
+      >
+        <!-- Nội dung bài viết chính -->
+        <article class="post-detail__content">
+          <!-- Header bài viết -->
+          <header class="post-detail__header">
+            <!-- Tiêu đề -->
+            <h1 class="post-detail__title" id="postTitle">Tiêu đề bài viết</h1>
+
+            <!-- Meta info: Avatar, tên, thời gian -->
+            <div class="post-detail__meta">
+              <img
+                src="/images/avatar.jpeg"
+                alt="Avatar"
+                class="post-detail__avatar"
+                id="authorAvatar"
+              />
+              <div class="post-detail__author-info">
+                <a href="#" class="post-detail__author" id="authorName"
+                  >Tác giả</a
+                >
+                <time class="post-detail__date" id="postDate"
+                  >1 ngày trước</time
+                >
+              </div>
+            </div>
+
+            <!-- Topics/Tags -->
+            <div class="post-detail__topics" id="postTopics">
+              <!-- Topics sẽ được thêm động bằng JS -->
+            </div>
+          </header>
+
+          <!-- Nội dung bài viết (HTML từ markdown) -->
+          <section class="post-detail__body" id="postBody">
+            <!-- Nội dung HTML sẽ được inject bằng JS -->
+          </section>
+
+          <!-- Footer với vote buttons -->
+          <footer class="post-detail__footer">
+            <div class="post-detail__vote">
+              <button
+                class="post-detail__vote-btn post-detail__vote-btn--up"
+                id="upvoteBtn"
+                title="Upvote"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 4L4 12H8V20H16V12H20L12 4Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+              <span class="post-detail__vote-count" id="voteCount">0</span>
+              <button
+                class="post-detail__vote-btn post-detail__vote-btn--down"
+                id="downvoteBtn"
+                title="Downvote"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 20L20 12H16V4H8V12H4L12 20Z"
+                    fill="currentColor"
+                  />
+                </svg>
+              </button>
+            </div>
+          </footer>
+        </article>
+
+        <!-- Sidebar - Table of Contents -->
+        <aside class="post-detail__toc" id="tocSidebar">
+          <div class="post-detail__toc-sticky">
+            <h3 class="post-detail__toc-title">Mục lục</h3>
+            <nav class="post-detail__toc-nav" id="tocNav">
+              <!-- TOC sẽ được generate động từ các heading -->
+              <p class="post-detail__toc-empty">Không có mục lục</p>
+            </nav>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/scripts/common.js"></script>
+    <script src="/scripts/dropdown.js"></script>
+    <script src="/scripts/post.js"></script>
+    <!-- Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+  </body>
+</html>

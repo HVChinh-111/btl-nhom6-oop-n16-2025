@@ -373,7 +373,7 @@ function renderUserPosts(posts) {
       <article class="post">
         ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
         <h3 class="post__title">
-          <a href="post-detail.html?id=${post.postId}" class="post__title-link">
+          <a href="/post?id=${post.postId}" class="post__title-link">
             ${post.title}
           </a>
         </h3>
@@ -414,7 +414,7 @@ function renderUserPosts(posts) {
         post.content.length > 200 ? "..." : ""
       }
         </p>
-        <a href="post-detail.html?id=${post.postId}" class="post__read-more">
+        <a href="/post?id=${post.postId}" class="post__read-more">
           Đọc thêm
         </a>
       </article>
@@ -576,13 +576,19 @@ document
 
     try {
       errorEl.style.display = "none";
+      console.log(
+        "profile.js: Đang tạo bài viết với",
+        topicIds.length,
+        "chủ đề:",
+        topicIds
+      );
       const newPost = await createPost(title, content, topicIds);
 
       // Reset form
       document.getElementById("createPostForm").reset();
 
       // After creating a post, reload the page so feed and counts refresh
-      console.log("profile.js:createPost success, reloading page", newPost);
+      console.log("profile.js: Tạo bài viết thành công!", newPost);
       window.location.reload();
     } catch (error) {
       errorText.textContent = error.message;

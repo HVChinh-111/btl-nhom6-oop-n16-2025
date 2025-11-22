@@ -6,7 +6,8 @@ import java.util.List;
 public class PostResponse {
     private Integer id;
     private String title;
-    private String content;
+    private String content; // HTML hoặc Markdown tùy vào usecase
+    private String rawContent; // Markdown gốc (chỉ trả về khi cần edit)
     private List<TopicSummary> topics;
     private UserSummaryDTO author;
     private Instant createdAt;
@@ -37,6 +38,9 @@ public class PostResponse {
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
+
+    public String getRawContent() { return rawContent; }
+    public void setRawContent(String rawContent) { this.rawContent = rawContent; }
 
     public List<TopicSummary> getTopics() { return topics; }
     public void setTopics(List<TopicSummary> topics) { this.topics = topics; }

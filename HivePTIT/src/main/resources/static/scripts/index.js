@@ -180,7 +180,7 @@ function renderPost(post) {
       ? `${post.authorFirstname} ${post.authorLastname}`
       : post.authorUsername;
 
-  const avatarUrl = post.authorAvatarUrl || "../static/images/avatar.jpeg";
+  const avatarUrl = post.authorAvatarUrl || "/images/avatar.jpeg";
 
   return `
     <article class="post" data-post-id="${post.postId}">
@@ -188,7 +188,7 @@ function renderPost(post) {
         ${topicsHTML}
       </div>
       <h2 class="post__title">
-        <a href="post-detail.html?id=${post.postId}" class="post__title-link">
+        <a href="/post?id=${post.postId}" class="post__title-link">
           ${post.title}
         </a>
       </h2>
@@ -234,9 +234,7 @@ function renderPost(post) {
       <p class="post__excerpt">
         ${truncateText(post.content, 200)}
       </p>
-      <a href="post-detail.html?id=${
-        post.postId
-      }" class="post__read-more">Read More</a>
+      <a href="/post?id=${post.postId}" class="post__read-more">Đọc thêm</a>
     </article>
   `;
 }
@@ -586,7 +584,7 @@ async function renderTrendingPosts() {
 
       return `
       <div class="trending__item">
-        <a href="post-detail.html?id=${post.postId}" class="trending__title">
+        <a href="/post?id=${post.postId}" class="trending__title">
           ${post.title}
         </a>
         <div class="trending__meta">

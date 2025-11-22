@@ -87,6 +87,20 @@ public class HomeController {
     }
 
     /**
+     * Trang chi tiết bài viết
+     */
+    @GetMapping({"/post", "/post.html"})
+    public String post(Model model) {
+        try {
+            logger.info("Accessing post detail page");
+            return "post";
+        } catch (Exception e) {
+            logger.error("Error loading post detail page: {}", e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    /**
      * Xử lý lỗi chung cho controller
      */
     @ExceptionHandler(Exception.class)
