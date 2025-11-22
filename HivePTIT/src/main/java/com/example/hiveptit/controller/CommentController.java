@@ -28,7 +28,7 @@ public class CommentController {
     public ResponseEntity<PagedResponse<CommentResponse>> listByPost(
             @PathVariable Integer postId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(defaultValue = "0") int depth
