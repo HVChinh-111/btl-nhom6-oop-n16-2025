@@ -76,6 +76,15 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/test/public").permitAll()
                 
+                // Feed endpoints - Public access for viewing
+                .requestMatchers("/api/feed/home", "/api/feed/trending").permitAll()
+                
+                // Topics endpoint - Public access
+                .requestMatchers("/api/topics", "/api/topics/**").permitAll()
+                
+                // Search endpoint - Public access
+                .requestMatchers("/api/search/**").permitAll()
+                
                 // Protected endpoints - Cần authentication
                 // hasRole() tự động thêm prefix "ROLE_"
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
