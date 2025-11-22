@@ -1015,9 +1015,105 @@ Auth API is running!
 
 ---
 
-## 10. Test APIs (`/api/test`)
+## 10. Leaderboard APIs (`/api/leaderboard`)
 
-### 10.1. Public endpoint
+### 10.1. Lấy bảng xếp hạng có phân trang
+
+**Endpoint**: `GET /api/leaderboard`
+
+**Mô tả**: Lấy bảng xếp hạng tác giả theo rankingCore, có hỗ trợ phân trang
+
+**Query Parameters**:
+
+- `page`: Số trang (mặc định: 0, bắt đầu từ 0)
+- `size`: Số lượng tác giả mỗi trang (mặc định: 10)
+
+**Authentication**: Public (không cần đăng nhập)
+
+**Response**:
+
+```json
+{
+  "content": [
+    {
+      "rank": 1,
+      "studentId": "B21DCCN123",
+      "username": "user123",
+      "firstname": "Nguyen",
+      "lastname": "Van A",
+      "avatarUrl": "https://example.com/avatar.jpg",
+      "rankingCore": 500,
+      "postCount": 50,
+      "followerCount": 120
+    },
+    {
+      "rank": 2,
+      "studentId": "B21DCCN456",
+      "username": "user456",
+      "firstname": "Tran",
+      "lastname": "Thi B",
+      "avatarUrl": "https://example.com/avatar2.jpg",
+      "rankingCore": 450,
+      "postCount": 45,
+      "followerCount": 100
+    }
+  ],
+  "currentPage": 0,
+  "totalItems": 100,
+  "totalPages": 10,
+  "pageSize": 10,
+  "hasNext": true,
+  "hasPrevious": false
+}
+```
+
+**Status Codes**:
+
+- `200 OK`: Lấy bảng xếp hạng thành công
+
+**Lưu ý**:
+
+- Rank (thứ hạng) được tính theo vị trí global, không phải vị trí trong trang
+- Trang 2 sẽ có rank bắt đầu từ 11 (nếu size=10)
+- Danh sách được sắp xếp theo rankingCore giảm dần (cao → thấp)
+
+---
+
+### 10.2. Lấy top 100 tác giả
+
+**Endpoint**: `GET /api/leaderboard/top100`
+
+**Mô tả**: Lấy danh sách top 100 tác giả (legacy endpoint)
+
+**Authentication**: Public (không cần đăng nhập)
+
+**Response**: `List<LeaderboardUserResponse>`
+
+```json
+[
+  {
+    "rank": 1,
+    "studentId": "B21DCCN123",
+    "username": "user123",
+    "firstname": "Nguyen",
+    "lastname": "Van A",
+    "avatarUrl": "https://example.com/avatar.jpg",
+    "rankingCore": 500,
+    "postCount": 50,
+    "followerCount": 120
+  }
+]
+```
+
+**Status Codes**:
+
+- `200 OK`: Lấy danh sách thành công
+
+---
+
+## 11. Test APIs (`/api/test`)
+
+### 11.1. Public endpoint
 
 **Endpoint**: `GET /api/test/public`
 
@@ -1038,7 +1134,7 @@ Auth API is running!
 
 ---
 
-### 10.2. Authenticated endpoint
+### 11.2. Authenticated endpoint
 
 **Endpoint**: `GET /api/test/authenticated`
 
@@ -1063,7 +1159,7 @@ Auth API is running!
 
 ---
 
-### 10.3. Admin endpoint
+### 11.3. Admin endpoint
 
 **Endpoint**: `GET /api/test/admin`
 
@@ -1088,7 +1184,7 @@ Auth API is running!
 
 ---
 
-### 10.4. Moderator endpoint
+### 11.4. Moderator endpoint
 
 **Endpoint**: `GET /api/test/moderator`
 
@@ -1114,7 +1210,7 @@ Auth API is running!
 
 ---
 
-### 10.5. Create Post Permission
+### 11.5. Create Post Permission
 
 **Endpoint**: `GET /api/test/create-post`
 
@@ -1140,7 +1236,7 @@ Auth API is running!
 
 ---
 
-### 10.6. Admin Delete Permission
+### 11.6. Admin Delete Permission
 
 **Endpoint**: `GET /api/test/admin-delete`
 
@@ -1165,7 +1261,7 @@ Auth API is running!
 
 ---
 
-### 10.7. Edit Post Permission
+### 11.7. Edit Post Permission
 
 **Endpoint**: `GET /api/test/edit-post`
 
@@ -1190,7 +1286,7 @@ Auth API is running!
 
 ---
 
-### 10.8. Get Current User
+### 11.8. Get Current User
 
 **Endpoint**: `GET /api/test/me`
 

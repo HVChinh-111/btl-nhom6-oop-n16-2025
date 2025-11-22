@@ -1,14 +1,15 @@
 // ========== CONSTANTS ==========
 const API_BASE_URL = "http://localhost:8080/api";
-const TOP_AUTHORS_COUNT = 10;
+const AUTHORS_PER_PAGE = 10;
 
 // ========== STATE MANAGEMENT ==========
-let allAuthors = [];
+let currentPage = 0;
+let totalPages = 0;
+let totalAuthors = 0;
 let currentUser = null;
 
 // ========== UTILITY FUNCTIONS ==========
 // Note: getAuthToken, getCurrentUsername, logout are now in common.js
-// Keeping for backward compatibility but common.js will be used
 
 // ========== API CALLS ==========
 
@@ -34,50 +35,27 @@ async function fetchCurrentUser() {
   }
 }
 
-// Lấy danh sách top authors (giả sử từ feed hoặc tạo endpoint mới)
-// Vì chưa có API riêng cho ranking, tôi sẽ fetch nhiều users và sort
-async function fetchTopAuthors() {
+// Lấy danh sách authors với pagination
+async function fetchLeaderboard(page = 0, size = AUTHORS_PER_PAGE) {
   try {
-    // Tạm thời sử dụng cách này: fetch posts và lấy unique authors
-    const homeFeedResponse = await fetch(
-      `${API_BASE_URL}/feed/home?page=0&size=100`
+    const response = await fetch(
+      `${API_BASE_URL}/leaderboard?page=${page}&size=${size}`
     );
 
-    if (!homeFeedResponse.ok) {
-      throw new Error("Failed to fetch posts");
+    if (!response.ok) {
+      throw new Error("Failed to fetch leaderboard");
     }
 
-    const feedData = await homeFeedResponse.json();
-    const posts = feedData.content || feedData;
+    const data = await response.json();
 
-    // Extract unique authors và tính toán stats
-    const authorsMap = new Map();
+    // Update pagination state
+    currentPage = data.currentPage;
+    totalPages = data.totalPages;
+    totalAuthors = data.totalItems;
 
-    posts.forEach((post) => {
-      const author = post.author;
-      if (!authorsMap.has(author.username)) {
-        authorsMap.set(author.username, {
-          username: author.username,
-          firstname: author.firstname,
-          lastname: author.lastname,
-          studentId: author.studentId || "N/A",
-          avatarUrl: author.avatarUrl,
-          rankingCore: author.rankingCore || 0,
-          postCount: 1,
-        });
-      } else {
-        const existing = authorsMap.get(author.username);
-        existing.postCount += 1;
-      }
-    });
-
-    // Convert map to array and sort by rankingCore
-    const authors = Array.from(authorsMap.values());
-    authors.sort((a, b) => b.rankingCore - a.rankingCore);
-
-    return authors.slice(0, TOP_AUTHORS_COUNT);
+    return data.content || [];
   } catch (error) {
-    console.error("Error fetching top authors:", error);
+    console.error("Error fetching leaderboard:", error);
     return [];
   }
 }
@@ -86,7 +64,16 @@ async function fetchTopAuthors() {
 
 // Render header user info
 function renderHeaderUserInfo(user) {
-  if (!user) return;
+  if (!user) {
+    // If not logged in, hide user menu and show login button
+    const userMenu = document.querySelector(".header__user");
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
+    return;
+  }
 
   document.getElementById(
     "userName"
@@ -103,22 +90,30 @@ function renderHeaderUserInfo(user) {
 function renderPodium(authors) {
   if (authors.length === 0) return;
 
-  // First place
-  if (authors[0]) {
-    const firstPlace = document.getElementById("firstPlace");
-    renderPodiumItem(firstPlace, authors[0], 1);
-  }
+  // Only show podium on first page
+  const podiumSection = document.querySelector(".ranking__podium");
+  if (currentPage === 0) {
+    podiumSection.style.display = "block";
 
-  // Second place
-  if (authors[1]) {
-    const secondPlace = document.getElementById("secondPlace");
-    renderPodiumItem(secondPlace, authors[1], 2);
-  }
+    // First place
+    if (authors[0]) {
+      const firstPlace = document.getElementById("firstPlace");
+      renderPodiumItem(firstPlace, authors[0], 1);
+    }
 
-  // Third place
-  if (authors[2]) {
-    const thirdPlace = document.getElementById("thirdPlace");
-    renderPodiumItem(thirdPlace, authors[2], 3);
+    // Second place
+    if (authors[1]) {
+      const secondPlace = document.getElementById("secondPlace");
+      renderPodiumItem(secondPlace, authors[1], 2);
+    }
+
+    // Third place
+    if (authors[2]) {
+      const thirdPlace = document.getElementById("thirdPlace");
+      renderPodiumItem(thirdPlace, authors[2], 3);
+    }
+  } else {
+    podiumSection.style.display = "none";
   }
 }
 
@@ -163,8 +158,8 @@ function renderRankingTable(authors) {
   }
 
   tbody.innerHTML = authors
-    .map((author, index) => {
-      const rank = index + 1;
+    .map((author) => {
+      const rank = author.rank; // Use global rank from backend
       const rowClass =
         rank <= 3
           ? `ranking-table__row ranking-table__row--top${rank}`
@@ -175,13 +170,13 @@ function renderRankingTable(authors) {
         <td class="ranking-table__td ranking-table__td--rank">${rank}</td>
         <td class="ranking-table__td ranking-table__td--avatar">
           <img
-            src="${author.avatarUrl || "../static/images/avatar.jpeg"}"
+            src="${author.avatarUrl || "/images/avatar.jpeg"}"
             alt="${author.firstname} ${author.lastname}"
             class="ranking-table__avatar"
           />
         </td>
         <td class="ranking-table__td">
-          <a href="profile.html?username=${
+          <a href="/profile?username=${
             author.username
           }" class="ranking-table__link">
             ${author.username}
@@ -200,6 +195,95 @@ function renderRankingTable(authors) {
     .join("");
 }
 
+// Render pagination
+function renderPagination() {
+  const paginationContainer = document.getElementById("pagination");
+  if (!paginationContainer) return;
+
+  if (totalPages <= 1) {
+    paginationContainer.innerHTML = "";
+    return;
+  }
+
+  let paginationHTML = '<div class="pagination">';
+
+  // Previous button
+  if (currentPage > 0) {
+    paginationHTML += `
+      <button class="pagination__btn pagination__btn--prev" onclick="goToPage(${
+        currentPage - 1
+      })">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Trước
+      </button>
+    `;
+  }
+
+  // Page numbers with ellipsis
+  const maxVisiblePages = 7;
+  let startPage = Math.max(0, currentPage - Math.floor(maxVisiblePages / 2));
+  let endPage = Math.min(totalPages - 1, startPage + maxVisiblePages - 1);
+
+  if (endPage - startPage < maxVisiblePages - 1) {
+    startPage = Math.max(0, endPage - maxVisiblePages + 1);
+  }
+
+  // First page
+  if (startPage > 0) {
+    paginationHTML += `
+      <button class="pagination__btn ${
+        currentPage === 0 ? "pagination__btn--active" : ""
+      }" 
+              onclick="goToPage(0)">1</button>
+    `;
+    if (startPage > 1) {
+      paginationHTML += '<span class="pagination__ellipsis">...</span>';
+    }
+  }
+
+  // Page numbers
+  for (let i = startPage; i <= endPage; i++) {
+    paginationHTML += `
+      <button class="pagination__btn ${
+        i === currentPage ? "pagination__btn--active" : ""
+      }" 
+              onclick="goToPage(${i})">${i + 1}</button>
+    `;
+  }
+
+  // Last page
+  if (endPage < totalPages - 1) {
+    if (endPage < totalPages - 2) {
+      paginationHTML += '<span class="pagination__ellipsis">...</span>';
+    }
+    paginationHTML += `
+      <button class="pagination__btn ${
+        currentPage === totalPages - 1 ? "pagination__btn--active" : ""
+      }" 
+              onclick="goToPage(${totalPages - 1})">${totalPages}</button>
+    `;
+  }
+
+  // Next button
+  if (currentPage < totalPages - 1) {
+    paginationHTML += `
+      <button class="pagination__btn pagination__btn--next" onclick="goToPage(${
+        currentPage + 1
+      })">
+        Sau
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    `;
+  }
+
+  paginationHTML += "</div>";
+  paginationContainer.innerHTML = paginationHTML;
+}
+
 // ========== EVENT HANDLERS ==========
 
 // Handle logout
@@ -208,29 +292,29 @@ document.getElementById("logoutBtn")?.addEventListener("click", (e) => {
   logout();
 });
 
+// Go to specific page
+async function goToPage(page) {
+  if (page < 0 || page >= totalPages) return;
+
+  currentPage = page;
+  await loadLeaderboard();
+
+  // Scroll to top of table
+  document.querySelector(".ranking__table-section")?.scrollIntoView({
+    behavior: "smooth",
+  });
+}
+
 // ========== MAIN FUNCTIONS ==========
 
-// Initialize ranking page
-async function initRanking() {
-  // Check if user is logged in
-  const token = getAuthToken();
-  if (!token) {
-    window.location.href = "sign-in.html";
-    return;
-  }
+// Load leaderboard data
+async function loadLeaderboard() {
+  const authors = await fetchLeaderboard(currentPage, AUTHORS_PER_PAGE);
 
-  // Fetch current user info
-  currentUser = await fetchCurrentUser();
-  if (currentUser) {
-    renderHeaderUserInfo(currentUser);
-  }
-
-  // Fetch and render top authors
-  allAuthors = await fetchTopAuthors();
-
-  if (allAuthors.length > 0) {
-    renderPodium(allAuthors);
-    renderRankingTable(allAuthors);
+  if (authors.length > 0) {
+    renderPodium(authors);
+    renderRankingTable(authors);
+    renderPagination();
   } else {
     // Show error or empty state
     const tbody = document.getElementById("rankingTableBody");
@@ -242,6 +326,21 @@ async function initRanking() {
       </tr>
     `;
   }
+}
+
+// Initialize ranking page
+async function initRanking() {
+  // Try to fetch current user info (optional - public page)
+  const token = getAuthToken();
+  if (token) {
+    currentUser = await fetchCurrentUser();
+  }
+
+  // Render header (with or without user)
+  renderHeaderUserInfo(currentUser);
+
+  // Load leaderboard
+  await loadLeaderboard();
 }
 
 // Initialize on page load

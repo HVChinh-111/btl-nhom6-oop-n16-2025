@@ -602,6 +602,26 @@
   border-color: var(--color-accent);
 }
 
+/* HEADER__LOGIN-BTN - Nút đăng nhập (khi chưa login) */
+.header__login-btn {
+  padding: 10px 20px;
+  background-color: var(--color-accent);
+  color: white;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 14px;
+  transition: var(--transition);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__login-btn:hover {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+}
+
 /* HEADER__USER-MENU - Menu thả xuống của người dùng */
 .header__user-menu {
   position: absolute;
@@ -2512,6 +2532,13 @@
   text-align: center;
   color: var(--color-text-secondary);
   font-size: 15px;
+}
+
+/* RANKING__PAGINATION - Pagination container for ranking */
+.ranking__pagination {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  justify-content: center;
 }
 
 /* ========== RESPONSIVE RANKING ========== */

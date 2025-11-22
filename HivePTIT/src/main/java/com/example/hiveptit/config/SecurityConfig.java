@@ -98,6 +98,9 @@ public class SecurityConfig {
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/test/public").permitAll()
                 
+                // Leaderboard endpoints - Public access
+                .requestMatchers("/api/leaderboard", "/api/leaderboard/**").permitAll()
+                
                 // Feed endpoints - Public access for viewing
                 .requestMatchers("/api/feed/home", "/api/feed/trending").permitAll()
                 
