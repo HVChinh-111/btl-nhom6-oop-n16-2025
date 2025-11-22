@@ -58,10 +58,24 @@ public class SecurityConfig {
             
             // 2. Authorization Rules (Phân quyền URL)
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints - Không cần authentication
+                // HTML Pages - Public access
+                .requestMatchers("/", "/index", "/index.html").permitAll()
+                .requestMatchers("/sign-in", "/sign-in.html").permitAll()
+                .requestMatchers("/sign-up", "/sign-up.html").permitAll()
+                
+                // HTML Pages - Authenticated access
+                .requestMatchers("/profile", "/profile.html").authenticated()
+                .requestMatchers("/author-ranking", "/author-ranking.html").permitAll()
+                
+                // Static resources - Public access
+                .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/scripts/**", "/styles/**", "/fonts/**").permitAll()
+                
+                // API Public endpoints - Không cần authentication
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/test/public").permitAll()
+                
                 // Protected endpoints - Cần authentication
                 // hasRole() tự động thêm prefix "ROLE_"
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
