@@ -1,7 +1,29 @@
 // ========== CONSTANTS ==========
-const API_BASE_URL = "http://localhost:8080/api";
+// Avoid redeclaring `API_BASE_URL` (it's also declared in `common.js`).
+// Use a local `API_BASE` that falls back to the global value if present.
+const API_BASE =
+  typeof API_BASE_URL !== "undefined"
+    ? API_BASE_URL
+    : window.API_BASE_URL || "http://localhost:8080/api";
 const AUTHORS_PER_PAGE = 10;
 
+// Diagnostics: confirm script loaded
+try {
+  console.log("author-ranking.js loaded");
+} catch (e) {}
+
+// Global error handler to surface uncaught JS errors on the page for debugging
+window.addEventListener("error", function (event) {
+  try {
+    console.error("Uncaught error:", event.error || event.message);
+    const tbody = document.getElementById("rankingTableBody");
+    if (tbody) {
+      tbody.innerHTML = `\n        <tr class="ranking-table__row">\n          <td colspan="8" class="ranking-table__empty">Lỗi JavaScript: ${String(
+        event.error || event.message
+      )}</td>\n        </tr>\n      `;
+    }
+  } catch (ignore) {}
+});
 // ========== STATE MANAGEMENT ==========
 let currentPage = 0;
 let totalPages = 0;
@@ -19,7 +41,7 @@ async function fetchCurrentUser() {
   if (!username) return null;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${username}`, {
+    const response = await fetch(`${API_BASE}/users/${username}`, {
       headers: {
         Authorization: `Bearer ${getAuthToken()}`,
       },
@@ -38,25 +60,28 @@ async function fetchCurrentUser() {
 // Lấy danh sách authors với pagination
 async function fetchLeaderboard(page = 0, size = AUTHORS_PER_PAGE) {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/leaderboard?page=${page}&size=${size}`
-    );
+    console.log(`Fetching leaderboard (page=${page}, size=${size})`);
+    const url = `${API_BASE}/leaderboard?page=${page}&size=${size}`;
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error("Failed to fetch leaderboard");
+      const text = await response.text().catch(() => "");
+      console.error(`Leaderboard API returned ${response.status}:`, text);
+      throw new Error(`Leaderboard API ${response.status}`);
     }
 
     const data = await response.json();
-
     // Update pagination state
     currentPage = data.currentPage;
     totalPages = data.totalPages;
     totalAuthors = data.totalItems;
 
+    console.log("Leaderboard data:", data);
     return data.content || [];
   } catch (error) {
     console.error("Error fetching leaderboard:", error);
-    return [];
+    // Re-throw so upper layers (loadLeaderboard) can show UI message
+    throw error;
   }
 }
 
@@ -309,22 +334,40 @@ async function goToPage(page) {
 
 // Load leaderboard data
 async function loadLeaderboard() {
-  const authors = await fetchLeaderboard(currentPage, AUTHORS_PER_PAGE);
-
-  if (authors.length > 0) {
-    renderPodium(authors);
-    renderRankingTable(authors);
-    renderPagination();
-  } else {
-    // Show error or empty state
-    const tbody = document.getElementById("rankingTableBody");
+  // Show loading UI
+  const tbody = document.getElementById("rankingTableBody");
+  if (tbody) {
     tbody.innerHTML = `
       <tr class="ranking-table__row">
-        <td colspan="8" class="ranking-table__empty">
-          Không thể tải dữ liệu bảng xếp hạng
-        </td>
-      </tr>
-    `;
+        <td colspan="8" class="ranking-table__loading">Đang tải dữ liệu...</td>
+      </tr>`;
+  }
+
+  try {
+    const authors = await fetchLeaderboard(currentPage, AUTHORS_PER_PAGE);
+
+    if (authors && authors.length > 0) {
+      renderPodium(authors);
+      renderRankingTable(authors);
+      renderPagination();
+    } else {
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr class="ranking-table__row">
+            <td colspan="8" class="ranking-table__empty">Không có dữ liệu bảng xếp hạng.</td>
+          </tr>`;
+      }
+    }
+  } catch (error) {
+    console.error("loadLeaderboard error:", error);
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr class="ranking-table__row">
+          <td colspan="8" class="ranking-table__empty">Lỗi khi tải dữ liệu: ${String(
+            error.message
+          )}</td>
+        </tr>`;
+    }
   }
 }
 

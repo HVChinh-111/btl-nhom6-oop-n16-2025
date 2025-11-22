@@ -476,13 +476,28 @@ function updateActiveMenu(activeItem) {
 
 // Render current user info in header
 async function renderUserInfo() {
+  const userMenu = document.querySelector(".header__user");
+
   if (!checkAuth()) {
-    // User not logged in - show login button or guest state
+    // User not logged in - show login button
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
     return;
   }
 
   const userProfile = await fetchCurrentUserProfile();
-  if (!userProfile) return;
+  if (!userProfile) {
+    // Show login button on error
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
+    return;
+  }
 
   const headerAvatar = document.getElementById("headerAvatar");
   const userMenuAvatar = document.getElementById("userMenuAvatar");

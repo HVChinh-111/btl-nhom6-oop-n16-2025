@@ -200,16 +200,37 @@ async function toggleFollow(username) {
 
 // Render header user info
 function renderHeaderUserInfo(user) {
-  if (!user) return;
+  const userMenu = document.querySelector(".header__user");
 
-  document.getElementById(
-    "userName"
-  ).textContent = `${user.firstname} ${user.lastname}`;
-  document.getElementById("userUsername").textContent = `@${user.username}`;
+  if (!user) {
+    // Show login button instead of user menu
+    if (userMenu) {
+      userMenu.innerHTML = `
+        <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
+      `;
+    }
+    return;
+  }
+
+  const userName = document.getElementById("userName");
+  const userUsername = document.getElementById("userUsername");
+  const headerAvatar = document.getElementById("headerAvatar");
+  const userMenuAvatar = document.getElementById("userMenuAvatar");
+
+  if (userName) {
+    userName.textContent = `${user.firstname} ${user.lastname}`;
+  }
+  if (userUsername) {
+    userUsername.textContent = `@${user.username}`;
+  }
 
   if (user.avatarUrl) {
-    document.getElementById("headerAvatar").src = user.avatarUrl;
-    document.getElementById("userMenuAvatar").src = user.avatarUrl;
+    if (headerAvatar) {
+      headerAvatar.src = user.avatarUrl;
+    }
+    if (userMenuAvatar) {
+      userMenuAvatar.src = user.avatarUrl;
+    }
   }
 }
 

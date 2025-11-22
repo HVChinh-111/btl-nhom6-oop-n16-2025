@@ -87,7 +87,7 @@ public class SecurityConfig {
                 .requestMatchers("/author-ranking", "/author-ranking.html").permitAll()
                 
                 // HTML Pages - Authenticated access (handle auth in frontend)
-                .requestMatchers("/profile", "/profile.html").permitAll()
+                .requestMatchers("/profile", "/profile.html").permitAll() 
                 
                 // Static resources - Public access
                 .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
