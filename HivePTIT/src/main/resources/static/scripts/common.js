@@ -84,6 +84,31 @@ function truncateText(text, maxLength = 200) {
   return text.substring(0, maxLength) + "...";
 }
 
+// ========== NAVIGATION UTILITIES ==========
+
+// Navigate to Following feed (chuyển về trang index với feed "Đang theo dõi")
+function navigateToFollowing() {
+  // Kiểm tra xem đã đăng nhập chưa
+  if (!checkAuth()) {
+    alert("Vui lòng đăng nhập để xem bài viết từ người bạn theo dõi.");
+    return;
+  }
+
+  // Nếu đang ở trang index, reload với feedType=following
+  if (
+    window.location.pathname === "/" ||
+    window.location.pathname === "/index"
+  ) {
+    // Set state trong sessionStorage để index.js biết phải load following feed
+    sessionStorage.setItem("feedType", "following");
+    window.location.reload();
+  } else {
+    // Nếu ở trang khác, chuyển về trang index với param
+    sessionStorage.setItem("feedType", "following");
+    window.location.href = "/";
+  }
+}
+
 // ========== INIT COMMON HANDLERS ==========
 
 function initCommonHandlers() {
@@ -93,6 +118,16 @@ function initCommonHandlers() {
     logoutBtn.addEventListener("click", (e) => {
       e.preventDefault();
       logout();
+    });
+  }
+
+  // Handle "Đang theo dõi" links - áp dụng cho tất cả trang
+  const menuLinks = document.querySelectorAll(".header__menu-link");
+  if (menuLinks[1]) {
+    // Menu thứ 2 là "Đang theo dõi"
+    menuLinks[1].addEventListener("click", (e) => {
+      e.preventDefault();
+      navigateToFollowing();
     });
   }
 

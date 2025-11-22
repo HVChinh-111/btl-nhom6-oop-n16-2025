@@ -670,14 +670,7 @@ function initEventListeners() {
     });
   }
 
-  // Following link
-  const menuLinks = document.querySelectorAll(".header__menu-link");
-  if (menuLinks[1]) {
-    menuLinks[1].addEventListener("click", (e) => {
-      e.preventDefault();
-      switchToFollowingFeed();
-    });
-  }
+  // Note: "Đang theo dõi" link được xử lý chung trong common.js
 
   // Previous page button
   const prevBtn = document.querySelector(".pagination__btn:first-child");
@@ -709,6 +702,13 @@ async function init() {
   currentState.isAuthenticated = checkAuth();
   currentState.currentUser = getCurrentUsername();
 
+  // Kiểm tra xem có yêu cầu load following feed từ sessionStorage không
+  const requestedFeedType = sessionStorage.getItem("feedType");
+  if (requestedFeedType === "following") {
+    currentState.feedType = "following";
+    sessionStorage.removeItem("feedType"); // Clear sau khi đọc
+  }
+
   // Initialize event listeners
   initEventListeners();
 
@@ -722,8 +722,13 @@ async function init() {
     renderTopicsSidebar(),
   ]);
 
-  // Load initial posts (home feed)
+  // Load initial posts (sẽ load theo feedType đã set)
   await loadPosts();
+
+  // Update active menu nếu là following feed
+  if (currentState.feedType === "following") {
+    updateActiveMenu("following");
+  }
 
   console.log("HivePTIT Index initialized successfully");
 }
