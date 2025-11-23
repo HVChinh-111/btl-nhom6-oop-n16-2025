@@ -1,20 +1,20 @@
-CREATE DATABASE IF NOT EXISTS HivePTIT
+CREATE DATABASE IF NOT EXISTS HivePTIT_1
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_unicode_ci;
-USE HivePTIT;
+USE HivePTIT_1;
 create table `users`(
 	student_id char(10) primary key,
-    password_hash varchar(30) not null,
+    password_hash varchar(256) not null,
     username varchar(30) unique not null,
-    email varchar(30) unique not null,
+    email varchar(50) unique not null,
     firstname varchar(30), 
     lastname varchar(30),
     avatar_url varchar(50),
-    bio text,
+    bio longtext,
     is_verified ENUM('Y','N') default 'N',
     -- tinh bang trigger dua vao cmt va post 
     ranking_core int not null default 0,
-    constraint check (email like '%@ptit.edu.vn')
+    constraint check (email like '%@stu.ptit.edu.vn')
 ) ENGINE=InnoDB;
 
 create table `roles`(
@@ -76,7 +76,8 @@ create table `bookmark_list`(
 create table `posts`(
 	post_id int auto_increment primary key,
     student_id char(10) not null,
-    title text not null,
+    -- đoạn này có thể thêm url image để chèn ảnh 
+    title longtext not null,
     content longtext not null,
     -- vote_count tinh bang trigger
     vote_count int not null default 0,
@@ -115,7 +116,7 @@ create table `comments`(
     parent_comment_id int,
     -- vote_count tinh bang trigger
     vote_count int not null default 0,
-    content text,
+    content longtext,
     created_at timestamp default current_timestamp,
     -- dung trigger 
     is_edited enum('Y','N') not null default 'N',
@@ -196,7 +197,7 @@ BEGIN
   IF OLD.post_id IS NOT NULL THEN
     UPDATE `posts` SET vote_count = vote_count - old_delta WHERE post_id    = OLD.post_id;
     UPDATE `users` SET ranking_core = ranking_core - 5*delta WHERE student_id IN (
-			SELECT p.student_id FROM `post` p WHERE p.post_id = OLD.post_id
+			SELECT p.student_id FROM `posts` p WHERE p.post_id = OLD.post_id
 	);
   ELSE
     UPDATE `comments` SET vote_count = vote_count - old_delta WHERE comment_id = OLD.comment_id;
@@ -208,7 +209,7 @@ BEGIN
   IF NEW.post_id IS NOT NULL THEN
     UPDATE `posts` SET vote_count = vote_count + new_delta WHERE post_id    = NEW.post_id;
 	UPDATE `users` SET ranking_core = ranking_core + 5*delta WHERE student_id IN (
-			SELECT p.student_id FROM `post` p WHERE p.post_id = NEW.post_id
+			SELECT p.student_id FROM `posts` p WHERE p.post_id = NEW.post_id
 	);
   ELSE
     UPDATE `comments` SET vote_count = vote_count + new_delta WHERE comment_id = NEW.comment_id;
@@ -259,3 +260,9 @@ BEGIN
   END IF;
 END//
 DELIMITER ;
+
+ALTER TABLE posts
+ADD FULLTEXT INDEX idx_posts_fulltext (title, content);
+
+ALTER TABLE users
+ADD FULLTEXT INDEX idx_users_fulltext (student_id,username, firstname, lastname);
