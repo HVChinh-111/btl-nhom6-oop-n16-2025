@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/static/images/LogoProPTIT.png" type="image/png" />
+    <title>Lỗi - HivePTIT</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", "Cantarell", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 20px;
+      }
+      .error-container {
+        text-align: center;
+        padding: 50px 40px;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 600px;
+        width: 100%;
+      }
+      .error-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #d32f2f;
+        margin-bottom: 20px;
+        font-size: 28px;
+        font-weight: 600;
+      }
+      p {
+        color: #666;
+        margin-bottom: 30px;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .btn-home {
+        display: inline-block;
+        padding: 12px 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .btn-home:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+      }
+      .error-details {
+        margin-top: 30px;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-left: 4px solid #d32f2f;
+        text-align: left;
+        font-size: 14px;
+        color: #666;
+        border-radius: 4px;
+        font-family: "Courier New", monospace;
+        word-break: break-word;
+      }
+      .error-details strong {
+        display: block;
+        margin-bottom: 10px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <h1>Oops! Đã xảy ra lỗi</h1>
+      <p
+        th:text="${errorMessage} ?: 'Đã xảy ra lỗi không xác định. Vui lòng thử lại sau.'"
+      >
+        Đã xảy ra lỗi không xác định.
+      </p>
+      <a href="/" class="btn-home">Về trang chủ</a>
+
+      <div class="error-details" th:if="${errorDetails}">
+        <strong>Chi tiết lỗi:</strong>
+        <span th:text="${errorDetails}">Error details</span>
+      </div>
+    </div>
+  </body>
+</html>

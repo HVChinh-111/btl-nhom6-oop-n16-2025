@@ -6,9 +6,13 @@ import com.example.hiveptit.dto.UserSummaryDTO;
 import com.example.hiveptit.model.Posts;
 import com.example.hiveptit.model.Topics;
 import com.example.hiveptit.model.Users;
+import com.example.hiveptit.model.Votes;
 import com.example.hiveptit.repository.PostRepository;
 import com.example.hiveptit.repository.TopicRepository;
 import com.example.hiveptit.repository.UserRepository;
+import com.example.hiveptit.repository.VoteRepository;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +29,26 @@ public class PostService {
     private final PostRepository postRepository;
     private final TopicRepository topicRepository;
     private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
+    private final Parser markdownParser;
+    private final HtmlRenderer htmlRenderer;
 
-    public PostService(PostRepository postRepository, TopicRepository topicRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, TopicRepository topicRepository, UserRepository userRepository, VoteRepository voteRepository) {
         this.postRepository = postRepository;
         this.topicRepository = topicRepository;
         this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
+        this.markdownParser = Parser.builder().build();
+        this.htmlRenderer = HtmlRenderer.builder().build();
+    }
+
+    // Chuyển đổi Markdown sang HTML
+    private String convertMarkdownToHtml(String markdown) {
+        if (markdown == null || markdown.isEmpty()) {
+            return "";
+        }
+        var document = markdownParser.parse(markdown);
+        return htmlRenderer.render(document);
     }
     // tạo bài viết mới
     @Transactional
@@ -51,7 +70,7 @@ public class PostService {
         }
 
         Posts saved = postRepository.save(post);
-        return toResponse(saved);
+        return toResponse(saved, username);
     }
     // sửa bài viết (người viết bài mới được sửa)
     @Transactional
@@ -74,7 +93,7 @@ public class PostService {
 
 
         Posts saved = postRepository.save(post);
-        return toResponse(saved);
+        return toResponse(saved, username);
     }
 
     // XÓA CỨNG(admin,người tạo)
@@ -102,21 +121,54 @@ public class PostService {
 
     // xem chi tiết bài viết
     @Transactional(readOnly = true)
-    public PostResponse getPost(Integer id) {
+    public PostResponse getPost(Integer id, String username) {
         Posts post = postRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bài viết không tồn tại"));
-        return toResponse(post);
+        return toResponse(post, false, username);
+    }
+
+    // Overload để hỗ trợ includeRawContent từ controller
+    @Transactional(readOnly = true)
+    public PostResponse getPost(Integer id, boolean includeRawContent, String username) {
+        Posts post = postRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bài viết không tồn tại"));
+        return toResponse(post, includeRawContent, username);
     }
 
 
-    private PostResponse toResponse(Posts post) {
+    private PostResponse toResponse(Posts post, String username) {
+        return toResponse(post, false, username);
+    }
+
+    // Overload method để có thể lấy markdown gốc khi cần edit
+    private PostResponse toResponse(Posts post, boolean includeRawContent, String username) {
         PostResponse resp = new PostResponse();
         resp.setId(post.getPostId());
         resp.setTitle(post.getTitle());
-        resp.setContent(post.getContent());
+        // Content là HTML để hiển thị
+        resp.setContent(convertMarkdownToHtml(post.getContent()));
+        // RawContent là markdown gốc (chỉ khi cần edit)
+        if (includeRawContent) {
+            resp.setRawContent(post.getContent());
+        }
         resp.setCreatedAt(post.getCreatedAt());
         resp.setUpdatedAt(post.getUpdatedAt());
         resp.setVoteCount(post.getVoteCount());
+        
+        // Set user vote type if user is logged in
+        if (username != null) {
+            Users user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                voteRepository.findByVoterAndPost(user, post).ifPresent(vote -> {
+                    if (vote.getVoteType() == Votes.VoteType.upvote) {
+                        resp.setUserVoteType("UPVOTE");
+                    } else if (vote.getVoteType() == Votes.VoteType.downvote) {
+                        resp.setUserVoteType("DOWNVOTE");
+                    }
+                });
+            }
+        }
+        
         if (post.getAuthor() != null) {
             resp.setAuthor(new UserSummaryDTO(
                     post.getAuthor().getStudentId(),

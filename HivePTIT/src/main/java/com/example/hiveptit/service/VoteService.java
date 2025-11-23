@@ -6,6 +6,7 @@ import com.example.hiveptit.model.*;
 import com.example.hiveptit.repository.PostRepository;
 import com.example.hiveptit.repository.VoteRepository;
 import com.example.hiveptit.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ public class VoteService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private EntityManager entityManager;
 
     @Transactional
     public VoteResponse votePost(VoteRequest request, String username) {
@@ -31,7 +35,7 @@ public class VoteService {
         Posts post = postRepository.findById(request.getPostId())
                 .orElseThrow(() -> new RuntimeException("Post not found"));
 
-        Votes.VoteType newVoteType = request.getVoteType().equalsIgnoreCase("UP") 
+        Votes.VoteType newVoteType = request.getVoteType().equalsIgnoreCase("UPVOTE") 
                 ? Votes.VoteType.upvote 
                 : Votes.VoteType.downvote;
 
@@ -41,23 +45,26 @@ public class VoteService {
         if (existingVote.isPresent()) {
             Votes vote = existingVote.get();
             if (vote.getVoteType() == newVoteType) {
+                // Click same vote again - DELETE vote
                 voteRepository.delete(vote);
+                entityManager.flush(); // Ensure DELETE is executed immediately
                 action = "REMOVED";
-                updatePostVoteCount(post, vote.getVoteType(), -1);
             } else {
-                updatePostVoteCount(post, vote.getVoteType(), -1);
-                vote.setVoteType(newVoteType);
-                voteRepository.save(vote);
+                // Switch from one vote to another - DELETE old, INSERT new
+                voteRepository.delete(vote);
+                entityManager.flush(); // Ensure DELETE is committed before INSERT
+                Votes newVote = new Votes(user, post, null, newVoteType);
+                voteRepository.save(newVote);
                 action = "CHANGED";
-                updatePostVoteCount(post, newVoteType, 1);
             }
         } else {
+            // New vote - INSERT
             Votes newVote = new Votes(user, post, null, newVoteType);
             voteRepository.save(newVote);
             action = "ADDED";
-            updatePostVoteCount(post, newVoteType, 1);
         }
 
+        // Recalculate total score from database
         int totalScore = calculatePostScore(post);
         post.setVoteCount(totalScore);
         postRepository.save(post);
@@ -68,15 +75,6 @@ public class VoteService {
                 totalScore,
                 true
         );
-    }
-
-    private void updatePostVoteCount(Posts post, Votes.VoteType voteType, int delta) {
-        int currentScore = post.getVoteCount();
-        if (voteType == Votes.VoteType.upvote) {
-            post.setVoteCount(currentScore + delta);
-        } else {
-            post.setVoteCount(currentScore - delta);
-        }
     }
 
     private int calculatePostScore(Posts post) {

@@ -55,8 +55,13 @@ public class PostController {
 
     // GET /api/posts/{id} : Xem chi tiết bài viết
     @GetMapping("/{id}")
-    public ResponseEntity<PostResponse> getPostById(@PathVariable Integer id) {
-        return ResponseEntity.ok(postService.getPost(id));
+    public ResponseEntity<PostResponse> getPostById(
+            @PathVariable Integer id,
+            @RequestParam(required = false, defaultValue = "false") boolean includeRawContent,
+            Principal principal
+    ) {
+        String username = principal != null ? principal.getName() : null;
+        return ResponseEntity.ok(postService.getPost(id, includeRawContent, username));
     }
 
 }

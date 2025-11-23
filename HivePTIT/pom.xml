@@ -86,9 +86,17 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
-
-	<build>
+	<dependency>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-thymeleaf</artifactId>
+	</dependency>
+	<!-- Markdown to HTML conversion -->
+	<dependency>
+		<groupId>org.commonmark</groupId>
+		<artifactId>commonmark</artifactId>
+		<version>0.21.0</version>
+	</dependency>
+	</dependencies>	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

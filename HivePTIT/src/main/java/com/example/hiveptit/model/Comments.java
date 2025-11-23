@@ -29,7 +29,7 @@ public class Comments {
     @Column(name = "vote_count", nullable = false)
     private int voteCount = 0;
 
-//    @Lob
+    @Lob
     private String content;
 
     @Column(name = "created_at")

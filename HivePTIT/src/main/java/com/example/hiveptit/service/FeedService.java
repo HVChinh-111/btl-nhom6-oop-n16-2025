@@ -6,6 +6,7 @@ import com.example.hiveptit.model.Topics;
 import com.example.hiveptit.model.Users;
 import com.example.hiveptit.repository.FollowRepository;
 import com.example.hiveptit.repository.PostRepository;
+import com.example.hiveptit.repository.TopicRepository;
 import com.example.hiveptit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,9 @@ public class FeedService {
 
     @Autowired
     private FollowRepository followRepository;
+
+    @Autowired
+    private TopicRepository topicRepository;
 
     public List<FeedPostResponse> getFollowingFeed(String username, int page, int size) {
         Users currentUser = userRepository.findByUsername(username)
@@ -75,6 +79,30 @@ public class FeedService {
     public List<FeedPostResponse> getHomeFeed(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Posts> postsPage = postRepository.findAll(pageable);
+
+        return postsPage.getContent().stream()
+                .map(this::convertToFeedPostResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<FeedPostResponse> getTopicFeed(String topicName, int page, int size) {
+        Topics topic = topicRepository.findByNameIgnoreCase(topicName)
+                .orElseThrow(() -> new RuntimeException("Topic not found: " + topicName));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Posts> postsPage = postRepository.findByTopicsContaining(topic, pageable);
+
+        return postsPage.getContent().stream()
+                .map(this::convertToFeedPostResponse)
+                .collect(Collectors.toList());
+    }
+
+    public List<FeedPostResponse> getUserFeed(String username, int page, int size) {
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Posts> postsPage = postRepository.findByAuthor(user, pageable);
 
         return postsPage.getContent().stream()
                 .map(this::convertToFeedPostResponse)
