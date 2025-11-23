@@ -206,6 +206,27 @@
             <div class="post-detail__topics" id="postTopics">
               <!-- Topics sẽ được thêm động bằng JS -->
             </div>
+
+            <!-- AI Summarize Button -->
+            <div style="margin-top: 16px;">
+              <button
+                class="post-detail__summarize-btn"
+                id="summarizeBtn"
+                style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 14px;"
+              >
+                Tóm tắt bằng AI
+              </button>
+            </div>
+
+            <!-- Summary Container -->
+            <div
+              class="post-detail__summary"
+              id="summaryContainer"
+              style="display: none; margin-top: 16px; padding: 16px; background-color: #f3f4f6; border-radius: 8px; border-left: 4px solid #2563eb;"
+            >
+              <h4 style="margin: 0 0 8px 0; color: #1f2937; font-size: 16px;">Tóm tắt AI</h4>
+              <p id="summaryText" style="margin: 0; color: #4b5563; line-height: 1.6;"></p>
+            </div>
           </header>
 
           <!-- Nội dung bài viết (HTML từ markdown) -->

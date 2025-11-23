@@ -339,6 +339,47 @@ async function handleVote(postId, voteType) {
   }
 }
 
+// Handle AI summarization
+async function handleSummarize(postId) {
+  const summarizeBtn = document.getElementById("summarizeBtn");
+  const summaryContainer = document.getElementById("summaryContainer");
+  const summaryText = document.getElementById("summaryText");
+  
+  try {
+    summarizeBtn.disabled = true;
+    summarizeBtn.textContent = "Đang tóm tắt...";
+    summaryText.textContent = "Đang xử lý...";
+    summaryContainer.style.display = "block";
+    
+    const token = getAuthToken();
+    const headers = {
+      "Content-Type": "application/json",
+    };
+    
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    
+    const response = await fetch(`${API_BASE_URL}/posts/${postId}/summarize`, {
+      method: "POST",
+      headers: headers,
+    });
+    
+    if (!response.ok) {
+      throw new Error("Không thể tóm tắt bài viết");
+    }
+    
+    const result = await response.json();
+    summaryText.textContent = result.summary;
+  } catch (error) {
+    console.error("Error summarizing:", error);
+    summaryText.textContent = "Lỗi: " + error.message;
+  } finally {
+    summarizeBtn.disabled = false;
+    summarizeBtn.textContent = "Tóm tắt bằng AI";
+  }
+}
+
 // Init post detail page
 async function initPostDetail() {
   const postId = getPostIdFromURL();
@@ -361,6 +402,12 @@ async function initPostDetail() {
 
     upvoteBtn.addEventListener("click", () => handleVote(postId, "UPVOTE"));
     downvoteBtn.addEventListener("click", () => handleVote(postId, "DOWNVOTE"));
+    
+    // Setup summarize button
+    const summarizeBtn = document.getElementById("summarizeBtn");
+    if (summarizeBtn) {
+      summarizeBtn.addEventListener("click", () => handleSummarize(postId));
+    }
   } catch (error) {
     console.error("Error initializing post detail:", error);
     showError("Không thể tải bài viết. Vui lòng thử lại sau.");
