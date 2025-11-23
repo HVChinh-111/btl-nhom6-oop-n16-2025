@@ -587,10 +587,14 @@ async function openEditPostModal(postId) {
     titleInput.value = post.title;
     contentInput.value = post.rawContent || post.content; // Use rawContent (markdown)
 
-    // Pre-select topics
+    // Pre-select topics (post.topics is array of { id, name })
     const topicCheckboxes = document.querySelectorAll('input[name="topicIds"]');
+    const selectedIds = Array.isArray(post.topics)
+      ? post.topics.map((t) => t.id)
+      : [];
     topicCheckboxes.forEach((checkbox) => {
-      checkbox.checked = post.topics.includes(parseInt(checkbox.value));
+      const id = parseInt(checkbox.value);
+      checkbox.checked = selectedIds.includes(id);
     });
 
     // Set to edit mode
