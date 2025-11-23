@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký - HivePTIT</title>
+    <link rel="stylesheet" href="/styles/general.css" />
+  </head>
+  <body class="page">
+    <main class="auth">
+      <div class="auth__container auth__container--large">
+        <!-- Header của trang đăng ký -->
+        <header class="auth__header">
+          <h1 class="auth__logo">HivePTIT</h1>
+          <p class="auth__description">
+            Nền tảng chia sẻ kiến thức học thuật PTIT
+          </p>
+        </header>
+
+        <!-- Form đăng ký -->
+        <section class="auth__form-section">
+          <h2 class="auth__title">Đăng ký tài khoản</h2>
+
+          <!-- Thông báo lỗi đăng ký -->
+          <div class="form__error" id="signupError" style="display: none">
+            <svg
+              class="form__error-icon"
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+            >
+              <path
+                fill="currentColor"
+                d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm1 15H9v-2h2v2zm0-4H9V5h2v6z"
+              />
+            </svg>
+            <span class="form__error-text"
+              >Đã có lỗi xảy ra. Vui lòng kiểm tra lại thông tin!</span
+            >
+          </div>
+
+          <form
+            class="form"
+            action="/api/auth/signup"
+            method="POST"
+            id="signupForm"
+          >
+            <!-- Grid 2 cột cho một số trường -->
+            <div class="form__grid">
+              <!-- Tên người dùng -->
+              <div class="form__group">
+                <label for="username" class="form__label">
+                  Tên người dùng
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  class="form__input"
+                  placeholder="Nhập tên người dùng"
+                  required
+                  minlength="3"
+                  maxlength="30"
+                />
+              </div>
+
+              <!-- Mã sinh viên -->
+              <div class="form__group">
+                <label for="studentId" class="form__label">
+                  Mã sinh viên
+                </label>
+                <input
+                  type="text"
+                  id="studentId"
+                  name="studentId"
+                  class="form__input"
+                  placeholder="VD: B21DCCN001"
+                  required
+                  minlength="10"
+                  maxlength="10"
+                />
+              </div>
+            </div>
+
+            <!-- Grid 2 cột cho họ và tên -->
+            <div class="form__grid">
+              <!-- Họ (lastname) -->
+              <div class="form__group">
+                <label for="lastname" class="form__label"> Họ </label>
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  class="form__input"
+                  placeholder="Nhập họ"
+                  maxlength="30"
+                />
+              </div>
+
+              <!-- Tên (firstname) -->
+              <div class="form__group">
+                <label for="firstname" class="form__label"> Tên </label>
+                <input
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  class="form__input"
+                  placeholder="Nhập tên"
+                  maxlength="30"
+                />
+              </div>
+            </div>
+
+            <!-- Grid 2 cột cho email -->
+            <div class="form__grid">
+              <!-- Email -->
+              <div class="form__group">
+                <label for="email" class="form__label"> Email </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form__input"
+                  placeholder="example@stu.ptit.edu.vn"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Grid 2 cột cho mật khẩu -->
+            <div class="form__grid">
+              <!-- Mật khẩu -->
+              <div class="form__group">
+                <label for="password" class="form__label"> Mật khẩu </label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  class="form__input"
+                  placeholder="Tối thiểu 6 ký tự"
+                  required
+                  minlength="6"
+                  maxlength="30"
+                />
+              </div>
+
+              <!-- Xác nhận mật khẩu -->
+              <div class="form__group">
+                <label for="confirmPassword" class="form__label">
+                  Xác nhận mật khẩu
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  class="form__input"
+                  placeholder="Nhập lại mật khẩu"
+                  required
+                  minlength="6"
+                  maxlength="30"
+                />
+              </div>
+            </div>
+
+            <!-- Điều khoản sử dụng -->
+            <div class="form__terms">
+              <label class="form__checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  class="form__checkbox"
+                  name="acceptTerms"
+                  required
+                />
+                <span class="form__checkbox-label">
+                  Tôi đồng ý với
+                  <a href="/terms" class="form__link form__link--inline"
+                    >Điều khoản sử dụng</a
+                  >
+                  và
+                  <a href="/privacy" class="form__link form__link--inline"
+                    >Chính sách bảo mật</a
+                  >
+                </span>
+              </label>
+            </div>
+
+            <!-- Nút đăng ký -->
+            <button type="submit" class="form__button form__button--primary">
+              Đăng ký
+            </button>
+          </form>
+        </section>
+
+        <!-- Footer với link đến trang đăng nhập -->
+        <footer class="auth__footer">
+          <p class="auth__footer-text">
+            Đã có tài khoản?
+            <a href="/sign-in" class="auth__footer-link">Đăng nhập ngay</a>
+          </p>
+        </footer>
+      </div>
+    </main>
+    <script src="/scripts/sign-up.js"></script>
+  </body>
+</html>

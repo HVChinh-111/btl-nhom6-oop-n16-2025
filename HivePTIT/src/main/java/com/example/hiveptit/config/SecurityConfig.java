@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -56,20 +57,73 @@ public class SecurityConfig {
             // Tắt CSRF vì dùng JWT (stateless), không dùng cookie/session
             .csrf(csrf -> csrf.disable())
             
-            // 2. Authorization Rules (Phân quyền URL)
+            // 2. Form Login - Tắt để không redirect
+            .formLogin(form -> form.disable())
+            
+            // 3. HTTP Basic - Tắt
+            .httpBasic(basic -> basic.disable())
+            
+            // 4. Exception Handling - Không redirect khi unauthorized
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    // Return 401 instead of redirecting to login
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Unauthorized\",\"message\":\"Authentication required\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    // Return 403 instead of redirecting
+                    response.setStatus(403);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"error\":\"Forbidden\",\"message\":\"Access denied\"}");
+                })
+            )
+            
+            // 5. Authorization Rules (Phân quyền URL)
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints - Không cần authentication
+                // HTML Pages - Public access
+                .requestMatchers("/", "/index", "/index.html").permitAll()
+                .requestMatchers("/sign-in", "/sign-in.html").permitAll()
+                .requestMatchers("/sign-up", "/sign-up.html").permitAll()
+                .requestMatchers("/author-ranking", "/author-ranking.html").permitAll()
+                .requestMatchers("/post", "/post.html").permitAll()
+                
+                // HTML Pages - Authenticated access (handle auth in frontend)
+                .requestMatchers("/profile", "/profile.html").permitAll() 
+                
+                // Static resources - Public access
+                .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/scripts/**", "/styles/**", "/fonts/**").permitAll()
+                
+                // API Public endpoints - Không cần authentication
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
                 .requestMatchers("/api/test/public").permitAll()
+                
+                // Leaderboard endpoints - Public access
+                .requestMatchers("/api/leaderboard", "/api/leaderboard/**").permitAll()
+                
+                // Feed endpoints - Public access for viewing
+                .requestMatchers("/api/feed/home", "/api/feed/trending").permitAll()
+                .requestMatchers("/api/feed/user/**").permitAll()
+                // Allow public GET to retrieve post details
+                .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+                
+                // Topics endpoint - Public access
+                .requestMatchers("/api/topics", "/api/topics/**").permitAll()
+                
+                // Search endpoint - Public access
+                .requestMatchers("/api/search/**").permitAll()
+                
+                // Posts endpoints - Allow authenticated users to create, update, delete
+                .requestMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
+                
                 // Protected endpoints - Cần authentication
                 // hasRole() tự động thêm prefix "ROLE_"
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/moderator/**").hasAnyRole("ADMIN", "MODERATOR")
-                
-                // hasAuthority() dùng cho permission (không thêm prefix)
-                .requestMatchers("/api/posts/create").hasAuthority("POST_CREATE")
-                .requestMatchers("/api/posts/delete/**").hasAuthority("POST_DELETE")
                 
                 // Vote và Bookmark endpoints - Authenticated users
                 .requestMatchers("/api/votes/**").authenticated()
@@ -90,18 +144,18 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             
-            // 3. Session Management
+            // 6. Session Management
             // STATELESS: Không tạo session, mỗi request phải có JWT token
             // Khác với session-based: server lưu session, client lưu session ID
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             
-            // 4. Authentication Provider
+            // 7. Authentication Provider
             // Đăng ký provider đã tạo ở trên
             .authenticationProvider(authenticationProvider())
             
-            // 5. Add JWT Filter
+            // 8. Add JWT Filter
             // Thêm JwtAuthenticationFilter VÀO TRƯỚC UsernamePasswordAuthenticationFilter
             // Tại sao? Vì ta muốn check JWT trước khi Spring Security xử lý authentication
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

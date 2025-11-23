@@ -97,6 +97,18 @@ public class FeedService {
                 .collect(Collectors.toList());
     }
 
+    public List<FeedPostResponse> getUserFeed(String username, int page, int size) {
+        Users user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found: " + username));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Posts> postsPage = postRepository.findByAuthor(user, pageable);
+
+        return postsPage.getContent().stream()
+                .map(this::convertToFeedPostResponse)
+                .collect(Collectors.toList());
+    }
+
     private double calculateTrendingScore(Posts post) {
         int upvotes = post.getVoteCount() > 0 ? post.getVoteCount() : 0;
         int downvotes = post.getVoteCount() < 0 ? Math.abs(post.getVoteCount()) : 0;

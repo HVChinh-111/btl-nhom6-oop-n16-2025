@@ -6,12 +6,14 @@ import java.util.List;
 public class PostResponse {
     private Integer id;
     private String title;
-    private String content;
+    private String content; // HTML hoặc Markdown tùy vào usecase
+    private String rawContent; // Markdown gốc (chỉ trả về khi cần edit)
     private List<TopicSummary> topics;
     private UserSummaryDTO author;
     private Instant createdAt;
     private Instant updatedAt;
     private Integer voteCount;
+    private String userVoteType; // "UPVOTE", "DOWNVOTE", hoặc null
 
     public static class TopicSummary {
         private Integer id;
@@ -38,6 +40,9 @@ public class PostResponse {
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }
 
+    public String getRawContent() { return rawContent; }
+    public void setRawContent(String rawContent) { this.rawContent = rawContent; }
+
     public List<TopicSummary> getTopics() { return topics; }
     public void setTopics(List<TopicSummary> topics) { this.topics = topics; }
 
@@ -52,4 +57,7 @@ public class PostResponse {
 
     public Integer getVoteCount() { return voteCount; }
     public void setVoteCount(Integer voteCount) { this.voteCount = voteCount; }
+
+    public String getUserVoteType() { return userVoteType; }
+    public void setUserVoteType(String userVoteType) { this.userVoteType = userVoteType; }
 }
