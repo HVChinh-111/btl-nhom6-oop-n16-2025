@@ -7,48 +7,638 @@
 
 /* ========== BIẾN TOÀN CỤC - Màu sắc và spacing ========== */
 :root {
-  /* Màu nền */
-  --color-bg-primary: #0d1117;
-  --color-bg-secondary: #161b22;
-  --color-bg-tertiary: #21262d;
-  --color-bg-hover: #30363d;
+  /* ===== MÀU NỀN ===== */
+  --color-bg-primary: #0d1117; /* Màu nền chính - đen đậm nhất */
+  --color-bg-secondary: #161b22; /* Màu nền thứ cấp - cho card, modal */
+  --color-bg-tertiary: #21262d; /* Màu nền thứ ba - cho input, dropdown */
+  --color-bg-hover: #30363d; /* Màu nền khi hover */
 
-  /* Màu chữ */
-  --color-text-primary: #e6edf3;
-  --color-text-secondary: #8b949e;
-  --color-text-tertiary: #6e7681;
+  /* ===== MÀU CHỮ ===== */
+  --color-text-primary: #e6edf3; /* Màu chữ chính - trắng sáng */
+  --color-text-secondary: #8b949e; /* Màu chữ phụ - xám nhạt */
+  --color-text-tertiary: #6e7681; /* Màu chữ mờ - xám tối */
 
-  /* Màu viền */
-  --color-border: #30363d;
-  --color-border-hover: #484f58;
+  /* ===== MÀU VIỀN ===== */
+  --color-border: #30363d; /* Màu viền mặc định */
+  --color-border-hover: #484f58; /* Màu viền khi hover */
 
-  /* Màu accent */
-  --color-accent: #2f81f7;
-  --color-accent-hover: #1f6feb;
-  --color-accent-active: #1158c7;
-  /* Màu tối cho chỉ báo mục lục khi active */
-  --toc-active-dark: #071117;
+  /* ===== MÀU ACCENT - Màu chủ đạo ===== */
+  --color-accent: #2f81f7; /* Màu accent chính - xanh dương */
+  --color-accent-hover: #1f6feb; /* Màu accent khi hover */
+  --color-accent-active: #1158c7; /* Màu accent khi active/click */
+  --color-accent-light: #58a6ff; /* Màu accent nhạt - cho gradient */
 
-  /* Shadow */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  /* ===== MÀU TRẠNG THÁI ===== */
+  --color-danger: #f85149; /* Màu nguy hiểm - đỏ cho xóa, lỗi */
+  --color-danger-hover: #da3633; /* Màu nguy hiểm khi hover */
+  --color-danger-bg: rgba(248, 81, 73, 0.1); /* Màu nền nguy hiểm mờ */
+  --color-danger-border: rgba(248, 81, 73, 0.3); /* Màu viền nguy hiểm mờ */
 
-  /* Spacing */
-  --spacing-xs: 8px;
-  --spacing-sm: 12px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-xxl: 48px;
+  --color-success: #22c55e; /* Màu thành công - xanh lá */
+  --color-success-bg: rgba(34, 197, 94, 0.1); /* Màu nền thành công mờ */
 
-  /* Border radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
+  --color-warning: #ffc44f; /* Màu cảnh báo - vàng */
 
-  /* Transition */
-  --transition: all 0.2s ease;
+  --color-red: #ef4444; /* Màu đỏ - cho nút đọc thêm, AI */
+  --color-red-hover: #dc2626; /* Màu đỏ khi hover */
+
+  /* ===== MÀU CODE ===== */
+  --color-code-inline: #ff7b72; /* Màu code inline - đỏ cam */
+
+  /* ===== MÀU MẠNG XÃ HỘI ===== */
+  --color-google: #ea4335; /* Màu Google */
+  --color-facebook: #1877f2; /* Màu Facebook */
+  --color-facebook-hover: #0e62c7; /* Màu Facebook khi hover */
+  --color-linkedin: #0077b5; /* Màu LinkedIn */
+  --color-linkedin-hover: #005885; /* Màu LinkedIn khi hover */
+
+  /* ===== MÀU PODIUM - Bảng xếp hạng ===== */
+  --color-gold: #ffd700; /* Màu vàng - hạng 1 */
+  --color-gold-light: #ffed4e; /* Màu vàng nhạt */
+  --color-silver: #c0c0c0; /* Màu bạc - hạng 2 */
+  --color-silver-light: #e8e8e8; /* Màu bạc nhạt */
+  --color-bronze: #cd7f32; /* Màu đồng - hạng 3 */
+  --color-bronze-light: #e5a05f; /* Màu đồng nhạt */
+
+  /* ===== MÀU KHÁC ===== */
+  --color-white: #ffffff; /* Màu trắng */
+  --color-overlay: rgba(0, 0, 0, 0.7); /* Màu overlay cho modal */
+  --color-overlay-dark: rgba(0, 0, 0, 0.8); /* Màu overlay đậm hơn */
+  --toc-active-dark: #071117; /* Màu tối cho chỉ báo mục lục khi active */
+
+  /* ===== SHADOW - Bóng đổ ===== */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3); /* Bóng nhỏ */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4); /* Bóng vừa */
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5); /* Bóng lớn */
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4); /* Bóng modal */
+
+  /* ===== SPACING - Khoảng cách ===== */
+  --spacing-xs: 8px; /* Khoảng cách cực nhỏ */
+  --spacing-sm: 12px; /* Khoảng cách nhỏ */
+  --spacing-md: 16px; /* Khoảng cách vừa */
+  --spacing-lg: 24px; /* Khoảng cách lớn */
+  --spacing-xl: 32px; /* Khoảng cách cực lớn */
+  --spacing-xxl: 48px; /* Khoảng cách siêu lớn */
+
+  /* ===== BORDER RADIUS - Bo góc ===== */
+  --radius-sm: 6px; /* Bo góc nhỏ */
+  --radius-md: 8px; /* Bo góc vừa */
+  --radius-lg: 12px; /* Bo góc lớn */
+  --radius-full: 50%; /* Bo tròn hoàn toàn */
+
+  /* ===== TRANSITION - Hiệu ứng chuyển đổi ===== */
+  --transition: all 0.2s ease; /* Transition mặc định */
+
+  /* ===== FOCUS RING - Viền focus cho input ===== */
+  --focus-ring: 0 0 0 3px rgba(47, 129, 247, 0.1); /* Viền xanh mờ khi focus */
+}
+
+/* ========== UTILITY CLASSES - Các class tiện ích dùng chung ========== */
+
+/* ===== SCROLLBAR TỐI - Dùng cho các container có scroll ===== */
+.scrollbar-dark {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ===== AVATAR - Các kích thước avatar dùng chung ===== */
+/* Avatar nhỏ - dùng cho comments, post meta */
+.avatar--sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+}
+
+/* Avatar trung bình - dùng cho comments, top authors */
+.avatar--md {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+}
+
+/* Avatar lớn - dùng cho header user menu, post detail */
+.avatar--lg {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-border);
+}
+
+/* Avatar cực lớn - dùng cho profile */
+.avatar--xl {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-border);
+}
+
+/* ===== CLOSE BUTTON - Nút đóng cho modal/dropdown ===== */
+/* Áp dụng cho tất cả các nút đóng modal */
+.btn-close,
+.bookmark-modal__close,
+.post-modal__close,
+.profile-edit__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-close:hover,
+.bookmark-modal__close:hover,
+.post-modal__close:hover,
+.profile-edit__close:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* ===== DROPDOWN MENU - Menu thả xuống dùng chung ===== */
+/* Áp dụng cho tất cả các dropdown menu */
+.dropdown-menu,
+.comment__menu-dropdown,
+.post__menu-dropdown {
+  position: absolute;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: var(--spacing-xs);
+  z-index: 100;
+}
+
+/* ===== DROPDOWN ITEM - Mỗi mục trong dropdown ===== */
+/* Áp dụng cho tất cả các menu item */
+.dropdown-item,
+.comment__menu-item,
+.post__menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  font-family: inherit;
+}
+
+.dropdown-item:hover,
+.comment__menu-item:hover,
+.post__menu-item:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-hover);
+}
+
+.dropdown-item svg,
+.comment__menu-item svg,
+.post__menu-item svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+/* Dropdown item nguy hiểm - dùng cho xóa */
+.dropdown-item--danger,
+.comment__menu-item--danger,
+.post__menu-item--danger {
+  color: var(--color-danger);
+}
+
+.dropdown-item--danger:hover,
+.comment__menu-item--danger:hover,
+.post__menu-item--danger:hover {
+  color: var(--color-white);
+  background-color: var(--color-danger-hover);
+}
+
+.dropdown-item--danger svg,
+.comment__menu-item--danger svg,
+.post__menu-item--danger svg {
+  opacity: 1;
+}
+
+/* ===== MENU BUTTON - Nút ba chấm mở menu ===== */
+/* Áp dụng cho tất cả các nút mở menu dropdown */
+.btn-menu,
+.post__menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-menu:hover,
+.post__menu-btn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* Kích thước nhỏ hơn cho menu button */
+.btn-menu--sm,
+.comment__menu-btn {
+  width: 28px;
+  height: 28px;
+}
+
+/* Áp dụng base style cho comment menu button */
+.comment__menu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.comment__menu-btn:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+/* ===== PRIMARY BUTTON - Nút chính (accent color) ===== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-white);
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== SECONDARY BUTTON - Nút phụ (outline) ===== */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== DANGER BUTTON - Nút nguy hiểm (xóa) ===== */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-danger);
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: var(--color-white);
+}
+
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== CTA BUTTON - Nút hành động nổi bật (đỏ) ===== */
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-white);
+  background-color: var(--color-red);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-cta:hover:not(:disabled) {
+  background-color: var(--color-red-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-cta:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== INPUT FIELD - Input dùng chung ===== */
+.input {
+  width: 100%;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* ===== TEXTAREA - Textarea dùng chung ===== */
+.textarea {
+  width: 100%;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.textarea:hover {
+  border-color: var(--color-border-hover);
+}
+
+.textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--focus-ring);
+}
+
+/* ===== MODAL OVERLAY - Overlay cho modal ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-overlay);
+  z-index: 999;
+}
+
+/* ===== MODAL CONTAINER - Container cho modal ===== */
+.modal-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+/* ===== MODAL CONTENT - Nội dung modal ===== */
+.modal-content {
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+}
+
+/* ===== MODAL HEADER - Header modal ===== */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* ===== MODAL TITLE - Tiêu đề modal ===== */
+.modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* ===== CARD - Card container dùng chung ===== */
+.card {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  transition: var(--transition);
+}
+
+.card:hover {
+  border-color: var(--color-border-hover);
+}
+
+/* ===== SECTION TITLE - Tiêu đề section ===== */
+.section-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* ===== TEXT TRUNCATE - Cắt text với ... ===== */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Text truncate 2 dòng */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ===== FLEX UTILITIES ===== */
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== HIDDEN UTILITY ===== */
+.hidden {
+  display: none !important;
+}
+
+/* ===== GOM SCROLLBAR TỐI CHO CÁC CONTAINERS ===== */
+/* Áp dụng scrollbar tối cho tất cả các container có scroll (trừ các container có style riêng) */
+.bookmark-modal__lists,
+.bookmark-modal__content,
+.post-modal__form,
+.post-modal__topics,
+.post-detail__bookmark-dropdown-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.bookmark-modal__lists::-webkit-scrollbar,
+.bookmark-modal__content::-webkit-scrollbar,
+.post-modal__form::-webkit-scrollbar,
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.post-modal__topics::-webkit-scrollbar {
+  height: 8px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-track,
+.bookmark-modal__content::-webkit-scrollbar-track,
+.post-modal__form::-webkit-scrollbar-track,
+.post-modal__topics::-webkit-scrollbar-track,
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-thumb,
+.bookmark-modal__content::-webkit-scrollbar-thumb,
+.post-modal__form::-webkit-scrollbar-thumb,
+.post-modal__topics::-webkit-scrollbar-thumb,
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-thumb:hover,
+.bookmark-modal__content::-webkit-scrollbar-thumb:hover,
+.post-modal__form::-webkit-scrollbar-thumb:hover,
+.post-modal__topics::-webkit-scrollbar-thumb:hover,
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
 }
 
 /* ========== PAGE - Thiết lập trang cơ bản ========== */
@@ -244,8 +834,8 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background-color: rgba(248, 81, 73, 0.1);
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: var(--radius-sm);
   padding: 12px 14px;
   margin-bottom: var(--spacing-md);
@@ -254,14 +844,14 @@
 
 /* FORM__ERROR-ICON - Icon cảnh báo trong thông báo lỗi */
 .form__error-icon {
-  color: #f85149;
+  color: var(--color-danger);
   flex-shrink: 0;
 }
 
 /* FORM__ERROR-TEXT - Nội dung thông báo lỗi */
 .form__error-text {
   font-size: 14px;
-  color: #f85149;
+  color: var(--color-danger);
   font-weight: 500;
 }
 
@@ -297,7 +887,7 @@
 /* FORM__BUTTON--PRIMARY - Nút chính (đăng nhập) */
 .form__button--primary {
   background-color: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-white);
   margin-top: var(--spacing-sm);
 }
 
@@ -509,7 +1099,7 @@
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--color-white);
   background-color: var(--color-bg-tertiary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -548,84 +1138,23 @@
   position: relative;
 }
 
-/* COMMENT__MENU - Menu cho comment (giống post__menu) */
+/* COMMENT__MENU - Menu cho comment */
 .comment__menu {
   position: absolute;
   top: var(--spacing-sm);
   right: var(--spacing-sm);
 }
 
-.comment__menu-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.comment__menu-btn:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
-}
-
+/* Vị trí và min-width riêng cho comment dropdown */
 .comment__menu-dropdown {
-  position: absolute;
   top: calc(100% + 4px);
   right: 0;
   min-width: 160px;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-xs);
-  z-index: 100;
 }
 
+/* Padding nhỏ hơn cho comment menu item */
 .comment__menu-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  width: 100%;
   padding: 8px 10px;
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  background-color: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-  font-family: inherit;
-}
-
-.comment__menu-item:hover {
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-hover);
-}
-
-.comment__menu-item svg {
-  flex-shrink: 0;
-  opacity: 0.7;
-}
-
-.comment__menu-item--danger {
-  color: #f85149;
-}
-
-.comment__menu-item--danger:hover {
-  color: #ffffff;
-  background-color: #da3633;
-}
-
-.comment__menu-item--danger svg {
-  opacity: 1;
 }
 
 /* Comment edit form inline */
@@ -866,7 +1395,7 @@
 .header__login-btn {
   padding: 10px 20px;
   background-color: var(--color-accent);
-  color: white;
+  color: var(--color-white);
   text-decoration: none;
   border-radius: var(--radius-md);
   font-weight: 500;
@@ -1235,15 +1764,15 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
-  background-color: #ef4444;
+  color: var(--color-white);
+  background-color: var(--color-red);
   border-radius: var(--radius-sm);
   text-decoration: none;
   transition: var(--transition);
 }
 
 .post__read-more:hover {
-  background-color: #dc2626;
+  background-color: var(--color-red-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -1254,8 +1783,8 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
-  background-color: #ef4444;
+  color: var(--color-white);
+  background-color: var(--color-red);
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1264,7 +1793,7 @@
 }
 
 .post-detail__summarize-btn:hover {
-  background-color: #dc2626;
+  background-color: var(--color-red-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -1275,7 +1804,7 @@
   padding: 24px;
   background-color: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
-  border-left: 4px solid #ef4444;
+  border-left: 4px solid var(--color-red);
   box-shadow: var(--shadow-sm);
 }
 
@@ -1347,7 +1876,7 @@
   border-radius: 3px;
   font-family: "Courier New", monospace;
   font-size: 0.9em;
-  color: #ef4444;
+  color: var(--color-red);
 }
 
 .post-detail__summary-content pre {
@@ -1365,7 +1894,7 @@
 }
 
 .post-detail__summary-content blockquote {
-  border-left: 3px solid #ef4444;
+  border-left: 3px solid var(--color-red);
   padding-left: 16px;
   margin: 12px 0;
   color: var(--color-text-secondary);
@@ -1373,7 +1902,7 @@
 }
 
 .post-detail__summary-content a {
-  color: #ef4444;
+  color: var(--color-red);
   text-decoration: none;
 }
 
@@ -1462,7 +1991,7 @@
 
 /* PAGINATION__PAGE--ACTIVE - Trang đang được chọn */
 .pagination__page--active {
-  color: #ffffff;
+  color: var(--color-white);
   background-color: var(--color-accent);
   border-color: var(--color-accent);
 }
@@ -1531,7 +2060,7 @@
 /* SEARCH__BTN - Nút tìm kiếm */
 .search__btn {
   padding: 12px 16px;
-  background-color: #ef4444;
+  background-color: var(--color-red);
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1542,14 +2071,14 @@
 }
 
 .search__btn:hover {
-  background-color: #dc2626;
+  background-color: var(--color-red-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
 
 /* SEARCH__ICON - Icon tìm kiếm */
 .search__icon {
-  color: #ffffff;
+  color: var(--color-white);
   flex-shrink: 0;
 }
 
@@ -1692,24 +2221,36 @@
     var(--color-accent),
     var(--color-accent-hover)
   );
-  color: #ffffff;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 700;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   flex-shrink: 0;
 }
 
 /* Top 3 có màu vàng */
 .top-authors__item:nth-child(1) .top-authors__rank {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  background: linear-gradient(
+    135deg,
+    var(--color-gold),
+    var(--color-gold-light)
+  );
 }
 
 .top-authors__item:nth-child(2) .top-authors__rank {
-  background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+  background: linear-gradient(
+    135deg,
+    var(--color-silver),
+    var(--color-silver-light)
+  );
 }
 
 .top-authors__item:nth-child(3) .top-authors__rank {
-  background: linear-gradient(135deg, #cd7f32, #e5a05f);
+  background: linear-gradient(
+    135deg,
+    var(--color-bronze),
+    var(--color-bronze-light)
+  );
 }
 
 /* TOP-AUTHORS__AVATAR - Avatar tác giả */
@@ -1897,23 +2438,23 @@
 }
 
 .author-card__social-link--facebook {
-  background-color: #1877f2;
-  color: #ffffff;
+  background-color: var(--color-facebook);
+  color: var(--color-white);
 }
 
 .author-card__social-link--facebook:hover {
-  background-color: #0e62c7;
+  background-color: var(--color-facebook-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
 .author-card__social-link--linkedin {
-  background-color: #0077b5;
-  color: #ffffff;
+  background-color: var(--color-linkedin);
+  color: var(--color-white);
 }
 
 .author-card__social-link--linkedin:hover {
-  background-color: #005885;
+  background-color: var(--color-linkedin-hover);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
@@ -2187,7 +2728,7 @@
 
 /* PROFILE__BTN--FOLLOW - Nút theo dõi */
 .profile__btn--follow {
-  color: #ffffff;
+  color: var(--color-white);
   background-color: var(--color-accent);
 }
 
@@ -2205,9 +2746,9 @@
 }
 
 .profile__btn--following:hover {
-  background-color: rgba(248, 81, 73, 0.1);
-  border-color: #f85149;
-  color: #f85149;
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 /* PROFILE__BTN--CREATE-POST - Nút tạo bài viết */
@@ -2255,7 +2796,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--color-overlay);
 }
 
 .bookmark-modal__container {
@@ -2271,8 +2812,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
-    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-modal);
 }
 
 .bookmark-modal__header {
@@ -2289,26 +2829,6 @@
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
-}
-
-.bookmark-modal__close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.bookmark-modal__close:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
 }
 
 .bookmark-modal__body {
@@ -2331,31 +2851,6 @@
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-sm);
-}
-
-/* Dark scrollbar for bookmark lists */
-.bookmark-modal__lists::-webkit-scrollbar {
-  width: 8px;
-}
-
-.bookmark-modal__lists::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-  border-radius: 4px;
-}
-
-.bookmark-modal__lists::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 4px;
-}
-
-.bookmark-modal__lists::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
-/* Firefox scrollbar */
-.bookmark-modal__lists {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
 }
 
 .bookmark-modal__list-item {
@@ -2457,7 +2952,7 @@
   background-color: var(--color-accent);
   border: none;
   border-radius: var(--radius-sm);
-  color: #ffffff;
+  color: var(--color-white);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -2496,7 +2991,7 @@
 
 .bookmark-modal__delete-btn:hover:not(:disabled) {
   background-color: var(--color-danger);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .bookmark-modal__delete-btn:disabled {
@@ -2510,31 +3005,6 @@
   overflow-y: auto;
   padding: var(--spacing-md);
   background-color: var(--color-bg-secondary);
-}
-
-/* Dark scrollbar for bookmark content */
-.bookmark-modal__content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.bookmark-modal__content::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-  border-radius: 4px;
-}
-
-.bookmark-modal__content::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 4px;
-}
-
-.bookmark-modal__content::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
-/* Firefox scrollbar */
-.bookmark-modal__content {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
 }
 
 .bookmark-modal__posts {
@@ -2605,7 +3075,7 @@
 .bookmark-modal__post-remove:hover {
   background-color: var(--color-danger);
   border-color: var(--color-danger);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .bookmark-modal__post-title {
@@ -2619,6 +3089,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  line-clamp: 2;
 }
 
 .bookmark-modal__post-meta {
@@ -2685,7 +3156,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: var(--color-overlay);
 }
 
 .post-modal__container {
@@ -2701,8 +3172,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
-    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-modal);
 }
 
 .post-modal__header {
@@ -2720,55 +3190,10 @@
   margin: 0;
 }
 
-.post-modal__close {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.post-modal__close:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
-}
-
 .post-modal__form {
   padding: var(--spacing-lg);
   overflow-y: auto;
   flex: 1;
-}
-
-/* Dark scrollbar for modal form */
-.post-modal__form::-webkit-scrollbar {
-  width: 8px;
-}
-
-.post-modal__form::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-  border-radius: 4px;
-}
-
-.post-modal__form::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 4px;
-}
-
-.post-modal__form::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
-/* Firefox scrollbar */
-.post-modal__form {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
 }
 
 .post-modal__topics {
@@ -2780,31 +3205,6 @@
   overflow-y: hidden;
 }
 
-/* Dark scrollbar for topics */
-.post-modal__topics::-webkit-scrollbar {
-  height: 8px;
-}
-
-.post-modal__topics::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-  border-radius: 4px;
-}
-
-.post-modal__topics::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 4px;
-}
-
-.post-modal__topics::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-secondary);
-}
-
-/* Firefox scrollbar */
-.post-modal__topics {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
-}
-
 /* POST__MENU - Menu bài viết */
 .post__menu {
   position: absolute;
@@ -2812,77 +3212,16 @@
   right: var(--spacing-md);
 }
 
-.post__menu-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  background-color: transparent;
-  border: none;
-  color: var(--color-text-secondary);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.post__menu-btn:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
-}
-
+/* Vị trí và min-width riêng cho post dropdown */
 .post__menu-dropdown {
-  position: absolute;
   top: calc(100% + 4px);
   right: 0;
   min-width: 180px;
-  background-color: var(--color-bg-tertiary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-xs);
-  z-index: 100;
 }
 
+/* Font size lớn hơn cho post menu item */
 .post__menu-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  width: 100%;
-  padding: 10px 12px;
   font-size: 15px;
-  color: var(--color-text-secondary);
-  background-color: transparent;
-  border: none;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition);
-  text-align: left;
-  font-family: inherit;
-}
-
-.post__menu-item:hover {
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-hover);
-}
-
-.post__menu-item svg {
-  flex-shrink: 0;
-  opacity: 0.7;
-}
-
-.post__menu-item--danger {
-  color: #f85149;
-}
-
-.post__menu-item--danger:hover {
-  color: #ffffff;
-  background-color: #da3633;
-}
-
-.post__menu-item--danger svg {
-  opacity: 1;
 }
 
 /* PROFILE__POSTS - Phần bài viết */
@@ -2922,7 +3261,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: var(--color-overlay-dark);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2957,26 +3296,6 @@
   font-weight: 600;
   color: var(--color-text-primary);
   margin: 0;
-}
-
-/* PROFILE-EDIT__CLOSE - Nút đóng */
-.profile-edit__close {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--color-text-secondary);
-  cursor: pointer;
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
-}
-
-.profile-edit__close:hover {
-  background-color: var(--color-bg-hover);
-  color: var(--color-text-primary);
 }
 
 /* PROFILE-EDIT__FORM - Form chỉnh sửa */
@@ -3353,7 +3672,7 @@
 
 /* PODIUM__ITEM--FIRST - Vị trí thứ 1 */
 .podium__item--first {
-  border-color: #ffd700;
+  border-color: var(--color-gold);
   background: linear-gradient(
     135deg,
     var(--color-bg-secondary) 0%,
@@ -3365,7 +3684,7 @@
 
 /* PODIUM__ITEM--SECOND - Vị trí thứ 2 */
 .podium__item--second {
-  border-color: #c0c0c0;
+  border-color: var(--color-silver);
   background: linear-gradient(
     135deg,
     var(--color-bg-secondary) 0%,
@@ -3377,7 +3696,7 @@
 
 /* PODIUM__ITEM--THIRD - Vị trí thứ 3 */
 .podium__item--third {
-  border-color: #cd7f32;
+  border-color: var(--color-bronze);
   background: linear-gradient(
     135deg,
     var(--color-bg-secondary) 0%,
@@ -3411,25 +3730,37 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   font-size: 24px;
   font-weight: 700;
   margin-bottom: var(--spacing-md);
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .podium__item--first .podium__rank {
-  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  background: linear-gradient(
+    135deg,
+    var(--color-gold),
+    var(--color-gold-light)
+  );
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
 }
 
 .podium__item--second .podium__rank {
-  background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+  background: linear-gradient(
+    135deg,
+    var(--color-silver),
+    var(--color-silver-light)
+  );
   box-shadow: 0 4px 12px rgba(192, 192, 192, 0.4);
 }
 
 .podium__item--third .podium__rank {
-  background: linear-gradient(135deg, #cd7f32, #e5a05f);
+  background: linear-gradient(
+    135deg,
+    var(--color-bronze),
+    var(--color-bronze-light)
+  );
   box-shadow: 0 4px 12px rgba(205, 127, 50, 0.4);
 }
 
@@ -3445,7 +3776,7 @@
 }
 
 .podium__item--first .podium__avatar {
-  border-color: #ffd700;
+  border-color: var(--color-gold);
   width: 120px;
   height: 120px;
 }
@@ -3510,7 +3841,7 @@
 .podium__stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #22c55e;
+  color: var(--color-success);
 }
 
 /* PODIUM__STAT-LABEL - Label */
@@ -3640,7 +3971,7 @@
 
 /* RANKING-TABLE__TD--CORRECT - Correct count */
 .ranking-table__td--correct {
-  color: #22c55e;
+  color: var(--color-success);
   font-weight: 600;
 }
 
@@ -3820,10 +4151,10 @@
 .post-detail__error {
   text-align: center;
   padding: var(--spacing-xxl);
-  background-color: rgba(248, 81, 73, 0.1);
-  border: 1px solid rgba(248, 81, 73, 0.3);
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
   border-radius: var(--radius-lg);
-  color: #f85149;
+  color: var(--color-danger);
 }
 
 /* POST-DETAIL__CONTAINER - Container chứa vote sidebar, nội dung và TOC */
@@ -3998,7 +4329,7 @@
   border-radius: 4px;
   font-family: "Courier New", Courier, monospace;
   font-size: 0.9em;
-  color: #ff7b72;
+  color: var(--color-code-inline);
 }
 
 .post-detail__body pre {
@@ -4097,26 +4428,26 @@
 
 /* POST-DETAIL__VOTE-BTN--UP - Nút upvote */
 .post-detail__vote-btn--up:hover {
-  color: #22c55e;
-  border-color: #22c55e;
+  color: var(--color-success);
+  border-color: var(--color-success);
 }
 
 .post-detail__vote-btn--up.post-detail__vote-btn--active {
-  background-color: rgba(34, 197, 94, 0.1);
-  border-color: #22c55e;
-  color: #22c55e;
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
 /* POST-DETAIL__VOTE-BTN--DOWN - Nút downvote */
 .post-detail__vote-btn--down:hover {
-  color: #ef4444;
-  border-color: #ef4444;
+  color: var(--color-red);
+  border-color: var(--color-red);
 }
 
 .post-detail__vote-btn--down.post-detail__vote-btn--active {
   background-color: rgba(239, 68, 68, 0.1);
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: var(--color-red);
+  color: var(--color-red);
 }
 
 /* POST-DETAIL__VOTE-COUNT - Số vote */
@@ -4200,31 +4531,6 @@
   padding: var(--spacing-xs);
 }
 
-/* Dark scrollbar for dropdown list */
-.post-detail__bookmark-dropdown-list::-webkit-scrollbar {
-  width: 6px;
-}
-
-.post-detail__bookmark-dropdown-list::-webkit-scrollbar-track {
-  background: var(--color-bg-primary);
-  border-radius: 3px;
-}
-
-.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb {
-  background: var(--color-border-hover);
-  border-radius: 3px;
-}
-
-.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-tertiary);
-}
-
-/* Firefox scrollbar */
-.post-detail__bookmark-dropdown-list {
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
-}
-
 .post-detail__bookmark-dropdown-loading {
   padding: var(--spacing-md);
   text-align: center;
@@ -4295,7 +4601,7 @@
   font-size: 11px;
   padding: 2px 6px;
   background-color: var(--color-success);
-  color: #ffffff;
+  color: var(--color-white);
   border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
@@ -4312,7 +4618,7 @@
   background-color: var(--color-accent);
   border: none;
   border-radius: var(--radius-sm);
-  color: #ffffff;
+  color: var(--color-white);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
