@@ -907,10 +907,363 @@ async function initPostDetail() {
     if (summarizeBtn) {
       summarizeBtn.addEventListener("click", () => handleSummarize(postId));
     }
+
+    // Setup bookmark dropdown
+    initBookmarkDropdown(postId);
   } catch (error) {
     console.error("Error initializing post detail:", error);
     showError("Không thể tải bài viết. Vui lòng thử lại sau.");
   }
+}
+
+// ========== BOOKMARK DROPDOWN FUNCTIONS ==========
+
+let bookmarkLists = [];
+let selectedBookmarkListIds = new Set(); // Thay đổi từ single name sang Set of IDs
+let isBookmarkDropdownOpen = false;
+let savedBookmarkListIds = []; // IDs của các bookmark lists đã lưu post này
+
+// Fetch bookmark lists từ API
+async function fetchBookmarkLists() {
+  try {
+    const token = getAuthToken();
+    if (!token) return [];
+
+    const response = await fetch(`${API_BASE_URL}/bookmarks/lists`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching bookmark lists:", error);
+    return [];
+  }
+}
+
+// Fetch danh sách bookmark list IDs chứa post này
+async function fetchSavedBookmarkListIds(postId) {
+  try {
+    const token = getAuthToken();
+    if (!token) return [];
+
+    const response = await fetch(
+      `${API_BASE_URL}/bookmarks/post/${postId}/lists`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching saved bookmark list IDs:", error);
+    return [];
+  }
+}
+
+// Thêm post vào bookmark list
+async function addPostToBookmark(listName, postId) {
+  try {
+    const token = getAuthToken();
+    if (!token) {
+      alert("Vui lòng đăng nhập để lưu bookmark");
+      return null;
+    }
+
+    const response = await fetch(`${API_BASE_URL}/bookmarks/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        listName: listName,
+        postId: parseInt(postId),
+      }),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      throw new Error(error.message || "Không thể lưu bookmark");
+    }
+  } catch (error) {
+    console.error("Error adding post to bookmark:", error);
+    throw error;
+  }
+}
+
+// Render danh sách bookmark trong dropdown
+function renderBookmarkDropdownList(lists) {
+  const container = document.getElementById("bookmarkDropdownList");
+
+  if (!lists || lists.length === 0) {
+    container.innerHTML = `
+      <div class="post-detail__bookmark-dropdown-empty">
+        Chưa có bookmark list nào.<br/>
+        <small>Tạo bookmark list trong trang Profile</small>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = lists
+    .map((list) => {
+      const isSelected = selectedBookmarkListIds.has(list.listId);
+      const isSaved = savedBookmarkListIds.includes(list.listId);
+
+      return `
+        <button 
+          class="post-detail__bookmark-dropdown-item ${
+            isSelected || isSaved
+              ? "post-detail__bookmark-dropdown-item--selected"
+              : ""
+          }" 
+          data-list-id="${list.listId}"
+          data-list-name="${list.name}"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ${isSelected || isSaved ? 'fill="currentColor"' : ""}
+            />
+          </svg>
+          <span>${list.name}</span>
+          ${
+            isSaved && !isSelected
+              ? '<span class="post-detail__bookmark-saved-badge">Đã lưu</span>'
+              : ""
+          }
+        </button>
+      `;
+    })
+    .join("");
+}
+
+// Toggle bookmark dropdown
+function toggleBookmarkDropdown() {
+  const dropdown = document.getElementById("bookmarkDropdown");
+  const saveBtn = document.getElementById("saveBookmarkBtn");
+
+  if (isBookmarkDropdownOpen) {
+    dropdown.style.display = "none";
+    isBookmarkDropdownOpen = false;
+  } else {
+    dropdown.style.display = "block";
+    isBookmarkDropdownOpen = true;
+
+    // Reset selection (giữ lại trạng thái đã lưu)
+    selectedBookmarkListIds.clear();
+    saveBtn.disabled = true;
+
+    // Load bookmark lists
+    loadBookmarkDropdownLists();
+  }
+}
+
+// Load bookmark lists vào dropdown
+async function loadBookmarkDropdownLists() {
+  const container = document.getElementById("bookmarkDropdownList");
+  container.innerHTML =
+    '<div class="post-detail__bookmark-dropdown-loading">Đang tải...</div>';
+
+  const postId = getPostIdFromURL();
+
+  // Fetch cả bookmark lists và danh sách đã lưu
+  const [lists, savedIds] = await Promise.all([
+    fetchBookmarkLists(),
+    fetchSavedBookmarkListIds(postId),
+  ]);
+
+  bookmarkLists = lists;
+  savedBookmarkListIds = savedIds;
+
+  // Update bookmark button state nếu đã có bookmark
+  if (savedIds.length > 0) {
+    const bookmarkBtn = document.getElementById("bookmarkBtn");
+    if (bookmarkBtn) {
+      bookmarkBtn.classList.add("post-detail__bookmark-btn--active");
+    }
+  }
+
+  renderBookmarkDropdownList(bookmarkLists);
+}
+
+// Handle chọn bookmark list trong dropdown (multi-select)
+function handleSelectBookmarkList(listId, listName) {
+  // Nếu đã được lưu sẵn thì không cho chọn lại
+  if (savedBookmarkListIds.includes(listId)) {
+    return;
+  }
+
+  // Toggle selection
+  if (selectedBookmarkListIds.has(listId)) {
+    selectedBookmarkListIds.delete(listId);
+  } else {
+    selectedBookmarkListIds.add(listId);
+  }
+
+  const saveBtn = document.getElementById("saveBookmarkBtn");
+  saveBtn.disabled = selectedBookmarkListIds.size === 0;
+
+  // Update UI
+  renderBookmarkDropdownList(bookmarkLists);
+}
+
+// Handle lưu bookmark (multi-select)
+async function handleSaveBookmark(postId) {
+  if (selectedBookmarkListIds.size === 0) return;
+
+  const saveBtn = document.getElementById("saveBookmarkBtn");
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = "Đang lưu...";
+  saveBtn.disabled = true;
+
+  try {
+    // Lưu vào tất cả bookmark lists đã chọn
+    const selectedLists = bookmarkLists.filter((list) =>
+      selectedBookmarkListIds.has(list.listId)
+    );
+    const promises = selectedLists.map((list) =>
+      addPostToBookmark(list.name, postId)
+    );
+
+    const results = await Promise.all(promises);
+    const successCount = results.filter((r) => r && r.success).length;
+
+    if (successCount > 0) {
+      // Update bookmark button để hiển thị đã bookmark
+      const bookmarkBtn = document.getElementById("bookmarkBtn");
+      bookmarkBtn.classList.add("post-detail__bookmark-btn--active");
+
+      // Cập nhật savedBookmarkListIds
+      selectedBookmarkListIds.forEach((id) => {
+        if (!savedBookmarkListIds.includes(id)) {
+          savedBookmarkListIds.push(id);
+        }
+      });
+
+      // Đóng dropdown
+      toggleBookmarkDropdown();
+
+      // Thông báo thành công
+      const listNames = selectedLists.map((l) => l.name).join(", ");
+      alert(`Đã lưu bài viết vào: ${listNames}`);
+    } else {
+      alert("Không thể lưu bookmark");
+      saveBtn.textContent = originalText;
+      saveBtn.disabled = false;
+    }
+  } catch (error) {
+    alert(error.message);
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+  }
+}
+
+// Close dropdown khi click outside
+function handleClickOutsideBookmarkDropdown(event) {
+  const wrapper = document.querySelector(".post-detail__bookmark-wrapper");
+  if (wrapper && !wrapper.contains(event.target) && isBookmarkDropdownOpen) {
+    const dropdown = document.getElementById("bookmarkDropdown");
+    dropdown.style.display = "none";
+    isBookmarkDropdownOpen = false;
+  }
+}
+
+// Load trạng thái bookmark ban đầu khi trang được tải
+async function loadInitialBookmarkState(postId) {
+  try {
+    const token = getAuthToken();
+    if (!token) return;
+
+    const savedIds = await fetchSavedBookmarkListIds(postId);
+    savedBookmarkListIds = savedIds;
+
+    // Nếu đã có ít nhất 1 bookmark list lưu post này, highlight nút bookmark
+    if (savedIds.length > 0) {
+      const bookmarkBtn = document.getElementById("bookmarkBtn");
+      if (bookmarkBtn) {
+        bookmarkBtn.classList.add("post-detail__bookmark-btn--active");
+      }
+    }
+  } catch (error) {
+    console.error("Error loading initial bookmark state:", error);
+  }
+}
+
+// Initialize bookmark dropdown
+function initBookmarkDropdown(postId) {
+  const bookmarkBtn = document.getElementById("bookmarkBtn");
+  const saveBtn = document.getElementById("saveBookmarkBtn");
+  const listContainer = document.getElementById("bookmarkDropdownList");
+  const dropdown = document.getElementById("bookmarkDropdown");
+
+  if (!bookmarkBtn) return;
+
+  // Load trạng thái bookmark ban đầu
+  loadInitialBookmarkState(postId);
+
+  // Toggle dropdown khi click bookmark button
+  bookmarkBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+
+    // Check if logged in
+    const token = getAuthToken();
+    if (!token) {
+      alert("Vui lòng đăng nhập để lưu bookmark");
+      return;
+    }
+
+    toggleBookmarkDropdown();
+  });
+
+  // Prevent dropdown from closing when clicking inside
+  if (dropdown) {
+    dropdown.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+  }
+
+  // Handle chọn bookmark list - dùng event delegation
+  if (listContainer) {
+    listContainer.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const item = e.target.closest(".post-detail__bookmark-dropdown-item");
+      if (item) {
+        const listId = parseInt(item.dataset.listId);
+        const listName = item.dataset.listName;
+        if (listId && listName) {
+          handleSelectBookmarkList(listId, listName);
+        }
+      }
+    });
+  }
+
+  // Handle save button
+  if (saveBtn) {
+    saveBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleSaveBookmark(postId);
+    });
+  }
+
+  // Close dropdown khi click outside
+  document.addEventListener("click", handleClickOutsideBookmarkDropdown);
 }
 
 // Init khi DOM ready

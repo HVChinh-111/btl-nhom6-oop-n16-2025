@@ -314,22 +314,19 @@ function renderProfileHeader(user) {
   }
 
   // Hiển thị nút phù hợp
-  const editBtn = document.getElementById("editProfileBtn");
-  const createPostBtn = document.getElementById("createPostBtn");
+  const ownProfileActions = document.getElementById("ownProfileActions");
   const followBtn = document.getElementById("followBtn");
   const unfollowBtn = document.getElementById("unfollowBtn");
   const token = getAuthToken();
 
   if (isOwnProfile) {
     // Xem profile bản thân
-    editBtn.style.display = "flex";
-    createPostBtn.style.display = "flex";
+    ownProfileActions.style.display = "flex";
     followBtn.style.display = "none";
     unfollowBtn.style.display = "none";
   } else {
     // Xem profile người khác
-    editBtn.style.display = "none";
-    createPostBtn.style.display = "none";
+    ownProfileActions.style.display = "none";
 
     if (!token) {
       // Chưa đăng nhập -> vô hiệu hóa nút follow
@@ -981,8 +978,506 @@ async function initProfile() {
   if (isOwnProfile) {
     allTopics = await fetchTopics();
     renderTopicsCheckboxes(allTopics);
+
+    // Initialize bookmark modal events
+    initBookmarkModal();
   }
 }
 
 // Initialize on page load
 document.addEventListener("DOMContentLoaded", initProfile);
+
+// ========== BOOKMARK FUNCTIONS ==========
+
+let bookmarkLists = [];
+let selectedBookmarkListId = null;
+
+// Fetch bookmark lists từ API
+async function fetchBookmarkLists() {
+  try {
+    const token = getAuthToken();
+    console.log(
+      "Fetching bookmark lists with token:",
+      token ? "exists" : "missing"
+    );
+
+    if (!token) {
+      console.error("No auth token found");
+      return [];
+    }
+
+    const response = await fetch(`${API_BASE_URL}/bookmarks/lists`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Bookmark lists response status:", response.status);
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Bookmark lists data:", data);
+      return data;
+    } else {
+      const errorText = await response.text();
+      console.error("Error response:", errorText);
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching bookmark lists:", error);
+    return [];
+  }
+}
+
+// Tạo bookmark list mới
+async function createBookmarkList(listName) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/bookmarks/list/create?listName=${encodeURIComponent(
+        listName
+      )}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+        },
+      }
+    );
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      throw new Error(error.message || "Không thể tạo bookmark list");
+    }
+  } catch (error) {
+    console.error("Error creating bookmark list:", error);
+    throw error;
+  }
+}
+
+// Render danh sách bookmark lists trong sidebar
+function renderBookmarkListsSidebar(lists) {
+  const container = document.getElementById("bookmarkListsSidebar");
+  console.log("Rendering bookmark lists:", lists, "Container:", container);
+
+  if (!container) {
+    console.error("Container not found for rendering bookmark lists");
+    return;
+  }
+
+  if (!lists || lists.length === 0) {
+    container.innerHTML = `
+      <div class="bookmark-modal__list-empty">
+        <p>Chưa có bookmark list nào</p>
+        <p style="font-size: 12px; margin-top: 8px;">Tạo một bookmark list mới để lưu các bài viết yêu thích</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = lists
+    .map(
+      (list) => `
+      <button 
+        class="bookmark-modal__list-item ${
+          selectedBookmarkListId === list.listId
+            ? "bookmark-modal__list-item--active"
+            : ""
+        }" 
+        data-list-id="${list.listId}"
+        data-list-name="${list.name}"
+      >
+        <svg class="bookmark-modal__list-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="bookmark-modal__list-name">${list.name}</span>
+        <span class="bookmark-modal__list-count">${
+          list.posts ? list.posts.length : 0
+        }</span>
+      </button>
+    `
+    )
+    .join("");
+
+  console.log("Rendered bookmark lists HTML");
+}
+
+// Render danh sách bài viết trong bookmark list đã chọn
+function renderBookmarkPosts(posts) {
+  const container = document.getElementById("bookmarkPostsList");
+
+  if (!posts || posts.length === 0) {
+    container.innerHTML = `
+      <div class="bookmark-modal__empty">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <p>Bookmark list này chưa có bài viết nào</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = posts
+    .map(
+      (post) => `
+      <div class="bookmark-modal__post-item-wrapper">
+        <a href="/post?id=${post.postId}" class="bookmark-modal__post-item">
+          <h4 class="bookmark-modal__post-title">${post.title}</h4>
+          <div class="bookmark-modal__post-meta">
+            <span class="bookmark-modal__post-author">${
+              post.author
+                ? `${post.author.lastname || ""} ${post.author.firstname || ""}`
+                : "Ẩn danh"
+            }</span>
+            <span>•</span>
+            <span>${formatDate(post.createdAt)}</span>
+          </div>
+        </a>
+        <button class="bookmark-modal__post-remove" data-post-id="${
+          post.postId
+        }" title="Xóa khỏi bookmark list">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M6 6L18 18M6 18L18 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+    `
+    )
+    .join("");
+}
+
+// Mở bookmark modal
+function openBookmarkModal() {
+  const modal = document.getElementById("bookmarkModal");
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+
+  // Load bookmark lists
+  loadBookmarkLists();
+}
+
+// Đóng bookmark modal
+function closeBookmarkModal() {
+  const modal = document.getElementById("bookmarkModal");
+  modal.style.display = "none";
+  document.body.style.overflow = "auto";
+
+  // Reset state
+  selectedBookmarkListId = null;
+  document.getElementById("newBookmarkListName").value = "";
+
+  // Disable delete button
+  const deleteBtn = document.getElementById("deleteBookmarkListBtn");
+  if (deleteBtn) deleteBtn.disabled = true;
+
+  // Reset posts display
+  document.getElementById("bookmarkPostsList").innerHTML = `
+    <div class="bookmark-modal__empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+        <path
+          d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <p>Chọn một bookmark list để xem các bài viết</p>
+    </div>
+  `;
+}
+
+// Load bookmark lists
+async function loadBookmarkLists() {
+  const container = document.getElementById("bookmarkListsSidebar");
+  console.log("Loading bookmark lists, container:", container);
+
+  if (!container) {
+    console.error("bookmarkListsSidebar container not found!");
+    return;
+  }
+
+  container.innerHTML =
+    '<div class="bookmark-modal__loading">Đang tải...</div>';
+
+  bookmarkLists = await fetchBookmarkLists();
+  console.log("Loaded bookmark lists:", bookmarkLists);
+  renderBookmarkListsSidebar(bookmarkLists);
+}
+
+// Handle click vào bookmark list
+function handleBookmarkListClick(listId) {
+  selectedBookmarkListId = listId;
+
+  // Update active state
+  const allItems = document.querySelectorAll(".bookmark-modal__list-item");
+  allItems.forEach((item) => {
+    item.classList.remove("bookmark-modal__list-item--active");
+    if (parseInt(item.dataset.listId) === listId) {
+      item.classList.add("bookmark-modal__list-item--active");
+    }
+  });
+
+  // Enable delete button
+  const deleteBtn = document.getElementById("deleteBookmarkListBtn");
+  if (deleteBtn) deleteBtn.disabled = false;
+
+  // Find selected list and render posts
+  const selectedList = bookmarkLists.find((list) => list.listId === listId);
+  if (selectedList) {
+    renderBookmarkPosts(selectedList.posts || []);
+  }
+}
+
+// Handle tạo bookmark list mới
+async function handleCreateBookmarkList() {
+  const input = document.getElementById("newBookmarkListName");
+  const listName = input.value.trim();
+
+  if (!listName) {
+    alert("Vui lòng nhập tên bookmark list");
+    return;
+  }
+
+  try {
+    const result = await createBookmarkList(listName);
+    if (result.success) {
+      // Clear input
+      input.value = "";
+
+      // Reload bookmark lists
+      await loadBookmarkLists();
+
+      // Notify user
+      console.log("Bookmark list created:", result);
+    } else {
+      alert(result.message || "Không thể tạo bookmark list");
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+// Xóa bookmark list
+async function deleteBookmarkList(listId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookmarks/list/${listId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      throw new Error(error.message || "Không thể xóa bookmark list");
+    }
+  } catch (error) {
+    console.error("Error deleting bookmark list:", error);
+    throw error;
+  }
+}
+
+// Xóa post khỏi bookmark list
+async function removePostFromBookmarkList(listName, postId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/bookmarks/remove`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
+      body: JSON.stringify({
+        listName: listName,
+        postId: parseInt(postId),
+      }),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      const error = await response.json();
+      throw new Error(
+        error.message || "Không thể xóa bài viết khỏi bookmark list"
+      );
+    }
+  } catch (error) {
+    console.error("Error removing post from bookmark list:", error);
+    throw error;
+  }
+}
+
+// Handle xóa bookmark list đã chọn
+async function handleDeleteBookmarkList() {
+  if (!selectedBookmarkListId) {
+    alert("Vui lòng chọn một bookmark list để xóa");
+    return;
+  }
+
+  const selectedList = bookmarkLists.find(
+    (list) => list.listId === selectedBookmarkListId
+  );
+  if (!selectedList) return;
+
+  if (
+    !confirm(`Bạn có chắc chắn muốn xóa bookmark list "${selectedList.name}"?`)
+  ) {
+    return;
+  }
+
+  try {
+    const result = await deleteBookmarkList(selectedBookmarkListId);
+    if (result.success) {
+      // Reset state
+      selectedBookmarkListId = null;
+
+      // Update delete button state
+      const deleteBtn = document.getElementById("deleteBookmarkListBtn");
+      if (deleteBtn) deleteBtn.disabled = true;
+
+      // Reset posts display
+      document.getElementById("bookmarkPostsList").innerHTML = `
+        <div class="bookmark-modal__empty">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <p>Chọn một bookmark list để xem các bài viết</p>
+        </div>
+      `;
+
+      // Reload bookmark lists
+      await loadBookmarkLists();
+    } else {
+      alert(result.message || "Không thể xóa bookmark list");
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+// Handle xóa post khỏi bookmark list
+async function handleRemovePostFromBookmarkList(postId) {
+  if (!selectedBookmarkListId) return;
+
+  const selectedList = bookmarkLists.find(
+    (list) => list.listId === selectedBookmarkListId
+  );
+  if (!selectedList) return;
+
+  try {
+    const result = await removePostFromBookmarkList(selectedList.name, postId);
+    if (result.success) {
+      // Reload bookmark lists và render lại posts
+      await loadBookmarkLists();
+
+      // Tìm lại list đã cập nhật và render posts
+      const updatedList = bookmarkLists.find(
+        (list) => list.listId === selectedBookmarkListId
+      );
+      if (updatedList) {
+        renderBookmarkPosts(updatedList.posts || []);
+      }
+    } else {
+      alert(result.message || "Không thể xóa bài viết khỏi bookmark list");
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
+// Initialize bookmark modal
+function initBookmarkModal() {
+  // Open modal button
+  const openBtn = document.getElementById("bookmarkListsBtn");
+  if (openBtn) {
+    openBtn.addEventListener("click", openBookmarkModal);
+  }
+
+  // Close modal button
+  const closeBtn = document.getElementById("closeBookmarkModal");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeBookmarkModal);
+  }
+
+  // Close modal when clicking overlay
+  const overlay = document.getElementById("bookmarkModalOverlay");
+  if (overlay) {
+    overlay.addEventListener("click", closeBookmarkModal);
+  }
+
+  // Create bookmark list button
+  const createBtn = document.getElementById("createBookmarkListBtn");
+  if (createBtn) {
+    createBtn.addEventListener("click", handleCreateBookmarkList);
+  }
+
+  // Delete bookmark list button
+  const deleteBtn = document.getElementById("deleteBookmarkListBtn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", handleDeleteBookmarkList);
+  }
+
+  // Enter key to create bookmark list
+  const createInput = document.getElementById("newBookmarkListName");
+  if (createInput) {
+    createInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        handleCreateBookmarkList();
+      }
+    });
+  }
+
+  // Delegate click on bookmark list items
+  const listsSidebar = document.getElementById("bookmarkListsSidebar");
+  if (listsSidebar) {
+    listsSidebar.addEventListener("click", (e) => {
+      const listItem = e.target.closest(".bookmark-modal__list-item");
+      if (listItem) {
+        const listId = parseInt(listItem.dataset.listId);
+        handleBookmarkListClick(listId);
+      }
+    });
+  }
+
+  // Delegate click on remove post buttons
+  const postsContainer = document.getElementById("bookmarkPostsList");
+  if (postsContainer) {
+    postsContainer.addEventListener("click", (e) => {
+      const removeBtn = e.target.closest(".bookmark-modal__post-remove");
+      if (removeBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        const postId = parseInt(removeBtn.dataset.postId);
+        handleRemovePostFromBookmarkList(postId);
+      }
+    });
+  }
+}

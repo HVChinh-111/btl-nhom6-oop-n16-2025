@@ -2145,9 +2145,17 @@
 /* PROFILE__ACTIONS - Các nút action */
 .profile__actions {
   display: flex;
-  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
   padding-top: var(--spacing-md);
   flex-shrink: 0;
+}
+
+/* PROFILE__ACTIONS-GROUP - Nhóm các nút xếp dọc */
+.profile__actions-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 /* PROFILE__BTN - Nút chung */
@@ -2212,6 +2220,449 @@
 .profile__btn--create-post:hover {
   background-color: var(--color-bg-hover);
   border-color: var(--color-border-hover);
+}
+
+/* PROFILE__BTN--BOOKMARK-LISTS - Nút Bookmark Lists */
+.profile__btn--bookmark-lists {
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+}
+
+.profile__btn--bookmark-lists:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* ========== BOOKMARK MODAL ========== */
+/* BOOKMARK-MODAL - Modal quản lý bookmark lists */
+.bookmark-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.bookmark-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.bookmark-modal__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 900px;
+  height: 80vh;
+  max-height: 700px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
+    0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.bookmark-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+.bookmark-modal__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.bookmark-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bookmark-modal__close:hover {
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.bookmark-modal__body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar bên trái */
+.bookmark-modal__sidebar {
+  width: 280px;
+  min-width: 280px;
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+}
+
+.bookmark-modal__lists {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+}
+
+/* Dark scrollbar for bookmark lists */
+.bookmark-modal__lists::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.bookmark-modal__lists::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox scrollbar */
+.bookmark-modal__lists {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.bookmark-modal__list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+  background-color: transparent;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+
+.bookmark-modal__list-item:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.bookmark-modal__list-item--active {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-accent);
+}
+
+.bookmark-modal__list-item--active:hover {
+  color: var(--color-accent);
+}
+
+.bookmark-modal__list-icon {
+  flex-shrink: 0;
+}
+
+.bookmark-modal__list-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bookmark-modal__list-count {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  background-color: var(--color-bg-tertiary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.bookmark-modal__loading {
+  padding: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Phần tạo bookmark list mới */
+.bookmark-modal__create {
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+}
+
+.bookmark-modal__create-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: var(--spacing-sm);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  transition: var(--transition);
+  outline: none;
+  font-family: inherit;
+}
+
+.bookmark-modal__create-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.bookmark-modal__create-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(47, 129, 247, 0.1);
+}
+
+.bookmark-modal__create-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  padding: 10px 16px;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.bookmark-modal__create-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* Actions container with 2 buttons */
+.bookmark-modal__actions {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+/* Delete bookmark list button */
+.bookmark-modal__delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  flex: 1;
+  padding: 10px 16px;
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-sm);
+  color: var(--color-danger);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.bookmark-modal__delete-btn:hover:not(:disabled) {
+  background-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.bookmark-modal__delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Content bên phải */
+.bookmark-modal__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-secondary);
+}
+
+/* Dark scrollbar for bookmark content */
+.bookmark-modal__content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.bookmark-modal__content::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 4px;
+}
+
+.bookmark-modal__content::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 4px;
+}
+
+.bookmark-modal__content::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* Firefox scrollbar */
+.bookmark-modal__content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.bookmark-modal__posts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.bookmark-modal__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  gap: var(--spacing-md);
+}
+
+.bookmark-modal__empty svg {
+  opacity: 0.5;
+}
+
+.bookmark-modal__empty p {
+  font-size: 14px;
+  max-width: 250px;
+}
+
+/* Bookmark post item wrapper */
+.bookmark-modal__post-item-wrapper {
+  display: flex;
+  align-items: stretch;
+  gap: var(--spacing-xs);
+}
+
+/* Bookmark post item */
+.bookmark-modal__post-item {
+  display: block;
+  flex: 1;
+  padding: var(--spacing-md);
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.bookmark-modal__post-item:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-border-hover);
+}
+
+/* Remove post from bookmark button */
+.bookmark-modal__post-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bookmark-modal__post-remove:hover {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
+.bookmark-modal__post-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--spacing-xs) 0;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.bookmark-modal__post-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+}
+
+.bookmark-modal__post-author {
+  color: var(--color-text-secondary);
+}
+
+.bookmark-modal__list-empty {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 14px;
+}
+
+/* Responsive cho bookmark modal */
+@media (max-width: 768px) {
+  .bookmark-modal__container {
+    flex-direction: column;
+    height: 90vh;
+    max-height: none;
+  }
+
+  .bookmark-modal__body {
+    flex-direction: column;
+  }
+
+  .bookmark-modal__sidebar {
+    width: 100%;
+    min-width: unset;
+    max-height: 40%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .bookmark-modal__content {
+    flex: 1;
+  }
 }
 
 /* POST-MODAL - Modal tạo/sửa bài viết */
@@ -3606,7 +4057,7 @@
 .post-detail__vote-sticky {
   position: fixed;
   left: calc((100vw - 1400px) / 2 - 70px);
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -3712,6 +4163,170 @@
 
 .post-detail__bookmark-btn--active svg {
   fill: var(--color-accent);
+}
+
+/* POST-DETAIL__BOOKMARK-WRAPPER - Wrapper cho bookmark button và dropdown */
+.post-detail__bookmark-wrapper {
+  position: relative;
+}
+
+/* POST-DETAIL__BOOKMARK-DROPDOWN - Dropdown menu bookmark */
+.post-detail__bookmark-dropdown {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(100% + 10px);
+  width: 220px;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 100;
+  overflow: hidden;
+}
+
+.post-detail__bookmark-dropdown-header {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-tertiary);
+}
+
+.post-detail__bookmark-dropdown-list {
+  max-height: 160px;
+  overflow-y: auto;
+  padding: var(--spacing-xs);
+}
+
+/* Dark scrollbar for dropdown list */
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+  border-radius: 3px;
+}
+
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 3px;
+}
+
+.post-detail__bookmark-dropdown-list::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-tertiary);
+}
+
+/* Firefox scrollbar */
+.post-detail__bookmark-dropdown-list {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-hover) var(--color-bg-primary);
+}
+
+.post-detail__bookmark-dropdown-loading {
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.post-detail__bookmark-dropdown-empty {
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--color-text-tertiary);
+  font-size: 13px;
+  pointer-events: none;
+}
+
+.post-detail__bookmark-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: left;
+  font-family: inherit;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  pointer-events: auto;
+}
+
+.post-detail__bookmark-dropdown-item:hover {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+}
+
+.post-detail__bookmark-dropdown-item:active {
+  background-color: var(--color-bg-hover);
+}
+
+.post-detail__bookmark-dropdown-item--selected {
+  background-color: rgba(47, 129, 247, 0.1);
+  color: var(--color-accent);
+}
+
+.post-detail__bookmark-dropdown-item--selected:hover {
+  background-color: rgba(47, 129, 247, 0.15);
+}
+
+.post-detail__bookmark-dropdown-item svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.post-detail__bookmark-dropdown-item span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Badge "Đã lưu" */
+.post-detail__bookmark-saved-badge {
+  font-size: 11px;
+  padding: 2px 6px;
+  background-color: var(--color-success);
+  color: #ffffff;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.post-detail__bookmark-dropdown-footer {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-tertiary);
+}
+
+.post-detail__bookmark-save-btn {
+  width: 100%;
+  padding: 8px 16px;
+  background-color: var(--color-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: inherit;
+}
+
+.post-detail__bookmark-save-btn:hover:not(:disabled) {
+  background-color: var(--color-accent-hover);
+}
+
+.post-detail__bookmark-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* POST-DETAIL__TOC - Table of Contents Sidebar */
