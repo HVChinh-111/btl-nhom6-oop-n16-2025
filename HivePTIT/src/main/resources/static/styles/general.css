@@ -990,6 +990,139 @@
   box-shadow: var(--shadow-sm);
 }
 
+/* POST-DETAIL__SUMMARIZE-BTN - Nút tóm tắt AI (giống post__read-more) */
+.post-detail__summarize-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #ef4444;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.post-detail__summarize-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* POST-DETAIL__SUMMARY - Khung hiển thị kết quả AI (tông màu tối, như mini post) */
+.post-detail__summary {
+  margin-top: 16px;
+  padding: 24px;
+  background-color: var(--color-bg-tertiary);
+  border-radius: var(--radius-md);
+  border-left: 4px solid #ef4444;
+  box-shadow: var(--shadow-sm);
+}
+
+.post-detail__summary-title {
+  margin: 0 0 16px 0;
+  color: var(--color-text-primary);
+  font-size: 18px;
+  font-weight: 600;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.post-detail__summary-content {
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+/* Style cho nội dung HTML trong summary (giống post body) */
+.post-detail__summary-content h1,
+.post-detail__summary-content h2,
+.post-detail__summary-content h3,
+.post-detail__summary-content h4,
+.post-detail__summary-content h5,
+.post-detail__summary-content h6 {
+  color: var(--color-text-primary);
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.post-detail__summary-content h1 {
+  font-size: 1.8em;
+}
+.post-detail__summary-content h2 {
+  font-size: 1.5em;
+}
+.post-detail__summary-content h3 {
+  font-size: 1.3em;
+}
+.post-detail__summary-content h4 {
+  font-size: 1.1em;
+}
+
+.post-detail__summary-content p {
+  margin-bottom: 12px;
+}
+
+.post-detail__summary-content ul,
+.post-detail__summary-content ol {
+  margin: 12px 0;
+  padding-left: 24px;
+  color: var(--color-text-secondary);
+}
+
+.post-detail__summary-content li {
+  margin-bottom: 6px;
+}
+
+.post-detail__summary-content strong {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+.post-detail__summary-content code {
+  background-color: var(--color-bg-secondary);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+  color: #ef4444;
+}
+
+.post-detail__summary-content pre {
+  background-color: var(--color-bg-secondary);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.post-detail__summary-content pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.post-detail__summary-content blockquote {
+  border-left: 3px solid #ef4444;
+  padding-left: 16px;
+  margin: 12px 0;
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.post-detail__summary-content a {
+  color: #ef4444;
+  text-decoration: none;
+}
+
+.post-detail__summary-content a:hover {
+  text-decoration: underline;
+}
+
 /* ========== PAGINATION - Phân trang ========== */
 .pagination {
   display: flex;

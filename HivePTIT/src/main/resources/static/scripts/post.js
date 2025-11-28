@@ -342,7 +342,7 @@ async function handleSummarize(postId) {
   try {
     summarizeBtn.disabled = true;
     summarizeBtn.textContent = "Đang tóm tắt...";
-    summaryText.textContent = "Đang xử lý...";
+    summaryText.innerHTML = "Đang xử lý...";
     summaryContainer.style.display = "block";
 
     const token = getAuthToken();
@@ -364,10 +364,14 @@ async function handleSummarize(postId) {
     }
 
     const result = await response.json();
-    summaryText.textContent = result.summary;
+    // Hiển thị HTML được trả về từ backend
+    summaryText.innerHTML = result.summary;
+
+    // Apply Prism.js syntax highlighting cho code blocks trong summary
+    Prism.highlightAllUnder(summaryContainer);
   } catch (error) {
     console.error("Error summarizing:", error);
-    summaryText.textContent = "Lỗi: " + error.message;
+    summaryText.innerHTML = "<p>Lỗi: " + error.message + "</p>";
   } finally {
     summarizeBtn.disabled = false;
     summarizeBtn.textContent = "Tóm tắt bằng AI";

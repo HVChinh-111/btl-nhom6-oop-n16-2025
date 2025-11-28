@@ -5,6 +5,9 @@ import com.example.hiveptit.model.Posts;
 import com.example.hiveptit.repository.PostRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +30,23 @@ public class NvidiaAiService {
     
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final Parser markdownParser;
+    private final HtmlRenderer htmlRenderer;
     
     public NvidiaAiService() {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
+        this.markdownParser = Parser.builder().build();
+        this.htmlRenderer = HtmlRenderer.builder().build();
+    }
+    
+    // Chuyển đổi Markdown sang HTML
+    private String convertMarkdownToHtml(String markdown) {
+        if (markdown == null || markdown.isEmpty()) {
+            return "";
+        }
+        Node document = markdownParser.parse(markdown);
+        return htmlRenderer.render(document);
     }
     
     public SummarizeResponse summarizePost(Integer postId) throws Exception {
@@ -44,9 +60,12 @@ public class NvidiaAiService {
         
         String prompt = "Hãy tóm tắt nội dung sau đây một cách ngắn gọn và súc tích bằng tiếng Việt, chỉ nêu những ý chính:\n\n" + content;
         
-        String summary = callNvidiaApi(prompt);
+        String summaryMarkdown = callNvidiaApi(prompt);
         
-        return new SummarizeResponse(summary, postId);
+        // Chuyển đổi markdown sang HTML
+        String summaryHtml = convertMarkdownToHtml(summaryMarkdown);
+        
+        return new SummarizeResponse(summaryHtml, postId);
     }
     
     private String callNvidiaApi(String userMessage) throws Exception {

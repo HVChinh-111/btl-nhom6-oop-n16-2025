@@ -203,21 +203,8 @@
             </div>
 
             <!-- AI Summarize Button -->
-            <!-- AI button -->
             <div style="margin-top: 16px">
-              <button
-                class="post-detail__summarize-btn"
-                id="summarizeBtn"
-                style="
-                  padding: 8px 16px;
-                  background-color: #2563eb;
-                  color: white;
-                  border: none;
-                  border-radius: 4px;
-                  cursor: pointer;
-                  font-size: 14px;
-                "
-              >
+              <button class="post-detail__summarize-btn" id="summarizeBtn">
                 Tóm tắt bằng AI
               </button>
             </div>
@@ -226,22 +213,10 @@
             <div
               class="post-detail__summary"
               id="summaryContainer"
-              style="
-                display: none;
-                margin-top: 16px;
-                padding: 16px;
-                background-color: #f3f4f6;
-                border-radius: 8px;
-                border-left: 4px solid #2563eb;
-              "
+              style="display: none"
             >
-              <h4 style="margin: 0 0 8px 0; color: #1f2937; font-size: 16px">
-                Tóm tắt AI
-              </h4>
-              <p
-                id="summaryText"
-                style="margin: 0; color: #4b5563; line-height: 1.6"
-              ></p>
+              <h4 class="post-detail__summary-title">Tóm tắt AI</h4>
+              <div class="post-detail__summary-content" id="summaryText"></div>
             </div>
           </header>
 
