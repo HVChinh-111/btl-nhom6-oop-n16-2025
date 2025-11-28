@@ -101,9 +101,10 @@ async function handleLoginSubmit(e) {
 
     if (result.success) {
       // Show success message
-      showError("Đăng nhập thành công! Đang chuyển hướng...");
-      loginError.style.backgroundColor = "#166534";
-      loginError.style.borderColor = "#16a34a";
+      showError("Đăng nhập thành công!");
+      loginError.style.backgroundColor = "#22c55e";
+      loginError.style.borderColor = "#22c55e";
+      errorText.style.color = "#ffffff";
 
       // Redirect after a short delay
       setTimeout(() => {

@@ -1,6 +1,6 @@
 package com.example.hiveptit.model;
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -24,9 +24,11 @@ public class Posts {
     @Column(name = "vote_count", nullable = false)
     private int voteCount = 0;
 
-    private Instant createdAt = Instant.now();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    private Instant updatedAt = Instant.now();
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @ManyToMany
     @JoinTable(
@@ -39,7 +41,18 @@ public class Posts {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comments> comments = new ArrayList<>();
 
-    public Posts(Integer postId, Users author, String title, String content, int voteCount, Instant createdAt, Instant updatedAt, Set<Topics> topics, List<Comments> comments) {
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public Posts(Integer postId, Users author, String title, String content, int voteCount, LocalDateTime createdAt, LocalDateTime updatedAt, Set<Topics> topics, List<Comments> comments) {
         this.postId = postId;
         this.author = author;
         this.title = title;
@@ -95,19 +108,19 @@ public class Posts {
         this.voteCount = voteCount;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
-    public Instant getUpdatedAt() {
+    public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(Instant updatedAt) {
+    public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
 

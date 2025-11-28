@@ -30,8 +30,9 @@ function showSuccess(message) {
   if (signupError && errorText) {
     errorText.textContent = message;
     signupError.style.display = "flex";
-    signupError.style.backgroundColor = "#166534";
-    signupError.style.borderColor = "#16a34a";
+    signupError.style.backgroundColor = "#22c55e";
+    signupError.style.borderColor = "#22c55e";
+    errorText.style.color = "#ffffff";
   }
 }
 

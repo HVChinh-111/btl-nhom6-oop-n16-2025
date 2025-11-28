@@ -1,5 +1,6 @@
 package com.example.hiveptit.controller;
 
+import com.example.hiveptit.dto.BookmarkListDTO;
 import com.example.hiveptit.dto.BookmarkRequest;
 import com.example.hiveptit.dto.BookmarkResponse;
 import com.example.hiveptit.model.Bookmark_List;
@@ -52,10 +53,32 @@ public class BookmarkController {
     }
 
     @GetMapping("/lists")
-    public ResponseEntity<List<Bookmark_List>> getUserBookmarkLists(Authentication authentication) {
+    public ResponseEntity<List<BookmarkListDTO>> getUserBookmarkLists(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
-        List<Bookmark_List> lists = bookmarkService.getUserBookmarkLists(username);
+        List<BookmarkListDTO> lists = bookmarkService.getUserBookmarkListsDTO(username);
         return ResponseEntity.ok(lists);
+    }
+
+    @DeleteMapping("/list/{listId}")
+    public ResponseEntity<BookmarkResponse> deleteBookmarkList(
+            @PathVariable Integer listId,
+            Authentication authentication) {
+        
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        BookmarkResponse response = bookmarkService.deleteBookmarkList(listId, username);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/post/{postId}/lists")
+    public ResponseEntity<List<Integer>> getBookmarkListsForPost(
+            @PathVariable Integer postId,
+            Authentication authentication) {
+        
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        List<Integer> listIds = bookmarkService.getBookmarkListIdsContainingPost(postId, username);
+        return ResponseEntity.ok(listIds);
     }
 }

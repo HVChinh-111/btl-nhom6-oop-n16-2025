@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,8 +61,8 @@ public class PostService {
         post.setAuthor(author);
         post.setTitle(req.getTitle());
         post.setContent(req.getContent());
-        post.setCreatedAt(Instant.now());
-        post.setUpdatedAt(Instant.now());
+        post.setCreatedAt(LocalDateTime.now());
+        post.setUpdatedAt(LocalDateTime.now());
 
         if (req.getTopicIds() != null && !req.getTopicIds().isEmpty()) {
             List<Topics> topics = topicRepository.findAllById(req.getTopicIds());
@@ -84,7 +85,7 @@ public class PostService {
 
         post.setTitle(req.getTitle());
         post.setContent(req.getContent());
-        post.setUpdatedAt(Instant.now());
+        post.setUpdatedAt(LocalDateTime.now());
 
         if (req.getTopicIds() != null) {
             List<Topics> topics = topicRepository.findAllById(req.getTopicIds());

@@ -1,6 +1,6 @@
 package com.example.hiveptit.model;
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 @Entity
 @Table(name = "bookmark_list",
@@ -19,7 +19,14 @@ public class Bookmark_List {
     private String name;
 
     @Column(name = "created_at")
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     @ManyToMany
     @JoinTable(
@@ -35,7 +42,7 @@ public class Bookmark_List {
     public Bookmark_List(Users users, String name) {
         this.users = users;
         this.name = name;
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public Integer getListId() {
@@ -62,11 +69,11 @@ public class Bookmark_List {
         this.name = name;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

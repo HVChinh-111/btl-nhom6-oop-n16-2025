@@ -15,10 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,7 +55,7 @@ public class FeedService {
     }
 
     public List<FeedPostResponse> getTrendingFeed() {
-        Instant twentyFourHoursAgo = Instant.now().minus(24, ChronoUnit.HOURS);
+        LocalDateTime twentyFourHoursAgo = LocalDateTime.now().minusHours(24);
 
         List<Posts> recentPosts = postRepository.findByCreatedAtAfter(twentyFourHoursAgo);
 
@@ -125,8 +122,8 @@ public class FeedService {
         response.setContent(post.getContent());
         response.setVoteCount(post.getVoteCount());
         
-        LocalDateTime createdAt = LocalDateTime.ofInstant(post.getCreatedAt(), ZoneId.systemDefault());
-        LocalDateTime updatedAt = LocalDateTime.ofInstant(post.getUpdatedAt(), ZoneId.systemDefault());
+        LocalDateTime createdAt = post.getCreatedAt();
+        LocalDateTime updatedAt = post.getUpdatedAt();
         response.setCreatedAt(createdAt);
         response.setUpdatedAt(updatedAt);
         
