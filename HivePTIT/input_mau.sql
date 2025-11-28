@@ -230,3 +230,10 @@ INSERT INTO `votes` (student_id, comment_id, vote_type) VALUES
 -- User 2 tăng thêm 1 điểm (do vote comment). User 5 tăng thêm 1 điểm.
 
 -- Các user còn lại ranking = 0 do chưa được vote.
+
+-- role
+INSERT INTO `roles` (role_name) VALUES
+ ('Admin'),('Guest'),('Student');
+ 
+-- INSERT INTO user_role (student_id, role_id) VALUES
+-- ('B23DCKH011', 1);

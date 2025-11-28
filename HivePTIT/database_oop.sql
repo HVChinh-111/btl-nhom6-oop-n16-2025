@@ -9,7 +9,7 @@ create table `users`(
     email varchar(50) unique not null,
     firstname varchar(30), 
     lastname varchar(30),
-    avatar_url varchar(50),
+    avatar_url varchar(1000),
     bio longtext,
     is_verified ENUM('Y','N') default 'N',
     -- tinh bang trigger dua vao cmt va post 
