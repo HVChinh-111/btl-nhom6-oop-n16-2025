@@ -60,21 +60,28 @@ async function logout() {
 function formatDate(dateString) {
   const date = new Date(dateString);
   const now = new Date();
-  const diffInSeconds = Math.floor((now - date) / 1000);
+  const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+  const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
 
-  if (diffInSeconds < 60) return "Vừa xong";
-  if (diffInSeconds < 3600)
-    return `${Math.floor(diffInSeconds / 60)} phút trước`;
-  if (diffInSeconds < 86400)
-    return `${Math.floor(diffInSeconds / 3600)} giờ trước`;
-  if (diffInSeconds < 604800)
-    return `${Math.floor(diffInSeconds / 86400)} ngày trước`;
-
-  return date.toLocaleDateString("vi-VN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  // Nếu bé hơn 1 phút: hiển thị "Vừa xong"
+  if (diffInMinutes < 1) {
+    return "Vừa xong";
+  }
+  // Nếu bé hơn 60 phút: hiển thị ... phút trước
+  else if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`;
+  }
+  // Nếu bé hơn 24 giờ: hiển thị ... giờ trước
+  else if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`;
+  }
+  // Nếu lớn hơn 1 ngày: hiển thị ngày đăng bài (DD/MM/YYYY)
+  else {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 }
 
 // Truncate text

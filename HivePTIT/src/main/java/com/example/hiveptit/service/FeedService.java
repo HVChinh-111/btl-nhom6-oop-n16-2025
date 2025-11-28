@@ -125,8 +125,8 @@ public class FeedService {
         response.setContent(post.getContent());
         response.setVoteCount(post.getVoteCount());
         
-        LocalDateTime createdAt = LocalDateTime.ofInstant(post.getCreatedAt(), ZoneId.systemDefault());
-        LocalDateTime updatedAt = LocalDateTime.ofInstant(post.getUpdatedAt(), ZoneId.systemDefault());
+        LocalDateTime createdAt = post.getCreatedAt();
+        LocalDateTime updatedAt = post.getUpdatedAt();
         response.setCreatedAt(createdAt);
         response.setUpdatedAt(updatedAt);
         

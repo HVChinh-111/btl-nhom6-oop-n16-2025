@@ -39,7 +39,7 @@ public class BookmarkService {
         Bookmark_List bookmarkList = new Bookmark_List(user, listName);
         bookmarkList = bookmarkListRepository.save(bookmarkList);
 
-        LocalDateTime createdAt = LocalDateTime.ofInstant(bookmarkList.getCreatedAt(), ZoneId.systemDefault());
+        LocalDateTime createdAt = bookmarkList.getCreatedAt();
 
         return new BookmarkResponse(
                 "Bookmark list created successfully",
@@ -71,7 +71,7 @@ public class BookmarkService {
         bookmarkList.getPosts().add(post);
         bookmarkListRepository.save(bookmarkList);
 
-        LocalDateTime createdAt = LocalDateTime.ofInstant(bookmarkList.getCreatedAt(), ZoneId.systemDefault());
+        LocalDateTime createdAt = bookmarkList.getCreatedAt();
 
         return new BookmarkResponse(
                 "Post added to bookmark list",
@@ -100,7 +100,7 @@ public class BookmarkService {
         bookmarkList.getPosts().remove(post);
         bookmarkListRepository.save(bookmarkList);
 
-        LocalDateTime createdAt = LocalDateTime.ofInstant(bookmarkList.getCreatedAt(), ZoneId.systemDefault());
+        LocalDateTime createdAt = bookmarkList.getCreatedAt();
 
         return new BookmarkResponse(
                 "Post removed from bookmark list",

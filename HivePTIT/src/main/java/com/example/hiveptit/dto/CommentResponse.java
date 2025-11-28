@@ -1,6 +1,6 @@
 package com.example.hiveptit.dto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public record CommentResponse(
@@ -10,7 +10,7 @@ public record CommentResponse(
         String content,
         int voteCount,
         String isEdited, // "Y" | "N"
-        Instant createdAt,
+        LocalDateTime createdAt,
         Integer parentCommentId,
         List<CommentResponse> replies
 ) {}

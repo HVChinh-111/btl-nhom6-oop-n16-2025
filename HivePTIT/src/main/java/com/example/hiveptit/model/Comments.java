@@ -1,6 +1,6 @@
 package com.example.hiveptit.model;
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Entity
@@ -33,15 +33,22 @@ public class Comments {
     private String content;
 
     @Column(name = "created_at")
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "is_edited", columnDefinition = "ENUM('Y','N') default 'N'")
     private EditedStatus isEdited = EditedStatus.N;
 
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
     public enum EditedStatus { Y, N }
     public Comments() {}
-    public Comments(Integer commentId, Posts post, Users author, Comments parentComment, List<Comments> replies, int voteCount, String content, Instant createdAt, EditedStatus isEdited) {
+    public Comments(Integer commentId, Posts post, Users author, Comments parentComment, List<Comments> replies, int voteCount, String content, LocalDateTime createdAt, EditedStatus isEdited) {
         this.commentId = commentId;
         this.post = post;
         this.author = author;
@@ -61,11 +68,11 @@ public class Comments {
         this.isEdited = isEdited;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 

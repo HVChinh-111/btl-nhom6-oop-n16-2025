@@ -55,14 +55,29 @@ function formatDate(dateString) {
     date = new Date(dateString);
   }
 
-  const options = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return date.toLocaleDateString("vi-VN", options);
+  const now = new Date();
+  const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+  const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+
+  // Nếu bé hơn 1 phút: hiển thị "Vừa xong"
+  if (diffInMinutes < 1) {
+    return "Vừa xong";
+  }
+  // Nếu bé hơn 60 phút: hiển thị ... phút trước
+  else if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`;
+  }
+  // Nếu bé hơn 24 giờ: hiển thị ... giờ trước
+  else if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`;
+  }
+  // Nếu lớn hơn 1 ngày: hiển thị ngày đăng bài (DD/MM/YYYY)
+  else {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 }
 
 // ========== API CALLS ==========

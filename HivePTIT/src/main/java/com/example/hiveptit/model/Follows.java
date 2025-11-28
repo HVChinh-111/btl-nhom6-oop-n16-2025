@@ -1,7 +1,7 @@
 package com.example.hiveptit.model;
 import jakarta.persistence.*;
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -19,7 +19,14 @@ public class Follows {
     private Users following;
 
     @Column(name = "created_at")
-    private Instant createdAt = Instant.now();
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     public Follows() {
     }
@@ -27,7 +34,7 @@ public class Follows {
     public Follows(Users follower, Users following) {
         this.follower = follower;
         this.following = following;
-        this.createdAt = Instant.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     public Users getFollower() {
@@ -46,11 +53,11 @@ public class Follows {
         this.following = following;
     }
 
-    public Instant getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
 
