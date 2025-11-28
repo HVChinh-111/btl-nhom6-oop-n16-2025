@@ -1,20 +1,20 @@
-CREATE DATABASE IF NOT EXISTS HivePTIT
+CREATE DATABASE IF NOT EXISTS HivePTIT1
   DEFAULT CHARACTER SET utf8mb4
   DEFAULT COLLATE utf8mb4_unicode_ci;
-USE HivePTIT;
+USE HivePTIT1;
 create table `users`(
 	student_id char(10) primary key,
-    password_hash varchar(30) not null,
+    password_hash varchar(256) not null,
     username varchar(30) unique not null,
-    email varchar(30) unique not null,
+    email varchar(50) unique not null,
     firstname varchar(30), 
     lastname varchar(30),
     avatar_url varchar(50),
-    bio text,
+    bio longtext,
     is_verified ENUM('Y','N') default 'N',
     -- tinh bang trigger dua vao cmt va post 
     ranking_core int not null default 0,
-    constraint check (email like '%@ptit.edu.vn')
+    constraint check (email like '%@stu.ptit.edu.vn')
 ) ENGINE=InnoDB;
 
 create table `roles`(
@@ -76,7 +76,8 @@ create table `bookmark_list`(
 create table `posts`(
 	post_id int auto_increment primary key,
     student_id char(10) not null,
-    title text not null,
+    -- đoạn này có thể thêm url image để chèn ảnh 
+    title longtext not null,
     content longtext not null,
     -- vote_count tinh bang trigger
     vote_count int not null default 0,
@@ -115,7 +116,7 @@ create table `comments`(
     parent_comment_id int,
     -- vote_count tinh bang trigger
     vote_count int not null default 0,
-    content text,
+    content longtext,
     created_at timestamp default current_timestamp,
     -- dung trigger 
     is_edited enum('Y','N') not null default 'N',
@@ -192,30 +193,39 @@ BEGIN
   DECLARE old_delta INT; DECLARE new_delta INT;
   SET old_delta = CASE WHEN OLD.vote_type='upvote' THEN 1 ELSE -1 END;
   SET new_delta = CASE WHEN NEW.vote_type='upvote' THEN 1 ELSE -1 END;
-  -- Gỡ ảnh hưởng cũ
-  IF OLD.post_id IS NOT NULL THEN
-    UPDATE `posts` SET vote_count = vote_count - old_delta WHERE post_id    = OLD.post_id;
-    UPDATE `users` SET ranking_core = ranking_core - 5*delta WHERE student_id IN (
-			SELECT p.student_id FROM `post` p WHERE p.post_id = OLD.post_id
-	);
-  ELSE
-    UPDATE `comments` SET vote_count = vote_count - old_delta WHERE comment_id = OLD.comment_id;
-    UPDATE `users` SET ranking_core = ranking_core - delta WHERE student_id IN (
-			SELECT p.student_id FROM `comments` c WHERE c.comment_id = OLD.comment_id
-	);
-  END IF;
-  -- Áp ảnh hưởng mới
-  IF NEW.post_id IS NOT NULL THEN
-    UPDATE `posts` SET vote_count = vote_count + new_delta WHERE post_id    = NEW.post_id;
-	UPDATE `users` SET ranking_core = ranking_core + 5*delta WHERE student_id IN (
-			SELECT p.student_id FROM `post` p WHERE p.post_id = NEW.post_id
-	);
-  ELSE
-    UPDATE `comments` SET vote_count = vote_count + new_delta WHERE comment_id = NEW.comment_id;
-    UPDATE `users` SET ranking_core = ranking_core + delta WHERE student_id IN (
-			SELECT p.student_id FROM `comments` c WHERE c.comment_id = NEW.comment_id
-	);
-  END IF;
+-- Gỡ ảnh hưởng cũ
+IF OLD.post_id IS NOT NULL THEN
+  UPDATE `posts` SET vote_count = vote_count - old_delta WHERE post_id = OLD.post_id;
+  UPDATE `users` 
+  SET ranking_core = ranking_core - 5 * old_delta
+  WHERE student_id IN (
+    SELECT p.student_id FROM `posts` p WHERE p.post_id = OLD.post_id
+  );
+ELSE
+  UPDATE `comments` SET vote_count = vote_count - old_delta WHERE comment_id = OLD.comment_id;
+  UPDATE `users` 
+  SET ranking_core = ranking_core - old_delta
+  WHERE student_id IN (
+    SELECT c.student_id FROM `comments` c WHERE c.comment_id = OLD.comment_id
+  );
+END IF;
+
+-- Áp ảnh hưởng mới
+IF NEW.post_id IS NOT NULL THEN
+  UPDATE `posts` SET vote_count = vote_count + new_delta WHERE post_id = NEW.post_id;
+  UPDATE `users` 
+  SET ranking_core = ranking_core + 5 * new_delta
+  WHERE student_id IN (
+    SELECT p.student_id FROM `posts` p WHERE p.post_id = NEW.post_id
+  );
+ELSE
+  UPDATE `comments` SET vote_count = vote_count + new_delta WHERE comment_id = NEW.comment_id;
+  UPDATE `users` 
+  SET ranking_core = ranking_core + new_delta
+  WHERE student_id IN (
+    SELECT c.student_id FROM `comments` c WHERE c.comment_id = NEW.comment_id
+  );
+END IF;
 END;//
 
 -- xu ly vote_count ở cmt, post va ranking_core ở user  khi xoá vote
@@ -259,3 +269,73 @@ BEGIN
   END IF;
 END//
 DELIMITER ;
+
+-- trigger xử lý sự kiện xóa post hoặc xóa cmt trong th casecade
+DELIMITER //
+
+CREATE TRIGGER trg_before_delete_post
+BEFORE DELETE ON posts
+FOR EACH ROW
+BEGIN
+    DECLARE d_post INT DEFAULT 0;
+
+    -- tính tổng delta vote trên post
+    SELECT IFNULL(SUM(CASE vote_type WHEN 'upvote' THEN 1 WHEN 'downvote' THEN -1 END), 0)
+    INTO d_post
+    FROM votes 
+    WHERE post_id = OLD.post_id;
+
+    -- trừ điểm chủ post (mỗi vote post = 5 điểm)
+    IF d_post <> 0 THEN
+        UPDATE users 
+        SET ranking_core = ranking_core - 5 * d_post
+        WHERE student_id = OLD.student_id;
+    END IF;
+
+    -- trừ điểm của tất cả người comment trong post
+    UPDATE users u
+    JOIN (
+        SELECT c.student_id AS sid,
+               SUM(CASE v.vote_type WHEN 'upvote' THEN 1 WHEN 'downvote' THEN -1 END) AS dc
+        FROM comments c
+        JOIN votes v ON v.comment_id = c.comment_id
+        WHERE c.post_id = OLD.post_id
+        GROUP BY c.student_id
+    ) t ON u.student_id = t.sid
+    SET u.ranking_core = u.ranking_core - t.dc;
+
+END//
+
+DELIMITER ;
+DELIMITER //
+
+CREATE TRIGGER trg_before_delete_comment
+BEFORE DELETE ON comments
+FOR EACH ROW
+BEGIN
+    DECLARE d_cmt INT DEFAULT 0;
+
+    -- tổng delta vote trên comment
+    SELECT IFNULL(SUM(CASE vote_type WHEN 'upvote' THEN 1 WHEN 'downvote' THEN -1 END), 0)
+    INTO d_cmt
+    FROM votes
+    WHERE comment_id = OLD.comment_id;
+
+    -- trừ điểm chủ comment
+    IF d_cmt <> 0 THEN
+        UPDATE users
+        SET ranking_core = ranking_core - d_cmt
+        WHERE student_id = OLD.student_id;
+    END IF;
+END//
+
+DELIMITER ;
+
+
+
+
+ALTER TABLE posts
+ADD FULLTEXT INDEX idx_posts_fulltext (title, content);
+
+ALTER TABLE users
+ADD FULLTEXT INDEX idx_users_fulltext (student_id,username, firstname, lastname);

@@ -22,7 +22,7 @@ public class TopicService {
     @Transactional(readOnly = true)
     public List<TopicResponse> getAll() {
         return topicRepository.findAll().stream()
-                .map(t -> new TopicResponse(t.getName()))
+                .map(t -> new TopicResponse(t.getTopicId(), t.getName()))
                 .toList();
     }
     // tạo topic (admin)
@@ -31,6 +31,6 @@ public class TopicService {
         Topics topic = new Topics();
         topic.setName(request.getName());
         Topics saved = topicRepository.save(topic);
-        return new TopicResponse(saved.getName());
+        return new TopicResponse(saved.getTopicId(), saved.getName());
     }
 }
