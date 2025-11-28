@@ -232,22 +232,9 @@ function renderPost(post) {
   // Handle post ID - could be 'id' (PostResponse) or 'postId' (FeedPostResponse)
   const postId = post.id || post.postId;
 
-  // Check if current user is owner or admin - show action menu
-  const currentUsername = getCurrentUsername();
-  const isOwner = currentUsername && currentUsername === authorUsername;
-  const showActions = isOwner || currentState.isAdmin;
-
-  // Build edit button HTML - only show for owner
-  const editButtonHTML = isOwner
-    ? `
-        <a href="/post?id=${postId}&edit=true" class="post__actions-item">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M11.5 1.5L14.5 4.5M1 15L1.5 11.5L12 1L15 4L4.5 14.5L1 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Chỉnh sửa
-        </a>
-      `
-    : "";
+  // Check if current user is admin - only admin can see action menu in index page
+  // Owner without admin role cannot edit/delete from index page
+  const showActions = currentState.isAdmin;
 
   const actionsMenuHTML = showActions
     ? `
@@ -260,7 +247,6 @@ function renderPost(post) {
         </svg>
       </button>
       <div class="post__actions-menu" id="post-menu-${postId}">
-        ${editButtonHTML}
         <button class="post__actions-item post__actions-item--danger" onclick="deletePost(${postId})">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
             <path d="M2 4H14M5 4V2H11V4M6 7V12M10 7V12M3 4L4 14H12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -680,6 +666,9 @@ function switchToTopicFeed(topicName) {
 
   // Update active menu
   updateActiveMenu("topic");
+
+  // Scroll to top of page
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // Update active menu highlighting
@@ -942,14 +931,6 @@ function initEventListeners() {
 
 let selectedTopicId = null;
 
-// Show/hide Topics menu item based on admin role
-function updateTopicsMenuVisibility() {
-  const topicsMenuItem = document.getElementById("topicsMenuItem");
-  if (topicsMenuItem) {
-    topicsMenuItem.style.display = currentState.isAdmin ? "block" : "none";
-  }
-}
-
 // Open topic modal
 function openTopicModal() {
   const modal = document.getElementById("topicModal");
@@ -1191,7 +1172,7 @@ async function init() {
     console.log("Is Admin:", currentState.isAdmin);
 
     // Show/hide Topics menu item based on admin role
-    updateTopicsMenuVisibility();
+    updateTopicsMenuVisibility(currentState.isAdmin);
   }
 
   // Kiểm tra xem có yêu cầu load following feed từ sessionStorage không
@@ -1220,6 +1201,13 @@ async function init() {
   // Update active menu nếu là following feed
   if (currentState.feedType === "following") {
     updateActiveMenu("following");
+  }
+
+  // Check if we need to open topics modal (from other pages)
+  const shouldOpenTopicsModal = sessionStorage.getItem("openTopicsModal");
+  if (shouldOpenTopicsModal && currentState.isAdmin) {
+    sessionStorage.removeItem("openTopicsModal");
+    openTopicModal();
   }
 
   console.log("HivePTIT Index initialized successfully");

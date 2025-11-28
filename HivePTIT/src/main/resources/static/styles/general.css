@@ -16,18 +16,24 @@
 
   /* ===== MÀU CHỮ ===== */
   --color-text-primary: #0f0f0e; /* Màu chữ chính - đen */
-  --color-text-secondary: rgb(109, 112, 113); /* Màu chữ phụ - xám nhạt */
+  --color-text-secondary: #2c2c29; /* Màu chữ phụ - xám nhạt */
   --color-text-tertiary: #6e7681; /* Màu chữ mờ - xám tối */
+
+  /* ===== MÀU BUTTON ===== */
+  --color-btn-primary: #ffb13d; /* Màu  */
+  --color-btn-primary-hover: #f59608; /* Màu chữ chính - đen */
+  --color-btn-secondary: rgb(109, 112, 113); /* Màu  */
+  --color-btn-tertiary: #6e7681; /* Màu  */
 
   /* ===== MÀU VIỀN ===== */
   --color-border: #30363d; /* Màu viền mặc định */
   --color-border-hover: #484f58; /* Màu viền khi hover */
 
   /* ===== MÀU ACCENT - Màu chủ đạo ===== */
-  --color-accent: #2f81f7; /* Màu accent chính - xanh dương */
-  --color-accent-hover: #1f6feb; /* Màu accent khi hover */
-  --color-accent-active: #1158c7; /* Màu accent khi active/click */
-  --color-accent-light: #58a6ff; /* Màu accent nhạt - cho gradient */
+  --color-accent: #ffb13d; /* Màu accent chính - xanh dương */
+  --color-accent-hover: #f59608; /* Màu accent khi hover */
+  --color-accent-active: #e08700; /* Màu accent khi active/click */
+  --color-accent-light: #ffdc44; /* Màu accent nhạt - cho gradient */
 
   /* ===== MÀU TRẠNG THÁI ===== */
   --color-danger: #f85149; /* Màu nguy hiểm - đỏ cho xóa, lỗi */
@@ -888,7 +894,7 @@
 /* FORM__BUTTON--PRIMARY - Nút chính (đăng nhập) */
 .form__button--primary {
   background-color: var(--color-accent);
-  color: var(--color-white);
+  color: var(--color-text-secondary);
   margin-top: var(--spacing-sm);
 }
 
@@ -1100,7 +1106,7 @@
   padding: 8px 16px;
   font-size: 13px;
   font-weight: 500;
-  color: var(--color-white);
+  color: var(--color-text-secondary);
   background-color: var(--color-bg-tertiary);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
@@ -1734,6 +1740,7 @@
 .post__author {
   font-size: 14px;
   color: var(--color-text-secondary);
+  text-decoration: none;
 }
 
 /* POST__DATE - Ngày đăng */
@@ -1765,15 +1772,15 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-white);
-  background-color: var(--color-red);
+  color: var(--color-text-secondary);
+  background-color: var(--color-btn-primary);
   border-radius: var(--radius-sm);
   text-decoration: none;
   transition: var(--transition);
 }
 
 .post__read-more:hover {
-  background-color: var(--color-red-hover);
+  background-color: var(--color-btn-primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -1868,8 +1875,8 @@
   padding: 10px 20px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--color-white);
-  background-color: var(--color-red);
+  color: var(--color-text-secondary);
+  background-color: var(--color-btn-primary);
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1878,7 +1885,7 @@
 }
 
 .post-detail__summarize-btn:hover {
-  background-color: var(--color-red-hover);
+  background-color: var(--color-btn-primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -1889,7 +1896,7 @@
   padding: 24px;
   background-color: var(--color-bg-tertiary);
   border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-red);
+  border-left: 4px solid var(--color-btn-primary);
   box-shadow: var(--shadow-sm);
 }
 
@@ -2145,7 +2152,7 @@
 /* SEARCH__BTN - Nút tìm kiếm */
 .search__btn {
   padding: 12px 16px;
-  background-color: var(--color-red);
+  background-color: var(--color-btn-primary);
   border: none;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -2156,7 +2163,7 @@
 }
 
 .search__btn:hover {
-  background-color: var(--color-red-hover);
+  background-color: var(--color-btn-primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-sm);
 }
@@ -2449,16 +2456,11 @@
   color: var(--color-text-secondary);
   font-weight: 600;
   padding: 4px 10px;
-  background-color: rgba(48, 54, 61, 0.8);
+  background-color: var(--color-bg-primary);
   border-radius: 12px;
   min-width: 32px;
   text-align: center;
   transition: var(--transition);
-}
-
-.topics__link:hover .topics__count {
-  background-color: rgba(56, 139, 253, 0.2);
-  color: var(--color-accent);
 }
 
 /* ========== AUTHOR-CARD - Card thông tin tác giả ========== */
@@ -4697,7 +4699,7 @@
 .post-detail__body pre code {
   background-color: transparent;
   padding: 0;
-  color: var(--color-text-primary);
+  color: #e6e6e6;
   font-size: 14px;
 }
 
@@ -5073,10 +5075,8 @@
 /* POST-DETAIL__TOC-LINK--ACTIVE - Link đang active */
 .post-detail__toc-link--active {
   color: var(--color-text-primary);
-  /* nền tối hơn khi active để phù hợp với giao diện dark */
-  background-color: rgba(7, 17, 23, 0.8);
-  /* thanh dọc mảnh màu tối như yêu cầu */
-  border-left-color: var(--toc-active-dark);
+  background-color: var(--color-bg-primary);
+  border-left-color: var(--color-bg-header);
 }
 
 /* Trên màn hình rộng: cố định TOC vào viewport khi scroll */

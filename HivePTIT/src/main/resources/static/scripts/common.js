@@ -93,6 +93,39 @@ function truncateText(text, maxLength = 200) {
 
 // ========== USER PROFILE UTILITIES ==========
 
+// Check if current user is admin
+async function checkAdminRole() {
+  const token = getAuthToken();
+  if (!token) return false;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/test/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) return false;
+    const data = await response.json();
+    // Check if user has ROLE_Admin in authorities
+    const authorities = data.authorities || [];
+    return authorities.some(
+      (auth) =>
+        auth.authority === "ROLE_Admin" || auth.authority === "ROLE_ADMIN"
+    );
+  } catch (error) {
+    console.error("Error checking admin role:", error);
+    return false;
+  }
+}
+
+// Show/hide Topics menu item based on admin role
+function updateTopicsMenuVisibility(isAdmin) {
+  const topicsMenuItem = document.getElementById("topicsMenuItem");
+  if (topicsMenuItem) {
+    topicsMenuItem.style.display = isAdmin ? "block" : "none";
+  }
+}
+
 // Fetch current user profile
 async function fetchCurrentUserProfile() {
   const token = getAuthToken();
@@ -203,6 +236,15 @@ async function initCommonHandlers() {
   // Render user info in header dropdown (works on all pages)
   await renderUserInfo();
 
+  // Check admin role and show/hide Topics menu item
+  if (checkAuth()) {
+    const isAdmin = await checkAdminRole();
+    updateTopicsMenuVisibility(isAdmin);
+
+    // Store admin status for other scripts to use
+    window.isCurrentUserAdmin = isAdmin;
+  }
+
   // Handle logout button - tìm trong tất cả các trang
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
@@ -219,6 +261,28 @@ async function initCommonHandlers() {
     menuLinks[1].addEventListener("click", (e) => {
       e.preventDefault();
       navigateToFollowing();
+    });
+  }
+
+  // Handle Topics link click - redirect to index page topics section
+  const topicsLink = document.getElementById("topicsLink");
+  if (topicsLink) {
+    topicsLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      // Redirect to index and open topics modal
+      if (
+        window.location.pathname === "/" ||
+        window.location.pathname === "/index"
+      ) {
+        // Already on index, just open modal if function exists
+        if (typeof openTopicModal === "function") {
+          openTopicModal();
+        }
+      } else {
+        // Redirect to index with flag to open topics modal
+        sessionStorage.setItem("openTopicsModal", "true");
+        window.location.href = "/";
+      }
     });
   }
 
