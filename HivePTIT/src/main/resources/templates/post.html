@@ -224,6 +224,42 @@
           <section class="post-detail__body" id="postBody">
             <!-- Nội dung HTML sẽ được inject bằng JS -->
           </section>
+
+          <!-- Comments Section -->
+          <section class="post-detail__comments" id="commentsSection">
+            <h3 class="post-detail__comments-title">Bình luận</h3>
+
+            <!-- New comment composer -->
+            <div class="comments__composer" id="commentsComposer">
+              <img
+                src="/images/avatar.jpeg"
+                alt="avatar"
+                class="comments__composer-avatar"
+                id="composerAvatar"
+              />
+              <div class="comments__composer-body">
+                <textarea
+                  id="newCommentInput"
+                  class="comments__composer-input"
+                  rows="3"
+                  placeholder="Viết bình luận..."
+                ></textarea>
+                <div class="comments__composer-actions">
+                  <button
+                    id="submitCommentBtn"
+                    class="form__button form__button--primary"
+                  >
+                    Bình luận
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comments list -->
+            <div id="commentsList" class="comments__list">
+              <!-- Comments sẽ được render động bằng JS -->
+            </div>
+          </section>
         </article>
 
         <!-- Sidebar - Table of Contents -->
