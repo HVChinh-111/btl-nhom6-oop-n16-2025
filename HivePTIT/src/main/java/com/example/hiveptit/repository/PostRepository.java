@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
 
     Page<Posts> findByAuthorStudentIdIn(List<String> studentIds, Pageable pageable);
 
-    List<Posts> findByCreatedAtAfter(Instant createdAt);
+    List<Posts> findByCreatedAtAfter(LocalDateTime createdAt);
 
     Page<Posts> findByAuthor(Users author, Pageable pageable);
 

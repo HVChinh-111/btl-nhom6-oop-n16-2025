@@ -14,6 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,7 +55,7 @@ public class CommentService {
         c.setAuthor(author);
         c.setParentComment(parent);
         c.setContent(request.content());
-        c.setCreatedAt(Instant.now());
+        c.setCreatedAt(LocalDateTime.now());
         c.setIsEdited(Comments.EditedStatus.N);
         c = commentRepository.save(c);
 

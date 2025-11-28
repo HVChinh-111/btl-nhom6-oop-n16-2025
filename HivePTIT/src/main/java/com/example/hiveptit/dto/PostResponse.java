@@ -1,6 +1,6 @@
 package com.example.hiveptit.dto;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostResponse {
@@ -10,8 +10,8 @@ public class PostResponse {
     private String rawContent; // Markdown gốc (chỉ trả về khi cần edit)
     private List<TopicSummary> topics;
     private UserSummaryDTO author;
-    private Instant createdAt;
-    private Instant updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private Integer voteCount;
     private String userVoteType; // "UPVOTE", "DOWNVOTE", hoặc null
 
@@ -49,11 +49,11 @@ public class PostResponse {
     public UserSummaryDTO getAuthor() { return author; }
     public void setAuthor(UserSummaryDTO author) { this.author = author; }
 
-    public Instant getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public Instant getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     public Integer getVoteCount() { return voteCount; }
     public void setVoteCount(Integer voteCount) { this.voteCount = voteCount; }

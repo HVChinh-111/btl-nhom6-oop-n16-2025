@@ -81,6 +81,30 @@
                   Trang cá nhân
                 </a>
               </li>
+              <li
+                class="header__user-option header__user-option--admin"
+                id="topicsMenuItem"
+                style="display: none"
+              >
+                <a href="#" class="header__user-option-link" id="topicsLink">
+                  <svg
+                    class="header__user-option-icon"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                  >
+                    <path
+                      d="M2 3H14M2 8H14M2 13H10"
+                      stroke="currentColor"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Topics
+                </a>
+              </li>
               <li>
                 <a href="#" class="header__user-option-link" id="logoutBtn">
                   <svg
@@ -159,39 +183,60 @@
               </div>
             </div>
             <div class="profile__actions">
-              <!-- Nút Edit Profile - chỉ hiện khi xem profile bản thân -->
-              <button
-                class="profile__btn profile__btn--edit"
-                id="editProfileBtn"
+              <!-- Nhóm nút cho profile bản thân - xếp dọc -->
+              <div
+                class="profile__actions-group"
+                id="ownProfileActions"
                 style="display: none"
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M14.5 2.5L17.5 5.5L6.5 16.5H3.5V13.5L14.5 2.5Z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                Chỉnh sửa
-              </button>
-              <!-- Nút Create Post - chỉ hiện khi xem profile bản thân -->
-              <button
-                class="profile__btn profile__btn--create-post"
-                id="createPostBtn"
-                style="display: none"
-              >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M10 5V15M5 10H15"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                Tạo bài viết
-              </button>
+                <!-- Nút Edit Profile -->
+                <button
+                  class="profile__btn profile__btn--edit"
+                  id="editProfileBtn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M14.5 2.5L17.5 5.5L6.5 16.5H3.5V13.5L14.5 2.5Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Chỉnh sửa
+                </button>
+                <!-- Nút Create Post -->
+                <button
+                  class="profile__btn profile__btn--create-post"
+                  id="createPostBtn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M10 5V15M5 10H15"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  Tạo bài viết
+                </button>
+                <!-- Nút Bookmark Lists -->
+                <button
+                  class="profile__btn profile__btn--bookmark-lists"
+                  id="bookmarkListsBtn"
+                >
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path
+                      d="M5 3C4.44772 3 4 3.44772 4 4V17L10 13L16 17V4C16 3.44772 15.5523 3 15 3H5Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                  Bookmark lists
+                </button>
+              </div>
               <!-- Nút Follow - chỉ hiện khi xem profile người khác -->
               <button
                 class="profile__btn profile__btn--follow"
@@ -414,6 +459,102 @@
                 Đăng bài viết
               </button>
             </form>
+          </div>
+        </div>
+
+        <!-- Bookmark Lists Modal -->
+        <div class="bookmark-modal" id="bookmarkModal" style="display: none">
+          <div class="bookmark-modal__overlay" id="bookmarkModalOverlay"></div>
+          <div class="bookmark-modal__container">
+            <div class="bookmark-modal__header">
+              <h2 class="bookmark-modal__title">Bookmark Lists</h2>
+              <button class="bookmark-modal__close" id="closeBookmarkModal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M6 6L18 18M6 18L18 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="bookmark-modal__body">
+              <!-- Sidebar bên trái: danh sách bookmark lists -->
+              <div class="bookmark-modal__sidebar">
+                <div class="bookmark-modal__lists" id="bookmarkListsSidebar">
+                  <!-- Bookmark lists sẽ được load động ở đây -->
+                  <div class="bookmark-modal__loading">Đang tải...</div>
+                </div>
+                <div class="bookmark-modal__create">
+                  <input
+                    type="text"
+                    class="bookmark-modal__create-input"
+                    id="newBookmarkListName"
+                    placeholder="Tên bookmark list mới..."
+                  />
+                  <div class="bookmark-modal__actions">
+                    <button
+                      class="bookmark-modal__create-btn"
+                      id="createBookmarkListBtn"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d="M10 5V15M5 10H15"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                      Tạo mới
+                    </button>
+                    <button
+                      class="bookmark-modal__delete-btn"
+                      id="deleteBookmarkListBtn"
+                      disabled
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M4 6H20M10 10V16M14 10V16M6 6V18C6 19.1046 6.89543 20 8 20H16C17.1046 20 18 19.1046 18 18V6M9 6V4C9 3.44772 9.44772 3 10 3H14C14.5523 3 15 3.44772 15 4V6"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        />
+                      </svg>
+                      Xóa list
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <!-- Content bên phải: danh sách bài viết trong bookmark -->
+              <div class="bookmark-modal__content">
+                <div class="bookmark-modal__posts" id="bookmarkPostsList">
+                  <div class="bookmark-modal__empty">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M5 5C5 4.44772 5.44772 4 6 4H18C18.5523 4 19 4.44772 19 5V21L12 17L5 21V5Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    <p>Chọn một bookmark list để xem các bài viết</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

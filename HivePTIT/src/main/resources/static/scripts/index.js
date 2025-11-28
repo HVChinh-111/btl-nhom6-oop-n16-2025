@@ -6,10 +6,12 @@ let currentState = {
   currentPage: 1,
   totalPages: 0,
   totalPosts: 0,
-  feedType: "home", // 'home', 'following', 'topic'
+  feedType: "home", // 'home', 'following', 'topic', 'search'
   selectedTopic: null,
+  searchKeyword: null,
   isAuthenticated: false,
   currentUser: null,
+  isAdmin: false,
 };
 
 // ========== UTILITY FUNCTIONS ==========
@@ -17,6 +19,31 @@ let currentState = {
 // are now in common.js
 
 // ========== API CALLS ==========
+
+// Check if current user is admin
+async function checkAdminRole() {
+  const token = getAuthToken();
+  if (!token) return false;
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/test/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) return false;
+    const data = await response.json();
+    // Check if user has ROLE_Admin in authorities
+    const authorities = data.authorities || [];
+    return authorities.some(
+      (auth) =>
+        auth.authority === "ROLE_Admin" || auth.authority === "ROLE_ADMIN"
+    );
+  } catch (error) {
+    console.error("Error checking admin role:", error);
+    return false;
+  }
+}
 
 // Fetch home feed (all posts)
 async function fetchHomeFeed(page = 0, size = POSTS_PER_PAGE) {
@@ -104,6 +131,22 @@ async function fetchTrendingPosts(limit = 5) {
   }
 }
 
+// Search posts by keyword
+async function searchPosts(keyword, page = 0, size = POSTS_PER_PAGE) {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/search/posts?q=${encodeURIComponent(
+        keyword
+      )}&page=${page}&size=${size}`
+    );
+    if (!response.ok) throw new Error("Failed to search posts");
+    return await response.json();
+  } catch (error) {
+    console.error("Error searching posts:", error);
+    return { content: [], totalPages: 0, totalElements: 0 };
+  }
+}
+
 // Fetch current user profile
 async function fetchCurrentUserProfile() {
   const token = getAuthToken();
@@ -143,9 +186,17 @@ async function fetchTopAuthors(limit = 5) {
 
 // ========== RENDER FUNCTIONS ==========
 
-// Render a single post
+// Render a single post (supports both FeedPostResponse and PostResponse formats)
 function renderPost(post) {
-  const topicsHTML = post.topics
+  // Handle topics - could be array of strings (FeedPostResponse) or array of objects (PostResponse)
+  let topicsArray = [];
+  if (post.topics && Array.isArray(post.topics)) {
+    topicsArray = post.topics.map((topic) =>
+      typeof topic === "string" ? topic : topic.name
+    );
+  }
+
+  const topicsHTML = topicsArray
     .map(
       (topic, index) => `
       <span class="post__tag post__tag--${
@@ -157,18 +208,64 @@ function renderPost(post) {
     )
     .join("");
 
-  const authorName =
-    post.authorLastname && post.authorFirstname
-      ? `${post.authorLastname} ${post.authorFirstname}`
-      : post.authorUsername;
+  // Handle author - could be flat fields (FeedPostResponse) or nested object (PostResponse)
+  let authorName, authorUsername, avatarUrl;
 
-  const avatarUrl = post.authorAvatarUrl || "/images/avatar.jpeg";
+  if (post.author) {
+    // PostResponse format (from search API)
+    authorName =
+      post.author.lastname && post.author.firstname
+        ? `${post.author.lastname} ${post.author.firstname}`
+        : post.author.username;
+    authorUsername = post.author.username;
+    avatarUrl = post.author.avatarUrl || "/images/avatar.jpeg";
+  } else {
+    // FeedPostResponse format (from feed API)
+    authorName =
+      post.authorLastname && post.authorFirstname
+        ? `${post.authorLastname} ${post.authorFirstname}`
+        : post.authorUsername;
+    authorUsername = post.authorUsername;
+    avatarUrl = post.authorAvatarUrl || "/images/avatar.jpeg";
+  }
+
+  // Handle post ID - could be 'id' (PostResponse) or 'postId' (FeedPostResponse)
+  const postId = post.id || post.postId;
+
+  // Check if current user is admin - only admin can see action menu in index page
+  // Owner without admin role cannot edit/delete from index page
+  const showActions = currentState.isAdmin;
+
+  const actionsMenuHTML = showActions
+    ? `
+    <div class="post__actions">
+      <button class="post__actions-btn" onclick="togglePostMenu(${postId})">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <circle cx="4" cy="10" r="1.5" fill="currentColor"/>
+          <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
+          <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+        </svg>
+      </button>
+      <div class="post__actions-menu" id="post-menu-${postId}">
+        <button class="post__actions-item post__actions-item--danger" onclick="deletePost(${postId})">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M2 4H14M5 4V2H11V4M6 7V12M10 7V12M3 4L4 14H12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Xóa bài viết
+        </button>
+      </div>
+    </div>
+  `
+    : "";
 
   return `
     <article class="post">
-      ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
+      <div class="post__header">
+        ${topicsHTML ? `<div class="post__tags">${topicsHTML}</div>` : ""}
+        ${actionsMenuHTML}
+      </div>
       <h3 class="post__title">
-        <a href="/post?id=${post.postId}" class="post__title-link">
+        <a href="/post?id=${postId}" class="post__title-link">
           ${post.title}
         </a>
       </h3>
@@ -179,7 +276,7 @@ function renderPost(post) {
           class="post__author-avatar"
           onerror="this.src='/images/avatar.jpeg'"
         />
-        <a href="/profile?username=${post.authorUsername}" class="post__author">
+        <a href="/profile?username=${authorUsername}" class="post__author">
           ${authorName}
         </a>
         <span class="post__date">
@@ -210,12 +307,66 @@ function renderPost(post) {
     post.content.length > 200 ? "..." : ""
   }
       </p>
-      <a href="/post?id=${post.postId}" class="post__read-more">
+      <a href="/post?id=${postId}" class="post__read-more">
         Đọc thêm
       </a>
     </article>
   `;
 }
+
+// Toggle post action menu
+function togglePostMenu(postId) {
+  const menu = document.getElementById(`post-menu-${postId}`);
+  if (menu) {
+    // Close all other menus first
+    document.querySelectorAll(".post__actions-menu").forEach((m) => {
+      if (m.id !== `post-menu-${postId}`) {
+        m.classList.remove("post__actions-menu--active");
+      }
+    });
+    menu.classList.toggle("post__actions-menu--active");
+  }
+}
+
+// Delete post
+async function deletePost(postId) {
+  if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) return;
+
+  const token = getAuthToken();
+  if (!token) {
+    alert("Vui lòng đăng nhập để thực hiện thao tác này.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok || response.status === 204) {
+      alert("Đã xóa bài viết thành công!");
+      loadPosts(); // Reload posts
+    } else {
+      const error = await response.json().catch(() => ({}));
+      alert(error.message || "Không thể xóa bài viết. Vui lòng thử lại.");
+    }
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    alert("Có lỗi xảy ra khi xóa bài viết.");
+  }
+}
+
+// Close post menus when clicking outside
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".post__actions")) {
+    document.querySelectorAll(".post__actions-menu").forEach((menu) => {
+      menu.classList.remove("post__actions-menu--active");
+    });
+  }
+});
 
 // Render all posts
 function renderPosts(posts) {
@@ -232,6 +383,40 @@ function renderPosts(posts) {
   }
 
   postsContainer.innerHTML = posts.map((post) => renderPost(post)).join("");
+}
+
+// Render search results with header info
+function renderSearchResults(posts, keyword) {
+  const postsContainer = document.querySelector(".posts");
+  if (!postsContainer) return;
+
+  const headerHTML = `
+    <div class="search-results-header" style="margin-bottom: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <p style="margin: 0; color: #1e40af; font-size: 14px;">
+          <strong>Kết quả tìm kiếm cho:</strong> "${keyword}" 
+          <span style="color: #6b7280;">(${currentState.totalPosts} bài viết)</span>
+        </p>
+        <button onclick="clearSearch()" style="padding: 6px 12px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px;">
+          ✕ Xóa tìm kiếm
+        </button>
+      </div>
+    </div>
+  `;
+
+  if (posts.length === 0) {
+    postsContainer.innerHTML =
+      headerHTML +
+      `
+      <div style="text-align: center; padding: 40px; color: #666;">
+        <p>Không tìm thấy bài viết nào phù hợp với từ khóa "${keyword}".</p>
+      </div>
+    `;
+    return;
+  }
+
+  postsContainer.innerHTML =
+    headerHTML + posts.map((post) => renderPost(post)).join("");
 }
 
 // Render pagination
@@ -342,7 +527,7 @@ async function goToPage(page) {
 
 // Load posts based on current state
 async function loadPosts() {
-  const { feedType, selectedTopic, currentPage } = currentState;
+  const { feedType, selectedTopic, searchKeyword, currentPage } = currentState;
   let posts = [];
 
   // Show loading state
@@ -353,7 +538,17 @@ async function loadPosts() {
   }
 
   try {
-    if (feedType === "home") {
+    if (feedType === "search" && searchKeyword) {
+      // Search mode - API returns Page object
+      const searchResult = await searchPosts(
+        searchKeyword,
+        currentPage - 1,
+        POSTS_PER_PAGE
+      );
+      posts = searchResult.content || [];
+      currentState.totalPages = searchResult.totalPages || 0;
+      currentState.totalPosts = searchResult.totalElements || 0;
+    } else if (feedType === "home") {
       posts = await fetchHomeFeed(currentPage - 1, POSTS_PER_PAGE);
     } else if (feedType === "following") {
       if (!checkAuth()) {
@@ -372,16 +567,21 @@ async function loadPosts() {
 
     currentState.posts = posts;
 
-    // Calculate total pages (simplified - assuming we get all posts for now)
-    // Note: API should return pagination info, but based on current API structure
-    if (posts.length < POSTS_PER_PAGE) {
-      currentState.totalPages = currentPage;
-    } else {
-      // Estimate - we'd need total count from API
-      currentState.totalPages = currentPage + 1;
+    // Calculate total pages for non-search modes
+    if (feedType !== "search") {
+      if (posts.length < POSTS_PER_PAGE) {
+        currentState.totalPages = currentPage;
+      } else {
+        currentState.totalPages = currentPage + 1;
+      }
     }
 
-    renderPosts(posts);
+    // Render posts
+    if (feedType === "search") {
+      renderSearchResults(posts, searchKeyword);
+    } else {
+      renderPosts(posts);
+    }
     renderPagination();
   } catch (error) {
     console.error("Error loading posts:", error);
@@ -396,11 +596,43 @@ async function loadPosts() {
 function switchToHomeFeed() {
   currentState.feedType = "home";
   currentState.selectedTopic = null;
+  currentState.searchKeyword = null;
   currentState.currentPage = 1;
+
+  // Clear search input
+  const searchInput = document.querySelector(".search__input");
+  if (searchInput) searchInput.value = "";
+
   loadPosts();
 
   // Update active menu
   updateActiveMenu("home");
+}
+
+// Clear search and go back to home
+function clearSearch() {
+  switchToHomeFeed();
+}
+
+// Perform search
+function performSearch() {
+  const searchInput = document.querySelector(".search__input");
+  if (!searchInput) return;
+
+  const keyword = searchInput.value.trim();
+  if (!keyword) {
+    return;
+  }
+
+  currentState.feedType = "search";
+  currentState.searchKeyword = keyword;
+  currentState.selectedTopic = null;
+  currentState.currentPage = 1;
+
+  // Remove active state from menu
+  updateActiveMenu("search");
+
+  loadPosts();
 }
 
 // Switch to following feed
@@ -412,7 +644,13 @@ function switchToFollowingFeed() {
 
   currentState.feedType = "following";
   currentState.selectedTopic = null;
+  currentState.searchKeyword = null;
   currentState.currentPage = 1;
+
+  // Clear search input
+  const searchInput = document.querySelector(".search__input");
+  if (searchInput) searchInput.value = "";
+
   loadPosts();
 
   // Update active menu
@@ -428,6 +666,9 @@ function switchToTopicFeed(topicName) {
 
   // Update active menu
   updateActiveMenu("topic");
+
+  // Scroll to top of page
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 // Update active menu highlighting
@@ -438,9 +679,7 @@ function updateActiveMenu(activeItem) {
   });
 
   if (activeItem === "home") {
-    const homeLink = document.querySelector(
-      '.header__menu-link[href="index.html"]'
-    );
+    const homeLink = document.querySelector('.header__menu-link[href="/"]');
     if (homeLink) homeLink.classList.add("header__menu-link--active");
   } else if (activeItem === "following") {
     const followingLink = document.querySelectorAll(".header__menu-link")[1]; // Second menu item
@@ -637,9 +876,7 @@ async function renderTopicsSidebar() {
 
 function initEventListeners() {
   // Home link
-  const homeLink = document.querySelector(
-    '.header__menu-link[href="index.html"]'
-  );
+  const homeLink = document.querySelector('.header__menu-link[href="/"]');
   if (homeLink) {
     homeLink.addEventListener("click", (e) => {
       e.preventDefault();
@@ -648,6 +885,26 @@ function initEventListeners() {
   }
 
   // Note: "Đang theo dõi" link được xử lý chung trong common.js
+
+  // Search functionality
+  const searchInput = document.querySelector(".search__input");
+  const searchBtn = document.querySelector(".search__btn");
+
+  if (searchBtn) {
+    searchBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      performSearch();
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        performSearch();
+      }
+    });
+  }
 
   // Previous page button
   const prevBtn = document.querySelector(".pagination__btn:first-child");
@@ -670,6 +927,236 @@ function initEventListeners() {
   }
 }
 
+// ========== TOPIC MODAL (ADMIN ONLY) ==========
+
+let selectedTopicId = null;
+
+// Open topic modal
+function openTopicModal() {
+  const modal = document.getElementById("topicModal");
+  if (modal) {
+    modal.style.display = "flex";
+    loadTopicsForModal();
+  }
+}
+
+// Close topic modal
+function closeTopicModal() {
+  const modal = document.getElementById("topicModal");
+  if (modal) {
+    modal.style.display = "none";
+    selectedTopicId = null;
+    updateDeleteTopicButton();
+    // Clear input
+    const input = document.getElementById("newTopicName");
+    if (input) input.value = "";
+  }
+}
+
+// Fetch all topics from API
+async function fetchAllTopics() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/topics`);
+    if (!response.ok) throw new Error("Failed to fetch topics");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching topics:", error);
+    return [];
+  }
+}
+
+// Load topics for modal
+async function loadTopicsForModal() {
+  const topicList = document.getElementById("topicList");
+  if (!topicList) return;
+
+  topicList.innerHTML = '<div class="topic-modal__loading">Đang tải...</div>';
+
+  const topics = await fetchAllTopics();
+
+  if (topics.length === 0) {
+    topicList.innerHTML =
+      '<div class="topic-modal__empty">Chưa có topic nào</div>';
+    return;
+  }
+
+  topicList.innerHTML = topics
+    .map(
+      (topic) => `
+    <button class="topic-modal__item ${
+      selectedTopicId === topic.id ? "topic-modal__item--active" : ""
+    }" 
+            data-topic-id="${topic.id}" 
+            onclick="selectTopic(${topic.id})">
+      <svg class="topic-modal__item-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M2 3H14M2 8H14M2 13H10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="topic-modal__item-name">${topic.name}</span>
+    </button>
+  `
+    )
+    .join("");
+}
+
+// Select a topic
+function selectTopic(topicId) {
+  // Toggle selection
+  if (selectedTopicId === topicId) {
+    selectedTopicId = null;
+  } else {
+    selectedTopicId = topicId;
+  }
+
+  // Update UI
+  document.querySelectorAll(".topic-modal__item").forEach((item) => {
+    const itemId = parseInt(item.getAttribute("data-topic-id"));
+    if (itemId === selectedTopicId) {
+      item.classList.add("topic-modal__item--active");
+    } else {
+      item.classList.remove("topic-modal__item--active");
+    }
+  });
+
+  updateDeleteTopicButton();
+}
+
+// Update delete button state
+function updateDeleteTopicButton() {
+  const deleteBtn = document.getElementById("deleteTopicBtn");
+  if (deleteBtn) {
+    deleteBtn.disabled = selectedTopicId === null;
+  }
+}
+
+// Create new topic
+async function createTopic() {
+  const input = document.getElementById("newTopicName");
+  if (!input) return;
+
+  const topicName = input.value.trim();
+  if (!topicName) {
+    alert("Vui lòng nhập tên topic");
+    return;
+  }
+
+  const token = getAuthToken();
+  if (!token) {
+    alert("Vui lòng đăng nhập để thực hiện thao tác này");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/topics`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name: topicName }),
+    });
+
+    if (response.ok || response.status === 201) {
+      input.value = "";
+      await loadTopicsForModal();
+      // Also refresh sidebar topics
+      await renderTopicsSidebar();
+      alert("Đã tạo topic thành công!");
+    } else {
+      const error = await response.json().catch(() => ({}));
+      alert(error.message || "Không thể tạo topic. Vui lòng thử lại.");
+    }
+  } catch (error) {
+    console.error("Error creating topic:", error);
+    alert("Có lỗi xảy ra khi tạo topic.");
+  }
+}
+
+// Delete selected topic
+async function deleteTopic() {
+  if (selectedTopicId === null) {
+    alert("Vui lòng chọn một topic để xóa");
+    return;
+  }
+
+  if (!confirm("Bạn có chắc chắn muốn xóa topic này?")) return;
+
+  const token = getAuthToken();
+  if (!token) {
+    alert("Vui lòng đăng nhập để thực hiện thao tác này");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/topics/${selectedTopicId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (response.ok || response.status === 204) {
+      selectedTopicId = null;
+      updateDeleteTopicButton();
+      await loadTopicsForModal();
+      // Also refresh sidebar topics
+      await renderTopicsSidebar();
+      alert("Đã xóa topic thành công!");
+    } else {
+      const error = await response.json().catch(() => ({}));
+      alert(error.message || "Không thể xóa topic. Vui lòng thử lại.");
+    }
+  } catch (error) {
+    console.error("Error deleting topic:", error);
+    alert("Có lỗi xảy ra khi xóa topic.");
+  }
+}
+
+// Initialize topic modal event listeners
+function initTopicModalEvents() {
+  // Topics link in dropdown
+  const topicsLink = document.getElementById("topicsLink");
+  if (topicsLink) {
+    topicsLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      openTopicModal();
+    });
+  }
+
+  // Close button
+  const closeBtn = document.getElementById("closeTopicModal");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeTopicModal);
+  }
+
+  // Overlay click to close
+  const overlay = document.getElementById("topicModalOverlay");
+  if (overlay) {
+    overlay.addEventListener("click", closeTopicModal);
+  }
+
+  // Create button
+  const createBtn = document.getElementById("createTopicBtn");
+  if (createBtn) {
+    createBtn.addEventListener("click", createTopic);
+  }
+
+  // Delete button
+  const deleteBtn = document.getElementById("deleteTopicBtn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", deleteTopic);
+  }
+
+  // Enter key in input
+  const input = document.getElementById("newTopicName");
+  if (input) {
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        createTopic();
+      }
+    });
+  }
+}
+
 // ========== INITIALIZATION ==========
 
 async function init() {
@@ -678,6 +1165,15 @@ async function init() {
   // Check authentication (from common.js)
   currentState.isAuthenticated = checkAuth();
   currentState.currentUser = getCurrentUsername();
+
+  // Check if current user is admin
+  if (currentState.isAuthenticated) {
+    currentState.isAdmin = await checkAdminRole();
+    console.log("Is Admin:", currentState.isAdmin);
+
+    // Show/hide Topics menu item based on admin role
+    updateTopicsMenuVisibility(currentState.isAdmin);
+  }
 
   // Kiểm tra xem có yêu cầu load following feed từ sessionStorage không
   const requestedFeedType = sessionStorage.getItem("feedType");
@@ -688,6 +1184,9 @@ async function init() {
 
   // Initialize event listeners
   initEventListeners();
+
+  // Initialize topic modal events (admin only)
+  initTopicModalEvents();
 
   // Render sidebar components
   await Promise.all([
@@ -702,6 +1201,13 @@ async function init() {
   // Update active menu nếu là following feed
   if (currentState.feedType === "following") {
     updateActiveMenu("following");
+  }
+
+  // Check if we need to open topics modal (from other pages)
+  const shouldOpenTopicsModal = sessionStorage.getItem("openTopicsModal");
+  if (shouldOpenTopicsModal && currentState.isAdmin) {
+    sessionStorage.removeItem("openTopicsModal");
+    openTopicModal();
   }
 
   console.log("HivePTIT Index initialized successfully");
