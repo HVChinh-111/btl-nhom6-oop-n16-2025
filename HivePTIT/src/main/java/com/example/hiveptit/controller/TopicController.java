@@ -33,4 +33,10 @@ public class TopicController {
     public TopicResponse createTopic(@Valid @RequestBody TopicRequest request) {
         return topicService.create(request);
     }
+    @DeleteMapping("/{topicId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteTopic(@PathVariable Integer topicId) {
+        topicService.delete(topicId);
+    }
 }

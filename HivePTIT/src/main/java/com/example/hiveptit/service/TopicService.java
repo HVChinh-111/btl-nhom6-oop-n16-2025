@@ -4,6 +4,7 @@ import com.example.hiveptit.dto.TopicRequest;
 import com.example.hiveptit.dto.TopicResponse;
 import com.example.hiveptit.model.Topics;
 import com.example.hiveptit.repository.TopicRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,4 +34,13 @@ public class TopicService {
         Topics saved = topicRepository.save(topic);
         return new TopicResponse(saved.getTopicId(), saved.getName());
     }
+
+    // xóa topic (admin only)
+    @Transactional
+    public void delete(Integer topicId) {
+        Topics topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new EntityNotFoundException("Topic not found"));
+        topicRepository.delete(topic);
+    }
+
 }
