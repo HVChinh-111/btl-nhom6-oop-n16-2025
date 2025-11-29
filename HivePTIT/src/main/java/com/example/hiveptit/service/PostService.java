@@ -174,12 +174,12 @@ public class PostService {
             resp.setAuthor(new UserSummaryDTO(
                     post.getAuthor().getStudentId(),
                     post.getAuthor().getUsername(),
-                    post.getAuthor().getFirstname(),   // nếu không có, có thể để null
-                    post.getAuthor().getLastname(),    // nếu không có, có thể để null
-                    post.getAuthor().getAvatarUrl(),   // nếu không có, có thể để null
-                    post.getAuthor().getBio(),         // nếu không có, có thể để null
-                    post.getAuthor().getRankingCore(), // nếu không có, có thể để null
-                    false                              // isFollowing: mặc định false nếu chưa có logic
+                    post.getAuthor().getFirstname(),
+                    post.getAuthor().getLastname(),
+                    post.getAuthor().getAvatarUrl(), 
+                    post.getAuthor().getBio(), 
+                    post.getAuthor().getRankingCore(),
+                    false 
             ));
 
         }

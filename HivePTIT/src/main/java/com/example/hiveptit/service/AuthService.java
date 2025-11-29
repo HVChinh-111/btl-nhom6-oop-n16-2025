@@ -67,7 +67,7 @@ public class AuthService {
         // Mã hóa password bằng BCrypt
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         
-        user.setIsVerified(Users.IsVerified.Y); // Mặc định verify luôn khi đăng ký
+        user.setIsVerified(Users.IsVerified.Y);
         user.setRankingCore(0);
 
         // Gán role "Student" mặc định
@@ -82,7 +82,7 @@ public class AuthService {
         userRepository.save(user);
 
         return new AuthResponse(
-            null, // Không trả token vì chưa verify email
+            null,
             user.getStudentId(),
             user.getUsername(),
             user.getEmail(),
@@ -138,17 +138,6 @@ public class AuthService {
         }
     }
 
-    /**
-     * Đăng xuất 
-     * 
-     * CHÚ Ý VỀ JWT LOGOUT:
-     * - JWT là stateless, server không lưu trạng thái
-     * - Không thể "thu hồi" token đã phát hành
-     * - Cách đơn giản: Client xóa token
-     * - Cách phức tạp: Dùng blacklist (lưu token bị revoke vào Redis/DB)
-     * 
-     * Hiện tại chỉ return message, client tự xóa token
-     */
     public AuthResponse logout() {
         return new AuthResponse(null, null, null, null, "Đăng xuất thành công!", true);
     }

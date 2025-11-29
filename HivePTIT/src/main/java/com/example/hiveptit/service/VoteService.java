@@ -45,26 +45,21 @@ public class VoteService {
         if (existingVote.isPresent()) {
             Votes vote = existingVote.get();
             if (vote.getVoteType() == newVoteType) {
-                // Click same vote again - DELETE vote
                 voteRepository.delete(vote);
-                entityManager.flush(); // Ensure DELETE is executed immediately
+                entityManager.flush();
                 action = "REMOVED";
             } else {
-                // Switch from one vote to another - DELETE old, INSERT new
                 voteRepository.delete(vote);
-                entityManager.flush(); // Ensure DELETE is committed before INSERT
+                entityManager.flush();
                 Votes newVote = new Votes(user, post, null, newVoteType);
                 voteRepository.save(newVote);
                 action = "CHANGED";
             }
         } else {
-            // New vote - INSERT
             Votes newVote = new Votes(user, post, null, newVoteType);
             voteRepository.save(newVote);
             action = "ADDED";
         }
-
-        // Recalculate total score from database
         int totalScore = calculatePostScore(post);
         post.setVoteCount(totalScore);
         postRepository.save(post);
