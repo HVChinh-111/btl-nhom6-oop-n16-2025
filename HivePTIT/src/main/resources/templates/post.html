@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/images/LogoProPTIT.png" type="image/png" />
     <link rel="stylesheet" href="/styles/general.css" />
-    <!-- Prism.js for syntax highlighting -->
+    <!-- Prism.js cho hiển thị code -->
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
@@ -139,26 +139,26 @@
 
     <!-- Main content - Nội dung bài viết -->
     <main class="post-detail">
-      <!-- Loading state -->
+      <!-- Trạng thái đang tải -->
       <div class="post-detail__loading" id="loadingState">
         <p>Đang tải bài viết...</p>
       </div>
 
-      <!-- Error state -->
+      <!-- Trạng thái lỗi -->
       <div class="post-detail__error" id="errorState" style="display: none">
         <p id="errorMessage">Không thể tải bài viết. Vui lòng thử lại sau.</p>
       </div>
 
-      <!-- Post content container -->
+      <!-- Container nội dung bài viết -->
       <div
         class="post-detail__container"
         id="postContainer"
         style="display: none"
       >
-        <!-- Left Sidebar - Vote controls -->
+        <!-- Thanh bên trái - vote -->
         <aside class="post-detail__vote-sidebar">
           <div class="post-detail__vote-sticky">
-            <!-- Upvote button -->
+            <!-- Nút upvote -->
             <button
               class="post-detail__vote-btn post-detail__vote-btn--up"
               id="upvoteBtn"
@@ -169,10 +169,10 @@
               </svg>
             </button>
 
-            <!-- Vote count -->
+            <!-- Số lượt vote -->
             <span class="post-detail__vote-count" id="voteCount">0</span>
 
-            <!-- Downvote button -->
+            <!-- Nút downvote -->
             <button
               class="post-detail__vote-btn post-detail__vote-btn--down"
               id="downvoteBtn"
@@ -183,7 +183,7 @@
               </svg>
             </button>
 
-            <!-- Bookmark button with dropdown -->
+            <!-- Nút bookmark với dropdown -->
             <div class="post-detail__bookmark-wrapper">
               <button
                 class="post-detail__bookmark-btn"
@@ -199,7 +199,7 @@
                   />
                 </svg>
               </button>
-              <!-- Bookmark dropdown menu -->
+              <!-- Menu dropdown bookmark -->
               <div
                 class="post-detail__bookmark-dropdown"
                 id="bookmarkDropdown"
@@ -256,14 +256,14 @@
               </div>
             </div>
 
-            <!-- AI Summarize Button -->
+            <!-- Nút tóm tắt bằng AI -->
             <div style="margin-top: 16px">
               <button class="post-detail__summarize-btn" id="summarizeBtn">
                 Tóm tắt bằng AI
               </button>
             </div>
 
-            <!-- Summary Container -->
+            <!-- Container hiển thị tóm tắt -->
             <div
               class="post-detail__summary"
               id="summaryContainer"
@@ -279,11 +279,11 @@
             <!-- Nội dung HTML sẽ được inject bằng JS -->
           </section>
 
-          <!-- Comments Section -->
+          <!-- Phần bình luận -->
           <section class="post-detail__comments" id="commentsSection">
             <h3 class="post-detail__comments-title">Bình luận</h3>
 
-            <!-- New comment composer -->
+            <!-- Khung viết bình luận mới -->
             <div class="comments__composer" id="commentsComposer">
               <img
                 src="/images/avatar.jpeg"
@@ -309,14 +309,14 @@
               </div>
             </div>
 
-            <!-- Comments list -->
+            <!-- Danh sách bình luận -->
             <div id="commentsList" class="comments__list">
               <!-- Comments sẽ được render động bằng JS -->
             </div>
           </section>
         </article>
 
-        <!-- Sidebar - Table of Contents -->
+        <!-- Thanh bên phải - Mục lục -->
         <aside class="post-detail__toc" id="tocSidebar">
           <div class="post-detail__toc-sticky">
             <h3 class="post-detail__toc-title">Mục lục</h3>
@@ -329,11 +329,11 @@
       </div>
     </main>
 
-    <!-- Scripts -->
+    <!-- Các file JavaScript -->
     <script src="/scripts/common.js"></script>
     <script src="/scripts/dropdown.js"></script>
     <script src="/scripts/post.js"></script>
-    <!-- Prism.js for code highlighting -->
+    <!-- Prism.js cho hiển thị code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
