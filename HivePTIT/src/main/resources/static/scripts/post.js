@@ -107,7 +107,7 @@ function renderPost(post) {
         : post.author.username;
 
     authorName.textContent = displayName;
-    authorName.href = `/profile?user=${post.author.username}`;
+    authorName.href = `/profile?username=${post.author.username}`;
   }
 
   // Update date
