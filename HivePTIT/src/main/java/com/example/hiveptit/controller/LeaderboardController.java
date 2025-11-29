@@ -24,12 +24,6 @@ public class LeaderboardController {
         return ResponseEntity.ok(leaderboard);
     }
 
-    /**
-     * Get paginated leaderboard
-     * @param page Page number (0-based)
-     * @param size Number of items per page (default: 10)
-     * @return Paginated leaderboard with metadata
-     */
     @GetMapping
     public ResponseEntity<Map<String, Object>> getLeaderboard(
             @RequestParam(defaultValue = "0") int page,

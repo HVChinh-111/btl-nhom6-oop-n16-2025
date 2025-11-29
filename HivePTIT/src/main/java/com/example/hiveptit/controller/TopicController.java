@@ -26,7 +26,7 @@ public class TopicController {
         return topicService.getAll();
     }
 
-    // MẶC ĐỊNH: Chỉ ADMIN được thêm chủ đề
+    // Chỉ ADMIN được thêm chủ đề
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")

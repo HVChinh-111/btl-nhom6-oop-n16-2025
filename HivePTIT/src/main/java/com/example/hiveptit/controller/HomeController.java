@@ -8,17 +8,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-/**
- * Controller quản lý các trang HTML tĩnh và điều hướng chính
- */
 @Controller
 public class HomeController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-    /**
-     * Trang chủ - Hiển thị danh sách bài viết
-     */
+    // Trang chủ - Hiển thị danh sách bài viết
     @GetMapping({"/", "/index", "/index.html"})
     public String index(Model model) {
         try {
@@ -30,9 +25,7 @@ public class HomeController {
         }
     }
 
-    /**
-     * Trang đăng nhập
-     */
+    // Trang đăng nhập
     @GetMapping({"/sign-in", "/sign-in.html"})
     public String signIn(Model model) {
         try {
@@ -44,9 +37,7 @@ public class HomeController {
         }
     }
 
-    /**
-     * Trang đăng ký
-     */
+    // Trang đăng ký
     @GetMapping({"/sign-up", "/sign-up.html"})
     public String signUp(Model model) {
         try {
@@ -58,9 +49,7 @@ public class HomeController {
         }
     }
 
-    /**
-     * Trang hồ sơ cá nhân
-     */
+    // Trang hồ sơ cá nhân
     @GetMapping({"/profile", "/profile.html"})
     public String profile(Model model) {
         try {
@@ -72,9 +61,7 @@ public class HomeController {
         }
     }
 
-    /**
-     * Trang bảng xếp hạng tác giả
-     */
+    // Trang bảng xếp hạng tác giả
     @GetMapping({"/author-ranking", "/author-ranking.html"})
     public String authorRanking(Model model) {
         try {
@@ -86,9 +73,7 @@ public class HomeController {
         }
     }
 
-    /**
-     * Trang chi tiết bài viết
-     */
+    // Trang chi tiết bài viết
     @GetMapping({"/post", "/post.html"})
     public String post(Model model) {
         try {
@@ -100,9 +85,6 @@ public class HomeController {
         }
     }
 
-    /**
-     * Xử lý lỗi chung cho controller
-     */
     @ExceptionHandler(Exception.class)
     public ModelAndView handleException(Exception e) {
         logger.error("Unhandled exception in HomeController: {}", e.getMessage(), e);
