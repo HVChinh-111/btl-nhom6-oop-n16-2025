@@ -56,15 +56,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         Set<Roles> roles = user.getRoles();
         
         for (Roles role : roles) {
-            // Thêm role với prefix "ROLE_"
-            // SimpleGrantedAuthority là implementation của GrantedAuthority
             authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRoleName().toUpperCase()));
             
-            // Lấy permissions của role này
             Set<Permissions> permissions = role.getPermissions();
             
-            // Thêm tất cả permissions (không có prefix)
-            // Stream API: map code của permission thành SimpleGrantedAuthority
             authorities.addAll(
                 permissions.stream()
                     .map(permission -> new SimpleGrantedAuthority(permission.getCode()))

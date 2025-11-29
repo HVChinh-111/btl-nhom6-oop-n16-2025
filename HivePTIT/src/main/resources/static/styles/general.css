@@ -1678,7 +1678,7 @@
   color: #c3e88d;
 }
 
-/* Backwards compatibility */
+/* Tương thích ngược */
 .post__tag--blue {
   background-color: rgba(88, 166, 255, 0.15);
   color: #58a6ff;

@@ -63,7 +63,6 @@ public class MyPostService {
         dto.setVoteCount(p.getVoteCount());
         dto.setCreatedAt(p.getCreatedAt());
         dto.setUpdatedAt(p.getUpdatedAt());
-        // Nếu PostResponse có thông tin author, topics... thì map thêm tại đây
         return dto;
     }
 }

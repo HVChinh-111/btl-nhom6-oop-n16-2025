@@ -22,7 +22,7 @@ public class SearchController {
     public SearchController(SearchService searchService) {
         this.searchService = searchService;
     }
-//   GET /api/search/posts?q=keyword
+
     @GetMapping("/posts")
     public Page<PostResponse> searchPosts(
             @RequestParam("q") String q,
@@ -38,7 +38,6 @@ public class SearchController {
         return searchService.searchPosts(q, pageable, currentUsername);
     }
 
-//    GET /api/search/users?q=keyword
     @GetMapping("/users")
     public Page<UserSummaryDTO> searchUsers(
             @RequestParam("q") String q,

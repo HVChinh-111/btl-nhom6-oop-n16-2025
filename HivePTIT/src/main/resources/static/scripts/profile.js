@@ -1,7 +1,3 @@
-// ========== CONSTANTS ==========
-// `API_BASE_URL` is provided by `common.js`; do not redeclare here.
-
-// ========== STATE MANAGEMENT ==========
 let currentUser = null;
 let profileUser = null;
 let isOwnProfile = false;
@@ -10,24 +6,18 @@ const pageSize = 10;
 let totalPages = 0;
 let allTopics = [];
 
-// ========== UTILITY FUNCTIONS ==========
-// Note: getAuthToken, getCurrentUsername, logout are now in common.js
-// Keeping local copies for backward compatibility
-
-// Lấy username từ URL query params
 function getUsernameFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("username");
 }
 
-// Format date
 function formatDate(dateString) {
   if (!dateString) return "";
 
-  // Handle both Instant (ISO string) and LocalDateTime formats
+  
   let date;
   if (typeof dateString === "string") {
-    // If it's array format from LocalDateTime [year, month, day, hour, minute, second]
+    
     if (dateString.startsWith("[")) {
       const parts = JSON.parse(dateString);
       date = new Date(
@@ -42,7 +32,7 @@ function formatDate(dateString) {
       date = new Date(dateString);
     }
   } else if (Array.isArray(dateString)) {
-    // LocalDateTime as array
+    
     date = new Date(
       dateString[0],
       dateString[1] - 1,
@@ -59,19 +49,19 @@ function formatDate(dateString) {
   const diffInMinutes = Math.floor((now - date) / (1000 * 60));
   const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
 
-  // Nếu bé hơn 1 phút: hiển thị "Vừa xong"
+  
   if (diffInMinutes < 1) {
     return "Vừa xong";
   }
-  // Nếu bé hơn 60 phút: hiển thị ... phút trước
+  
   else if (diffInMinutes < 60) {
     return `${diffInMinutes} phút trước`;
   }
-  // Nếu bé hơn 24 giờ: hiển thị ... giờ trước
+  
   else if (diffInHours < 24) {
     return `${diffInHours} giờ trước`;
   }
-  // Nếu lớn hơn 1 ngày: hiển thị ngày đăng bài (DD/MM/YYYY)
+  
   else {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -80,9 +70,6 @@ function formatDate(dateString) {
   }
 }
 
-// ========== API CALLS ==========
-
-// Lấy thông tin user hiện tại
 async function fetchCurrentUser() {
   const username = getCurrentUsername();
   if (!username) return null;
@@ -104,7 +91,6 @@ async function fetchCurrentUser() {
   }
 }
 
-// Lấy thông tin profile user
 async function fetchUserProfile(username) {
   console.log("profile.js:fetchUserProfile ->", username);
   try {
@@ -135,7 +121,6 @@ async function fetchUserProfile(username) {
   }
 }
 
-// Cập nhật profile
 async function updateProfile(firstname, lastname, avatarUrl, bio) {
   try {
     const response = await fetch(`${API_BASE_URL}/users/profile`, {
@@ -165,7 +150,6 @@ async function updateProfile(firstname, lastname, avatarUrl, bio) {
   }
 }
 
-// Lấy bài viết của user
 async function fetchUserPosts(username, page = 0) {
   try {
     console.log("profile.js:fetchUserPosts ->", username, page);
@@ -190,7 +174,6 @@ async function fetchUserPosts(username, page = 0) {
   }
 }
 
-// Tạo bài viết mới
 async function createPost(title, content, topicIds) {
   try {
     const response = await fetch(`${API_BASE_URL}/posts`, {
@@ -218,7 +201,6 @@ async function createPost(title, content, topicIds) {
   }
 }
 
-// Lấy danh sách topics
 async function fetchTopics() {
   try {
     const response = await fetch(`${API_BASE_URL}/topics`);
@@ -232,7 +214,6 @@ async function fetchTopics() {
   }
 }
 
-// Follow/Unfollow user
 async function toggleFollow(username) {
   try {
     const response = await fetch(`${API_BASE_URL}/follow/toggle`, {
@@ -256,14 +237,11 @@ async function toggleFollow(username) {
   }
 }
 
-// ========== RENDER FUNCTIONS ==========
-
-// Render header user info
 function renderHeaderUserInfo(user) {
   const userMenu = document.querySelector(".header__user");
 
   if (!user) {
-    // Show login button instead of user menu
+    
     if (userMenu) {
       userMenu.innerHTML = `
         <a href="/sign-in" class="header__login-btn">Đăng nhập</a>
@@ -294,7 +272,6 @@ function renderHeaderUserInfo(user) {
   }
 }
 
-// Render profile header
 function renderProfileHeader(user) {
   document.getElementById(
     "profileName"
@@ -313,29 +290,29 @@ function renderProfileHeader(user) {
     document.getElementById("profileAvatar").src = user.avatarUrl;
   }
 
-  // Hiển thị nút phù hợp
+  
   const ownProfileActions = document.getElementById("ownProfileActions");
   const followBtn = document.getElementById("followBtn");
   const unfollowBtn = document.getElementById("unfollowBtn");
   const token = getAuthToken();
 
   if (isOwnProfile) {
-    // Xem profile bản thân
+    
     ownProfileActions.style.display = "flex";
     followBtn.style.display = "none";
     unfollowBtn.style.display = "none";
   } else {
-    // Xem profile người khác
+    
     ownProfileActions.style.display = "none";
 
     if (!token) {
-      // Chưa đăng nhập -> vô hiệu hóa nút follow
+      
       followBtn.style.display = "flex";
       followBtn.disabled = true;
       followBtn.classList.add("profile__btn--disabled");
       unfollowBtn.style.display = "none";
     } else {
-      // Đã đăng nhập -> hiển thị nút follow/unfollow
+      
       followBtn.disabled = false;
       followBtn.classList.remove("profile__btn--disabled");
 
@@ -350,7 +327,6 @@ function renderProfileHeader(user) {
   }
 }
 
-// Render user posts
 function renderUserPosts(posts) {
   const postsContainer = document.getElementById("userPosts");
   const loadingEl = document.getElementById("postsLoading");
@@ -472,7 +448,6 @@ function renderUserPosts(posts) {
     .join("");
 }
 
-// Render pagination
 function renderPagination(pageData) {
   const paginationEl = document.getElementById("postsPagination");
   const prevBtn = document.getElementById("prevPageBtn");
@@ -488,7 +463,7 @@ function renderPagination(pageData) {
   totalPages = pageData.totalPages;
   currentPage = pageData.currentPage;
 
-  // Update prev button
+  
   if (currentPage === 0) {
     prevBtn.classList.add("pagination__btn--disabled");
     prevBtn.disabled = true;
@@ -497,7 +472,7 @@ function renderPagination(pageData) {
     prevBtn.disabled = false;
   }
 
-  // Update next button
+  
   if (currentPage >= totalPages - 1) {
     nextBtn.classList.add("pagination__btn--disabled");
     nextBtn.disabled = true;
@@ -506,7 +481,7 @@ function renderPagination(pageData) {
     nextBtn.disabled = false;
   }
 
-  // Render page numbers
+  
   let pagesHTML = "";
   for (let i = 0; i < totalPages; i++) {
     if (
@@ -528,7 +503,6 @@ function renderPagination(pageData) {
   pagesContainer.innerHTML = pagesHTML;
 }
 
-// Render topics for create post form
 function renderTopicsCheckboxes(topics) {
   const container = document.getElementById("postTopicsList");
   container.innerHTML = topics
@@ -543,30 +517,25 @@ function renderTopicsCheckboxes(topics) {
     .join("");
 }
 
-// ========== EVENT HANDLERS ==========
-
-// ========== MODAL HANDLERS ==========
-// Open post modal for creating new post
 function openPostModal() {
   const modal = document.getElementById("postModal");
   const modalTitle = document.getElementById("postModalTitle");
   const postIdInput = document.getElementById("postId");
   const submitBtn = document.getElementById("postSubmitBtn");
 
-  // Reset form
+  
   document.getElementById("postForm").reset();
   postIdInput.value = "";
 
-  // Set to create mode
+  
   modalTitle.textContent = "Tạo bài viết mới";
   submitBtn.textContent = "Đăng bài viết";
 
-  // Show modal
+  
   modal.style.display = "block";
   document.body.style.overflow = "hidden";
 }
 
-// Open post modal for editing existing post
 async function openEditPostModal(postId) {
   const modal = document.getElementById("postModal");
   const modalTitle = document.getElementById("postModalTitle");
@@ -580,7 +549,7 @@ async function openEditPostModal(postId) {
   try {
     errorEl.style.display = "none";
 
-    // Fetch post with rawContent
+    
     const response = await fetch(
       `${API_BASE_URL}/posts/${postId}?includeRawContent=true`,
       {
@@ -594,12 +563,12 @@ async function openEditPostModal(postId) {
 
     const post = await response.json();
 
-    // Pre-fill form with existing data
+    
     postIdInput.value = postId;
     titleInput.value = post.title;
-    contentInput.value = post.rawContent || post.content; // Use rawContent (markdown)
+    contentInput.value = post.rawContent || post.content; 
 
-    // Pre-select topics (post.topics is array of { id, name })
+    
     const topicCheckboxes = document.querySelectorAll('input[name="topicIds"]');
     const selectedIds = Array.isArray(post.topics)
       ? post.topics.map((t) => t.id)
@@ -609,11 +578,11 @@ async function openEditPostModal(postId) {
       checkbox.checked = selectedIds.includes(id);
     });
 
-    // Set to edit mode
+    
     modalTitle.textContent = "Chỉnh sửa bài viết";
     submitBtn.textContent = "Lưu thay đổi";
 
-    // Show modal
+    
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
   } catch (error) {
@@ -622,35 +591,32 @@ async function openEditPostModal(postId) {
   }
 }
 
-// Close post modal
 function closePostModal() {
   const modal = document.getElementById("postModal");
   modal.style.display = "none";
   document.body.style.overflow = "auto";
 
-  // Reset form
+  
   document.getElementById("postForm").reset();
   document.getElementById("postId").value = "";
   document.getElementById("postError").style.display = "none";
 }
 
-// Toggle post menu dropdown
 function togglePostMenu(postId) {
   const menu = document.getElementById(`postMenu${postId}`);
   const allMenus = document.querySelectorAll(".post__menu-dropdown");
 
-  // Close all other menus
+  
   allMenus.forEach((m) => {
     if (m.id !== `postMenu${postId}`) {
       m.style.display = "none";
     }
   });
 
-  // Toggle current menu
+  
   menu.style.display = menu.style.display === "none" ? "block" : "none";
 }
 
-// Close menus when clicking outside
 document.addEventListener("click", (e) => {
   if (!e.target.closest(".post__menu")) {
     document.querySelectorAll(".post__menu-dropdown").forEach((menu) => {
@@ -659,7 +625,6 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// Delete post with confirmation
 async function deletePost(postId) {
   if (!confirm("Bạn có chắc chắn muốn xóa bài viết này?")) {
     return;
@@ -686,7 +651,7 @@ async function deletePost(postId) {
       throw new Error(`Không thể xóa bài viết (${response.status})`);
     }
 
-    // Reload page after successful delete
+    
     window.location.reload();
   } catch (error) {
     console.error("Error deleting post:", error);
@@ -694,24 +659,21 @@ async function deletePost(postId) {
   }
 }
 
-// Handle edit profile button
 document.getElementById("editProfileBtn")?.addEventListener("click", () => {
   const modal = document.getElementById("profileEditModal");
   modal.style.display = "block";
 
-  // Pre-fill form
+  
   document.getElementById("editFirstname").value = profileUser.firstname;
   document.getElementById("editLastname").value = profileUser.lastname;
   document.getElementById("editAvatarUrl").value = profileUser.avatarUrl || "";
   document.getElementById("editBio").value = profileUser.bio || "";
 });
 
-// Handle close edit modal
 document.getElementById("closeEditModal")?.addEventListener("click", () => {
   document.getElementById("profileEditModal").style.display = "none";
 });
 
-// Handle edit profile form submit
 document
   .getElementById("editProfileForm")
   ?.addEventListener("submit", async (e) => {
@@ -729,15 +691,15 @@ document
       const response = await updateProfile(firstname, lastname, avatarUrl, bio);
 
       if (response.success) {
-        // Update profile user
+        
         profileUser = response.user;
         currentUser = response.user;
 
-        // Re-render
+        
         renderProfileHeader(profileUser);
         renderHeaderUserInfo(currentUser);
 
-        // Close modal
+        
         document.getElementById("profileEditModal").style.display = "none";
 
         alert("Cập nhật thông tin thành công!");
@@ -748,7 +710,6 @@ document
     }
   });
 
-// Handle create post form submit
 document.getElementById("postForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -773,7 +734,7 @@ document.getElementById("postForm")?.addEventListener("submit", async (e) => {
     errorEl.style.display = "none";
 
     if (postId) {
-      // Edit existing post
+      
       console.log("profile.js: Đang cập nhật bài viết", postId);
       const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
         method: "PUT",
@@ -788,7 +749,7 @@ document.getElementById("postForm")?.addEventListener("submit", async (e) => {
 
       console.log("profile.js: Cập nhật bài viết thành công!");
     } else {
-      // Create new post
+      
       console.log(
         "profile.js: Đang tạo bài viết với",
         topicIds.length,
@@ -799,7 +760,7 @@ document.getElementById("postForm")?.addEventListener("submit", async (e) => {
       console.log("profile.js: Tạo bài viết thành công!");
     }
 
-    // Close modal and reload page
+    
     closePostModal();
     window.location.reload();
   } catch (error) {
@@ -808,22 +769,18 @@ document.getElementById("postForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// Handle create post button
 document.getElementById("createPostBtn")?.addEventListener("click", () => {
   openPostModal();
 });
 
-// Handle close post modal
 document.getElementById("closePostModal")?.addEventListener("click", () => {
   closePostModal();
 });
 
-// Handle post modal overlay click
 document.getElementById("postModalOverlay")?.addEventListener("click", () => {
   closePostModal();
 });
 
-// Handle follow button
 document.getElementById("followBtn")?.addEventListener("click", async () => {
   if (!getAuthToken()) {
     alert("Vui lòng đăng nhập để theo dõi người dùng");
@@ -832,14 +789,14 @@ document.getElementById("followBtn")?.addEventListener("click", async () => {
 
   const result = await toggleFollow(profileUser.username);
   if (result && result.success) {
-    // Cập nhật trạng thái follow
+    
     profileUser.isFollowing = result.action === "FOLLOWED";
 
-    // Cập nhật số lượng followers từ response
+    
     if (result.followerCount !== undefined) {
       profileUser.followerCount = result.followerCount;
     } else {
-      // Nếu API không trả về followerCount, tự tăng/giảm
+      
       profileUser.followerCount += result.action === "FOLLOWED" ? 1 : -1;
     }
 
@@ -847,7 +804,6 @@ document.getElementById("followBtn")?.addEventListener("click", async () => {
   }
 });
 
-// Handle unfollow button
 document.getElementById("unfollowBtn")?.addEventListener("click", async () => {
   if (!getAuthToken()) {
     return;
@@ -855,14 +811,14 @@ document.getElementById("unfollowBtn")?.addEventListener("click", async () => {
 
   const result = await toggleFollow(profileUser.username);
   if (result && result.success) {
-    // Cập nhật trạng thái follow
+    
     profileUser.isFollowing = result.action === "FOLLOWED";
 
-    // Cập nhật số lượng followers từ response
+    
     if (result.followerCount !== undefined) {
       profileUser.followerCount = result.followerCount;
     } else {
-      // Nếu API không trả về followerCount, tự tăng/giảm
+      
       profileUser.followerCount += result.action === "FOLLOWED" ? 1 : -1;
     }
 
@@ -870,7 +826,6 @@ document.getElementById("unfollowBtn")?.addEventListener("click", async () => {
   }
 });
 
-// Handle pagination
 document.getElementById("prevPageBtn")?.addEventListener("click", () => {
   if (currentPage > 0) {
     loadUserPosts(profileUser.username, currentPage - 1);
@@ -890,9 +845,6 @@ document.getElementById("paginationPages")?.addEventListener("click", (e) => {
   }
 });
 
-// ========== MAIN FUNCTIONS ==========
-
-// Load user posts
 async function loadUserPosts(username, page = 0) {
   const postsData = await fetchUserPosts(username, page);
   if (!postsData) {
@@ -904,14 +856,14 @@ async function loadUserPosts(username, page = 0) {
     return;
   }
 
-  // API may return either an array (List<FeedPostResponse>) or a paged object with `content`
+  
   if (Array.isArray(postsData)) {
     renderUserPosts(postsData);
   } else if (postsData.content && Array.isArray(postsData.content)) {
     renderUserPosts(postsData.content);
     renderPagination(postsData);
   } else {
-    // Fallback: try to render as array-like
+    
     try {
       renderUserPosts(Array.from(postsData));
     } catch (err) {
@@ -924,39 +876,38 @@ async function loadUserPosts(username, page = 0) {
       ).innerHTML = `<div class="posts__empty"><p>Không có bài viết</p></div>`;
     }
   }
-  // Hide pagination if not provided
+  
   if (!postsData.totalPages) {
     const pag = document.getElementById("postsPagination");
     if (pag) pag.style.display = "none";
   }
 }
 
-// Initialize profile page
 async function initProfile() {
   console.log("profile.js:initProfile called", {
     pathname: window.location.pathname,
     search: window.location.search,
   });
-  // Get username from URL
+  
   let targetUsername = getUsernameFromURL();
 
-  // Check if user is logged in
+  
   const token = getAuthToken();
   const currentUsername = getCurrentUsername();
 
-  // Nếu truy cập /profile (không có username param)
+  
   if (!targetUsername) {
     if (!token || !currentUsername) {
-      // Chưa đăng nhập -> redirect về sign-in
+      
       sessionStorage.setItem("redirectAfterLogin", window.location.href);
       window.location.href = "/sign-in";
       return;
     }
-    // Đã đăng nhập -> xem profile bản thân
+    
     targetUsername = currentUsername;
   }
 
-  // Fetch current user info (nếu đã đăng nhập)
+  
   if (token && currentUsername) {
     currentUser = await fetchCurrentUser();
     if (currentUser) {
@@ -964,35 +915,31 @@ async function initProfile() {
     }
   }
 
-  // Check if viewing own profile
+  
   isOwnProfile = currentUsername && targetUsername === currentUsername;
 
-  // Fetch profile user
+  
   profileUser = await fetchUserProfile(targetUsername);
   if (profileUser) {
     renderProfileHeader(profileUser);
     await loadUserPosts(targetUsername, 0);
   }
 
-  // Load topics for create post form (chỉ khi xem profile bản thân)
+  
   if (isOwnProfile) {
     allTopics = await fetchTopics();
     renderTopicsCheckboxes(allTopics);
 
-    // Initialize bookmark modal events
+    
     initBookmarkModal();
   }
 }
 
-// Initialize on page load
 document.addEventListener("DOMContentLoaded", initProfile);
-
-// ========== BOOKMARK FUNCTIONS ==========
 
 let bookmarkLists = [];
 let selectedBookmarkListId = null;
 
-// Fetch bookmark lists từ API
 async function fetchBookmarkLists() {
   try {
     const token = getAuthToken();
@@ -1030,7 +977,6 @@ async function fetchBookmarkLists() {
   }
 }
 
-// Tạo bookmark list mới
 async function createBookmarkList(listName) {
   try {
     const response = await fetch(
@@ -1057,7 +1003,6 @@ async function createBookmarkList(listName) {
   }
 }
 
-// Render danh sách bookmark lists trong sidebar
 function renderBookmarkListsSidebar(lists) {
   const container = document.getElementById("bookmarkListsSidebar");
   console.log("Rendering bookmark lists:", lists, "Container:", container);
@@ -1110,7 +1055,6 @@ function renderBookmarkListsSidebar(lists) {
   console.log("Rendered bookmark lists HTML");
 }
 
-// Render danh sách bài viết trong bookmark list đã chọn
 function renderBookmarkPosts(posts) {
   const container = document.getElementById("bookmarkPostsList");
 
@@ -1166,31 +1110,29 @@ function renderBookmarkPosts(posts) {
     .join("");
 }
 
-// Mở bookmark modal
 function openBookmarkModal() {
   const modal = document.getElementById("bookmarkModal");
   modal.style.display = "flex";
   document.body.style.overflow = "hidden";
 
-  // Load bookmark lists
+  
   loadBookmarkLists();
 }
 
-// Đóng bookmark modal
 function closeBookmarkModal() {
   const modal = document.getElementById("bookmarkModal");
   modal.style.display = "none";
   document.body.style.overflow = "auto";
 
-  // Reset state
+  
   selectedBookmarkListId = null;
   document.getElementById("newBookmarkListName").value = "";
 
-  // Disable delete button
+  
   const deleteBtn = document.getElementById("deleteBookmarkListBtn");
   if (deleteBtn) deleteBtn.disabled = true;
 
-  // Reset posts display
+  
   document.getElementById("bookmarkPostsList").innerHTML = `
     <div class="bookmark-modal__empty">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -1207,7 +1149,6 @@ function closeBookmarkModal() {
   `;
 }
 
-// Load bookmark lists
 async function loadBookmarkLists() {
   const container = document.getElementById("bookmarkListsSidebar");
   console.log("Loading bookmark lists, container:", container);
@@ -1225,11 +1166,10 @@ async function loadBookmarkLists() {
   renderBookmarkListsSidebar(bookmarkLists);
 }
 
-// Handle click vào bookmark list
 function handleBookmarkListClick(listId) {
   selectedBookmarkListId = listId;
 
-  // Update active state
+  
   const allItems = document.querySelectorAll(".bookmark-modal__list-item");
   allItems.forEach((item) => {
     item.classList.remove("bookmark-modal__list-item--active");
@@ -1238,18 +1178,17 @@ function handleBookmarkListClick(listId) {
     }
   });
 
-  // Enable delete button
+  
   const deleteBtn = document.getElementById("deleteBookmarkListBtn");
   if (deleteBtn) deleteBtn.disabled = false;
 
-  // Find selected list and render posts
+  
   const selectedList = bookmarkLists.find((list) => list.listId === listId);
   if (selectedList) {
     renderBookmarkPosts(selectedList.posts || []);
   }
 }
 
-// Handle tạo bookmark list mới
 async function handleCreateBookmarkList() {
   const input = document.getElementById("newBookmarkListName");
   const listName = input.value.trim();
@@ -1262,13 +1201,13 @@ async function handleCreateBookmarkList() {
   try {
     const result = await createBookmarkList(listName);
     if (result.success) {
-      // Clear input
+      
       input.value = "";
 
-      // Reload bookmark lists
+      
       await loadBookmarkLists();
 
-      // Notify user
+      
       console.log("Bookmark list created:", result);
     } else {
       alert(result.message || "Không thể tạo bookmark list");
@@ -1278,7 +1217,6 @@ async function handleCreateBookmarkList() {
   }
 }
 
-// Xóa bookmark list
 async function deleteBookmarkList(listId) {
   try {
     const response = await fetch(`${API_BASE_URL}/bookmarks/list/${listId}`, {
@@ -1300,7 +1238,6 @@ async function deleteBookmarkList(listId) {
   }
 }
 
-// Xóa post khỏi bookmark list
 async function removePostFromBookmarkList(listName, postId) {
   try {
     const response = await fetch(`${API_BASE_URL}/bookmarks/remove`, {
@@ -1329,7 +1266,6 @@ async function removePostFromBookmarkList(listName, postId) {
   }
 }
 
-// Handle xóa bookmark list đã chọn
 async function handleDeleteBookmarkList() {
   if (!selectedBookmarkListId) {
     alert("Vui lòng chọn một bookmark list để xóa");
@@ -1350,14 +1286,14 @@ async function handleDeleteBookmarkList() {
   try {
     const result = await deleteBookmarkList(selectedBookmarkListId);
     if (result.success) {
-      // Reset state
+      
       selectedBookmarkListId = null;
 
-      // Update delete button state
+      
       const deleteBtn = document.getElementById("deleteBookmarkListBtn");
       if (deleteBtn) deleteBtn.disabled = true;
 
-      // Reset posts display
+      
       document.getElementById("bookmarkPostsList").innerHTML = `
         <div class="bookmark-modal__empty">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
@@ -1373,7 +1309,7 @@ async function handleDeleteBookmarkList() {
         </div>
       `;
 
-      // Reload bookmark lists
+      
       await loadBookmarkLists();
     } else {
       alert(result.message || "Không thể xóa bookmark list");
@@ -1383,7 +1319,6 @@ async function handleDeleteBookmarkList() {
   }
 }
 
-// Handle xóa post khỏi bookmark list
 async function handleRemovePostFromBookmarkList(postId) {
   if (!selectedBookmarkListId) return;
 
@@ -1395,10 +1330,10 @@ async function handleRemovePostFromBookmarkList(postId) {
   try {
     const result = await removePostFromBookmarkList(selectedList.name, postId);
     if (result.success) {
-      // Reload bookmark lists và render lại posts
+      
       await loadBookmarkLists();
 
-      // Tìm lại list đã cập nhật và render posts
+      
       const updatedList = bookmarkLists.find(
         (list) => list.listId === selectedBookmarkListId
       );
@@ -1413,39 +1348,38 @@ async function handleRemovePostFromBookmarkList(postId) {
   }
 }
 
-// Initialize bookmark modal
 function initBookmarkModal() {
-  // Open modal button
+  
   const openBtn = document.getElementById("bookmarkListsBtn");
   if (openBtn) {
     openBtn.addEventListener("click", openBookmarkModal);
   }
 
-  // Close modal button
+  
   const closeBtn = document.getElementById("closeBookmarkModal");
   if (closeBtn) {
     closeBtn.addEventListener("click", closeBookmarkModal);
   }
 
-  // Close modal when clicking overlay
+  
   const overlay = document.getElementById("bookmarkModalOverlay");
   if (overlay) {
     overlay.addEventListener("click", closeBookmarkModal);
   }
 
-  // Create bookmark list button
+  
   const createBtn = document.getElementById("createBookmarkListBtn");
   if (createBtn) {
     createBtn.addEventListener("click", handleCreateBookmarkList);
   }
 
-  // Delete bookmark list button
+  
   const deleteBtn = document.getElementById("deleteBookmarkListBtn");
   if (deleteBtn) {
     deleteBtn.addEventListener("click", handleDeleteBookmarkList);
   }
 
-  // Enter key to create bookmark list
+  
   const createInput = document.getElementById("newBookmarkListName");
   if (createInput) {
     createInput.addEventListener("keypress", (e) => {
@@ -1455,7 +1389,7 @@ function initBookmarkModal() {
     });
   }
 
-  // Delegate click on bookmark list items
+  
   const listsSidebar = document.getElementById("bookmarkListsSidebar");
   if (listsSidebar) {
     listsSidebar.addEventListener("click", (e) => {
@@ -1467,7 +1401,7 @@ function initBookmarkModal() {
     });
   }
 
-  // Delegate click on remove post buttons
+  
   const postsContainer = document.getElementById("bookmarkPostsList");
   if (postsContainer) {
     postsContainer.addEventListener("click", (e) => {

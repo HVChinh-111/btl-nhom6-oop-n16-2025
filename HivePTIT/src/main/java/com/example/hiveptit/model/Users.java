@@ -40,8 +40,7 @@ public class Users {
     @Column(name = "ranking_core", nullable = false)
     private Integer rankingCore = 0;
 
-    // Quan hệ Many-to-Many với Roles thông qua bảng user_role
-    @ManyToMany(fetch = FetchType.EAGER) // EAGER: load roles cùng với user
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_role",
         joinColumns = @JoinColumn(name = "student_id"),
@@ -49,7 +48,6 @@ public class Users {
     )
     private Set<Roles> roles = new HashSet<>();
 
-    // Quan hệ Many-to-Many với Topics thông qua bảng user_topic
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_topic",
@@ -145,7 +143,6 @@ public class Users {
         this.bio = bio;
     }
 
-    // Getter và Setter cho roles
     public Set<Roles> getRoles() {
         return roles;
     }
@@ -154,7 +151,6 @@ public class Users {
         this.roles = roles;
     }
 
-    // Getter và Setter cho topics
     public Set<Topics> getTopics() {
         return topics;
     }

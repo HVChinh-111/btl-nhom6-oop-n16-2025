@@ -6,7 +6,7 @@ import java.util.List;
 public class PostResponse {
     private Integer id;
     private String title;
-    private String content; // HTML hoặc Markdown tùy vào usecase
+    private String content; 
     private String rawContent; // Markdown gốc (chỉ trả về khi cần edit)
     private List<TopicSummary> topics;
     private UserSummaryDTO author;

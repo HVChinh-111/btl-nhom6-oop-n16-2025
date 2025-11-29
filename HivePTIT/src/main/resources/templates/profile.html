@@ -30,7 +30,7 @@
           </li>
         </ul>
 
-        <!-- User menu -->
+        <!-- Menu người dùng -->
         <div class="header__user">
           <button class="header__avatar-btn">
             <img
@@ -41,7 +41,7 @@
               onerror="this.src='/images/avatar.jpeg'"
             />
           </button>
-          <!-- User dropdown menu -->
+          <!-- Menu thả xuống người dùng -->
           <div class="header__user-menu">
             <div class="header__user-info">
               <img
@@ -146,7 +146,7 @@
     <!-- Main content -->
     <main class="main">
       <div class="profile">
-        <!-- Profile Header -->
+        <!-- Phần header của profile -->
         <section class="profile__header">
           <div class="profile__cover"></div>
           <div class="profile__info-wrapper">
@@ -373,7 +373,7 @@
           </div>
         </section>
 
-        <!-- Create/Edit Post Modal -->
+        <!-- Modal Tạo/Chỉnh sửa bài viết -->
         <div class="post-modal" id="postModal" style="display: none">
           <div class="post-modal__overlay" id="postModalOverlay"></div>
           <div class="post-modal__container">
@@ -420,7 +420,7 @@
               <div class="form__group">
                 <label class="form__label" for="postTopics">Chủ đề</label>
                 <div class="post-modal__topics" id="postTopicsList">
-                  <!-- Topics will be dynamically loaded -->
+                  <!-- Các chủ đề sẽ được tải động -->
                 </div>
               </div>
               <div class="form__error" id="postError" style="display: none">
@@ -462,7 +462,7 @@
           </div>
         </div>
 
-        <!-- Bookmark Lists Modal -->
+        <!-- Modal danh sách Bookmark -->
         <div class="bookmark-modal" id="bookmarkModal" style="display: none">
           <div class="bookmark-modal__overlay" id="bookmarkModalOverlay"></div>
           <div class="bookmark-modal__container">
@@ -558,17 +558,17 @@
           </div>
         </div>
 
-        <!-- User's Posts -->
+        <!-- Bài viết của người dùng -->
         <section class="profile__posts">
           <h2 class="profile__posts-title">Bài viết</h2>
           <div class="posts" id="userPosts">
-            <!-- Loading message -->
+            <!-- Thông báo đang tải -->
             <div class="posts__loading" id="postsLoading">
               <p>Đang tải bài viết...</p>
             </div>
-            <!-- Posts will be dynamically loaded -->
+            <!-- Bài viết sẽ được tải động -->
           </div>
-          <!-- Pagination -->
+          <!-- Phân trang -->
           <div class="pagination" id="postsPagination" style="display: none">
             <button
               class="pagination__btn pagination__btn--disabled"
@@ -593,7 +593,7 @@
               Trước
             </button>
             <div class="pagination__pages" id="paginationPages">
-              <!-- Page numbers will be dynamically generated -->
+              <!-- Số trang sẽ được tạo động -->
             </div>
             <button class="pagination__btn" id="nextPageBtn">
               Sau
@@ -618,7 +618,7 @@
       </div>
     </main>
 
-    <!-- Scripts -->
+    <!-- Các file JavaScript -->
     <script src="/scripts/common.js"></script>
     <script src="/scripts/dropdown.js"></script>
     <script src="/scripts/profile.js"></script>

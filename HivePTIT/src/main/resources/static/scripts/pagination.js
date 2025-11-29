@@ -1,42 +1,36 @@
-// ========== PAGINATION HANDLER - Xử lý phân trang bài viết ==========
-
-// Cấu hình
 const POSTS_PER_PAGE = 10;
 let currentPage = 1;
 
-// Lấy tất cả các bài viết
 const allPosts = document.querySelectorAll(".post");
 const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
-// Hiển thị bài viết theo trang
 function showPage(page, shouldScroll = false) {
-  // Ẩn tất cả bài viết
+  
   allPosts.forEach((post) => {
     post.style.display = "none";
   });
 
-  // Tính toán index bắt đầu và kết thúc
+  
   const startIndex = (page - 1) * POSTS_PER_PAGE;
   const endIndex = startIndex + POSTS_PER_PAGE;
 
-  // Hiển thị bài viết của trang hiện tại
+  
   for (let i = startIndex; i < endIndex && i < allPosts.length; i++) {
     allPosts[i].style.display = "block";
   }
 
-  // Chỉ scroll khi người dùng click vào nút phân trang
+  
   if (shouldScroll) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 }
 
-// Cập nhật trạng thái các nút phân trang
 function updatePagination() {
-  // Cập nhật nút Trước/Sau
+  
   const prevBtn = document.querySelector(".pagination__btn:first-child");
   const nextBtn = document.querySelector(".pagination__btn:last-child");
 
-  // Nút Trước
+  
   if (currentPage === 1) {
     prevBtn.classList.add("pagination__btn--disabled");
     prevBtn.disabled = true;
@@ -45,7 +39,7 @@ function updatePagination() {
     prevBtn.disabled = false;
   }
 
-  // Nút Sau
+  
   if (currentPage === totalPages) {
     nextBtn.classList.add("pagination__btn--disabled");
     nextBtn.disabled = true;
@@ -54,7 +48,7 @@ function updatePagination() {
     nextBtn.disabled = false;
   }
 
-  // Cập nhật các số trang
+  
   const pageButtons = document.querySelectorAll(".pagination__page");
   pageButtons.forEach((btn, index) => {
     const pageNum = index + 1;
@@ -66,7 +60,6 @@ function updatePagination() {
   });
 }
 
-// Xử lý khi click vào số trang
 document.querySelectorAll(".pagination__page").forEach((btn) => {
   btn.addEventListener("click", () => {
     const pageNum = parseInt(btn.textContent);
@@ -76,7 +69,6 @@ document.querySelectorAll(".pagination__page").forEach((btn) => {
   });
 });
 
-// Xử lý nút Trước
 document
   .querySelector(".pagination__btn:first-child")
   .addEventListener("click", () => {
@@ -87,7 +79,6 @@ document
     }
   });
 
-// Xử lý nút Sau
 document
   .querySelector(".pagination__btn:last-child")
   .addEventListener("click", () => {
@@ -98,6 +89,5 @@ document
     }
   });
 
-// Khởi tạo trang đầu tiên (không scroll)
 showPage(currentPage, false);
 updatePagination();

@@ -16,7 +16,7 @@ public class Roles {
     @ManyToMany(mappedBy = "roles")
     private Set<Users> users = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER) // EAGER: load permissions cùng với role
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "role_permission",
             joinColumns = @JoinColumn(name = "role_id"),

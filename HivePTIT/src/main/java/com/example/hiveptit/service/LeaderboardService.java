@@ -54,33 +54,21 @@ public class LeaderboardService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get paginated leaderboard with global ranking
-     * @param page Page number (0-based)
-     * @param size Number of items per page
-     * @return Page of LeaderboardUserResponse with correct global ranking
-     */
     public Page<LeaderboardUserResponse> getLeaderboard(int page, int size) {
-        // Fetch all users sorted by rankingCore to calculate global rank
         List<Users> allUsersSorted = userRepository.findAll(Sort.by("rankingCore").descending());
         
-        // Get total count
         long totalUsers = allUsersSorted.size();
         
-        // Calculate pagination boundaries
         int start = page * size;
         int end = Math.min(start + size, allUsersSorted.size());
         
-        // Get users for current page
         List<Users> pageUsers = allUsersSorted.subList(start, end);
         
-        // Map to response DTOs with global ranking
         List<LeaderboardUserResponse> responses = pageUsers.stream()
                 .map(user -> {
                     Long postCount = postRepository.countByAuthor(user);
                     Long followerCount = followRepository.countByFollowing(user);
-                    
-                    // Calculate global rank (position in full sorted list + 1)
+
                     int globalRank = allUsersSorted.indexOf(user) + 1;
                     
                     return new LeaderboardUserResponse(
@@ -97,10 +85,8 @@ public class LeaderboardService {
                 })
                 .collect(Collectors.toList());
         
-        // Create pageable
         Pageable pageable = PageRequest.of(page, size);
         
-        // Return as Page
         return new PageImpl<>(responses, pageable, totalUsers);
     }
 }

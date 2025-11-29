@@ -51,7 +51,6 @@ public class BookmarkListDTO {
         this.posts = posts;
     }
 
-    // Nested DTO for posts in bookmark
     public static class BookmarkPostDTO {
         private Integer postId;
         private String title;
@@ -101,7 +100,6 @@ public class BookmarkListDTO {
         }
     }
 
-    // Nested DTO for author
     public static class BookmarkAuthorDTO {
         private String username;
         private String firstname;

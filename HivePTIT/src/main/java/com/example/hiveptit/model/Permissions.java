@@ -19,7 +19,6 @@ public class Permissions {
     @ManyToMany(mappedBy = "permissions")
     private Set<Roles> roles = new HashSet<>();
 
-    // Constructors
     public Permissions() {
     }
 
@@ -28,7 +27,6 @@ public class Permissions {
         this.description = description;
     }
 
-    // Getters and Setters
     public Integer getPermissionId() {
         return permissionId;
     }

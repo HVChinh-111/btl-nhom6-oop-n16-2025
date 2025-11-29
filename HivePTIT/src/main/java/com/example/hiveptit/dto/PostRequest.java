@@ -13,14 +13,13 @@ public class PostRequest {
     @NotBlank(message = "Nội dung không được để trống")
     private String content;
 
-    // Danh sách id chủ đề (topic) gắn cho bài viết
+    // Danh sách id chủ đề gắn cho bài viết
     private List<Integer> topicIds;
 
     public String getTitle() {
         return title;
     }
 
-    // ... existing code ...
     public void setTitle(String title) {
         this.title = title;
     }
