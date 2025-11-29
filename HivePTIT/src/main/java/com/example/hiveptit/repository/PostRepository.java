@@ -26,19 +26,24 @@ public interface PostRepository extends JpaRepository<Posts, Integer> {
 
     @Query(
             value = """
-                SELECT p.*
-                FROM posts p
-                WHERE MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE)
-                ORDER BY p.created_at DESC
-                """,
+            SELECT p.*
+            FROM posts p
+            WHERE MATCH(p.title, p.content) AGAINST (:keyword IN NATURAL LANGUAGE MODE)
+               OR LOWER(p.title) LIKE LOWER(CONCAT('%', :likeKeyword, '%'))
+               OR LOWER(p.content) LIKE LOWER(CONCAT('%', :likeKeyword, '%'))
+            ORDER BY MATCH(p.title, p.content) AGAINST (:keyword IN NATURAL LANGUAGE MODE) DESC,
+                     p.created_at DESC
+            """,
             countQuery = """
-                SELECT COUNT(*)
-                FROM posts p
-                WHERE MATCH(p.title, p.content) AGAINST (:keyword IN BOOLEAN MODE)
-                """,
+            SELECT COUNT(*)
+            FROM posts p
+            WHERE MATCH(p.title, p.content) AGAINST (:keyword IN NATURAL LANGUAGE MODE)
+               OR LOWER(p.title) LIKE LOWER(CONCAT('%', :likeKeyword, '%'))
+               OR LOWER(p.content) LIKE LOWER(CONCAT('%', :likeKeyword, '%'))
+            """,
             nativeQuery = true
     )
-    Page<Posts> searchFullText(@Param("keyword") String keyword, Pageable pageable);
+    Page<Posts> searchFullText(@Param("keyword") String keyword, @Param("likeKeyword") String likeKeyword, Pageable pageable);
 
     Page<Posts> findByTopicsContaining(Topics topic, Pageable pageable);
 }

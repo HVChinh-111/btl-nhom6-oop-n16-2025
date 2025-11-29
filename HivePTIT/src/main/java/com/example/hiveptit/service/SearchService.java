@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SearchService {
@@ -30,23 +31,67 @@ public class SearchService {
         this.followService = followService;
     }
 
-    public Page<PostResponse> searchPosts(String q, Pageable pageable) {
+
+    public Page<PostResponse> searchPosts(String q, Pageable pageable, String currentUsername) {
         if (q == null || q.isBlank()) {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
 
-        String keyword = q.trim() + "*";  // e.g. "abc*"
-        Page<Posts> posts = postRepository.searchFullText(keyword, pageable);
-        return posts.map(post -> {
-            PostResponse dto = new PostResponse();
-            dto.setId(post.getPostId());
-            dto.setTitle(post.getTitle());
-            dto.setContent(post.getContent());
-            dto.setCreatedAt(post.getCreatedAt());
-            dto.setUpdatedAt(post.getUpdatedAt());
-            return dto;
-        });
+        // Tách các từ khóa
+        String[] words = q.trim().split("\\s+");
+        String keyword = q.trim();
+        String likeKeyword = q.trim();
+
+        // Lấy tất cả kết quả từ database
+        Page<Posts> postsPage = postRepository.searchFullText(keyword, likeKeyword, pageable);
+
+        // Filter: phải chứa TẤT CẢ từ khóa (logic AND)
+        List<Posts> filtered = postsPage.getContent().stream()
+                .filter(post -> {
+                    String searchText = (post.getTitle() + " " + post.getContent()).toLowerCase();
+                    return java.util.Arrays.stream(words)
+                            .allMatch(word -> searchText.contains(word.toLowerCase()));
+                })
+                .collect(Collectors.toList());
+
+        // Map to response
+        List<PostResponse> responses = filtered.stream()
+                .map(post -> {
+                    PostResponse dto = new PostResponse();
+                    dto.setId(post.getPostId());
+                    dto.setTitle(post.getTitle());
+                    dto.setContent(post.getContent());
+                    dto.setCreatedAt(post.getCreatedAt());
+                    dto.setUpdatedAt(post.getUpdatedAt());
+
+                    if (post.getAuthor() != null) {
+                        Users author = post.getAuthor();
+                        boolean isFollowing = false;
+                        if (currentUsername != null && !currentUsername.isBlank()
+                                && !currentUsername.equals(author.getUsername())) {
+                            isFollowing = followService.isFollowing(currentUsername, author.getUsername());
+                        }
+
+                        UserSummaryDTO authorDTO = new UserSummaryDTO(
+                                author.getStudentId(),
+                                author.getUsername(),
+                                author.getFirstname(),
+                                author.getLastname(),
+                                author.getAvatarUrl(),
+                                author.getBio(),
+                                author.getRankingCore(),
+                                isFollowing
+                        );
+                        dto.setAuthor(authorDTO);
+                    }
+
+                    return dto;
+                })
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(responses, pageable, filtered.size());
     }
+
 
 
 
@@ -55,7 +100,7 @@ public class SearchService {
             return new PageImpl<>(Collections.emptyList(), pageable, 0);
         }
 
-        String keyword = q.trim() + "*";  // e.g. "abc*"
+        String keyword = q.trim() + "*";
         Page<Users> users = userRepository.searchFullText(keyword, pageable);
 
         List<UserSummaryDTO> content = new ArrayList<>();
