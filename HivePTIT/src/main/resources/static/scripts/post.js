@@ -4,6 +4,9 @@
 let currentUserVote = null; // "UPVOTE", "DOWNVOTE", or null
 let currentVoteCount = 0;
 
+// Store admin status for current user
+let isCurrentUserAdmin = false;
+
 // Lấy post ID từ URL parameter
 function getPostIdFromURL() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -301,8 +304,12 @@ function createCommentElement(comment, postId, isReply = false) {
     currentUsername &&
     comment.author.username === currentUsername;
 
-  // Add menu for comment owner (edit/delete)
-  if (isOwner) {
+  // Check if user can manage this comment (owner or admin)
+  const canEdit = isOwner; // Only owner can edit
+  const canDelete = isOwner || isCurrentUserAdmin; // Owner or admin can delete
+
+  // Add menu for comment owner or admin (edit/delete)
+  if (canEdit || canDelete) {
     const menu = document.createElement("div");
     menu.className = "comment__menu";
 
@@ -325,38 +332,42 @@ function createCommentElement(comment, postId, isReply = false) {
     dropdown.id = `commentMenu${comment.id}`;
     dropdown.style.display = "none";
 
-    // Edit button
-    const editBtn = document.createElement("button");
-    editBtn.className = "comment__menu-item";
-    editBtn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-        <path d="M11.5 2L14 4.5L5 13.5H2.5V11L11.5 2Z" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      Chỉnh sửa
-    `;
-    editBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      toggleCommentMenu(comment.id); // Close menu
-      openEditCommentForm(item, comment);
-    });
+    // Edit button - only for owner
+    if (canEdit) {
+      const editBtn = document.createElement("button");
+      editBtn.className = "comment__menu-item";
+      editBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M11.5 2L14 4.5L5 13.5H2.5V11L11.5 2Z" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        Chỉnh sửa
+      `;
+      editBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        toggleCommentMenu(comment.id); // Close menu
+        openEditCommentForm(item, comment);
+      });
+      dropdown.appendChild(editBtn);
+    }
 
-    // Delete button
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "comment__menu-item comment__menu-item--danger";
-    deleteBtn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-        <path d="M3 4H13M5 4V3C5 2.44772 5.44772 2 6 2H10C10.5523 2 11 2.44772 11 3V4M6.5 7.5V11.5M9.5 7.5V11.5M4 4H12V13C12 13.5523 11.5523 14 11 14H5C4.44772 14 4 13.5523 4 13V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      Xóa
-    `;
-    deleteBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      toggleCommentMenu(comment.id); // Close menu
-      await deleteComment(comment.id, item);
-    });
+    // Delete button - for owner or admin
+    if (canDelete) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.className = "comment__menu-item comment__menu-item--danger";
+      deleteBtn.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M3 4H13M5 4V3C5 2.44772 5.44772 2 6 2H10C10.5523 2 11 2.44772 11 3V4M6.5 7.5V11.5M9.5 7.5V11.5M4 4H12V13C12 13.5523 11.5523 14 11 14H5C4.44772 14 4 13.5523 4 13V4Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Xóa
+      `;
+      deleteBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        toggleCommentMenu(comment.id); // Close menu
+        await deleteComment(comment.id, item);
+      });
+      dropdown.appendChild(deleteBtn);
+    }
 
-    dropdown.appendChild(editBtn);
-    dropdown.appendChild(deleteBtn);
     menu.appendChild(menuBtn);
     menu.appendChild(dropdown);
     item.appendChild(menu);
@@ -886,6 +897,9 @@ async function initPostDetail() {
   }
 
   try {
+    // Check admin status before loading comments
+    isCurrentUserAdmin = await checkAdminRole();
+
     // Fetch post data
     const post = await fetchPost(postId);
 
