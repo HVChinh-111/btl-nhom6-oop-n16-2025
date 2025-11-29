@@ -26,9 +26,16 @@ public class SearchController {
     @GetMapping("/posts")
     public Page<PostResponse> searchPosts(
             @RequestParam("q") String q,
-            @PageableDefault(size = 10) Pageable pageable
+            @PageableDefault(size = 10) Pageable pageable,
+            Authentication authentication
     ) {
-        return searchService.searchPosts(q, pageable);
+        String currentUsername = null;
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            currentUsername = userDetails.getUsername();
+        }
+
+        return searchService.searchPosts(q, pageable, currentUsername);
     }
 
 //    GET /api/search/users?q=keyword
